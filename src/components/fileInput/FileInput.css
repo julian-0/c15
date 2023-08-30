@@ -1,0 +1,32 @@
+.file-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #094067;
+    border-radius: 3px;
+    padding: 2px;
+}
+
+.upload-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.upload-icon {
+    margin-right: 5px;
+}
+
+.selected-file {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.file-label {
+    font-size: 9px;
+    margin-bottom: 0;
+    padding: 2px;
+}
+.logo-container{
+    border-right: 1px solid #094067;
+}

@@ -1,0 +1,21 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.App{
+  width: 100vw;
+  height: 100vh;
+  background-color: #E6E6E6;
+}
+
+.content {
+  margin-left: 220px; /* Adjust based on the width of your sidebar */
+  width: calc(100vw - 220px);
+  height: 100vh;
+  background-color: #E6E6E6;
+  position: sticky;
+  top: 0;
+}
