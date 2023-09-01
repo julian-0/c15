@@ -32,6 +32,7 @@ class Programmer extends React.Component {
             devName: '--',
             eflPath: undefined
         };
+        this.intervalId = null;
         this.getData = this.getData.bind(this);
         this.programEfl = this.programEfl.bind(this);
         this.updateFile = this.updateFile.bind(this);
@@ -40,7 +41,6 @@ class Programmer extends React.Component {
     componentDidMount() {
         // 3. Setup listener for controller python output (bounced from main process)
         ipcRenderer.on('CONTROLLER_RESULT', (event, args) => {
-            console.log(args)
             let data = args.data;
             switch (data.command) {
                 case "GET_DATA":
@@ -49,16 +49,51 @@ class Programmer extends React.Component {
                 case "PROGRAM":
                     this.processProgramResult(data);
                     break;
+                case "CONNECTION":
+                    this.processCheckConnectionResult(data);
+                    break;
                 default:
                     console.log("Unknown command: " + data.command);
             }
         });
         this.getData();
+        this.intervalId = setInterval(() => {
+            this.checkConnection();
+        }, 1000);
     }
 
     componentWillUnmount() {
+        clearInterval(this.intervalId); // Limpia el intervalo cuando el componente se desmonta
         // 4. Remove all output listeners before app shuts down
         ipcRenderer.removeAllListeners('CONTROLLER_RESULT');
+    }
+
+    processCheckConnectionResult(response) {
+        if (response.status === 'ERROR') {
+            this.setState({
+                connected: false,
+                serialNumber: '--',
+                firmwareRevision: '--',
+                revName: '--',
+                devName: '--',
+                eflPath: undefined
+            });
+            return;
+        }
+        if (this.state.connected === false) {
+            this.getData();
+        }
+        this.setState({ connected: true });
+    }
+
+    checkConnection() {
+        loadBalancer.sendData(
+            ipcRenderer,
+            'controller',
+            {
+                command: "CONNECTION"
+            }
+        );
     }
 
     processGetDataResult(response) {
@@ -88,7 +123,6 @@ class Programmer extends React.Component {
 
     getData() {
         // 6. Sending data to controller (process already running)
-        console.log("Controller data sent")
         loadBalancer.sendData(
             ipcRenderer,
             'controller',
@@ -101,7 +135,6 @@ class Programmer extends React.Component {
     programEfl() {
         if (!this.state.eflPath || this.state.eflPath === '')
             return;
-        console.log("Programing efl")
         loadBalancer.sendData(
             ipcRenderer,
             'controller',

@@ -1,6 +1,6 @@
 {
-    "name": "f-cal",
-    "description": "A desktop interface for the Pocket Science Lab open-harware device",
+    "name": "c15-config",
+    "description": "A desktop interface for configuring C15 Defribillator",
     "version": "2.1.0",
     "private": true,
     "dependencies": {
@@ -80,9 +80,9 @@
         "url": "https://github.com/AakashMallik"
     },
     "build": {
-        "appId": "Factorial Calculator",
-        "productName": "F-Cal",
-        "copyright": "Copyright © 2019-2020 Mr. Mallik",
+        "appId": "C15 Configuration Tool",
+        "productName": "C15Config",
+        "copyright": "Copyright © E&M Electromedicina",
         "asar": false,
         "linux": {
             "target": [
@@ -98,7 +98,7 @@
             "target": [
                 "nsis"
             ],
-            "legalTrademarks": "Copyright © 2019-2020 Mr. Mallik",
+            "legalTrademarks": "Copyright © E&M Electromedicina",
             "signingHashAlgorithms": [
                 "sha1",
                 "sha256"
