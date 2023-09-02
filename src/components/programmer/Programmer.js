@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react'
 import './Programmer.css'
+import { FaPowerOff } from 'react-icons/fa';
 import FileInput from '../fileInput/FileInput'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,7 +27,7 @@ class Programmer extends React.Component {
         super(props);
         this.state = {
             connected: false,
-            serialNumber: '--',
+            serialNumber: '',
             firmwareRevision: '--',
             revName: '--',
             devName: '--',
@@ -72,7 +73,7 @@ class Programmer extends React.Component {
         if (response.status === 'ERROR') {
             this.setState({
                 connected: false,
-                serialNumber: '--',
+                serialNumber: '',
                 firmwareRevision: '--',
                 revName: '--',
                 devName: '--',
@@ -154,18 +155,6 @@ class Programmer extends React.Component {
             <div className='programmer card col-md-4'>
                 <h4 className='card-header text-center'>Programador</h4>
                 <div className='card-body'>
-                    <div className='d-flex justify-content-between'>
-                        <span className='card-text text-secondary'>
-                            {
-                                this.state.connected ?
-                                    <span className='online'>● Conectado</span> :
-                                    <span className='offline'>● Desconectado</span>
-                            }
-
-                        </span>
-                        <span>Desconectar</span>
-                    </div>
-                    <hr />
                     <div className='stlink'>
                         <h5 className='card-title text-center'>STLink</h5>
                         <div className='d-flex justify-content-between'>
@@ -180,6 +169,23 @@ class Programmer extends React.Component {
                     <hr />
                     <div className='microcontrolador'>
                         <h5 className='card-title text-center'>Microcontrolador</h5>
+                        <div className='d-flex justify-content-between'>
+                            <span className='card-text text-secondary'>
+                                {
+                                    this.state.connected ?
+                                        <span className='online'>● Conectado</span> :
+                                        <span className='offline'>● Desconectado</span>
+                                }
+                            </span>
+                            <label
+                                className={this.state.connected ? 'offline' : null}
+                                //onClick={toggleConexion}
+                                style={{ cursor: this.state.connected ? 'pointer' : 'not-allowed' }}
+                            >
+                                <FaPowerOff className="icon" />  
+                                Desconectar
+                            </label>
+                        </div>
                         <div className='d-flex justify-content-between'>
                             <span className='card-text text-secondary'>Modelo:</span>
                             <span className='card-text text-secondary-emphasis'>{this.state.devName + ' ' + this.state.revName}</span>
