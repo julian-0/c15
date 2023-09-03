@@ -37,3 +37,7 @@
 .offline {
     color: red;
 }
+
+.disabled {
+    color: gray;
+}

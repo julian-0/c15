@@ -12,6 +12,8 @@ GET_DATA = 'GET_DATA'
 PROGRAM = 'PROGRAM'
 KILL = 'KILL'
 CONNECTION = 'CONNECTION'
+CONNECT_TARGET = 'CONNECT_TARGET'
+DISCONNECT_TARGET = 'DISCONNECT_TARGET'
 
 class Status(Enum):
     OK, ERROR = range(2)
@@ -32,6 +34,10 @@ device_map = {
     # ...otros valores de dispositivo...
 }
 
+def get_connected_probe():
+    probes = ConnectHelper.get_all_connected_probes(blocking=False)
+    return probes.pop(0)
+
 def list_connected_probes():
     probes = ConnectHelper.get_all_connected_probes()
     for idx, p in probes:
@@ -44,37 +50,76 @@ def main():
         parsed_stream_data = json.loads(in_stream_data)
         command = parsed_stream_data['command']
 
-        if command == CONNECTION:
-            res, session = check_connection(session)
-            returnResult(res)
-        elif command == KILL:
+        if command == KILL:
+            try:
+                session.close()
+                print("Sesión cerrada")
+            except Exception as e:
+                print("Error al cerrar la sesión " + repr(e))
+                print("Saliendo...")
             exit()
-        else:
-            res, session = check_connection(session)
-            parsed_res = json.loads(res)
-            if parsed_res["status"] == Status.ERROR.name:
-                data = {}
-                data["error"] = "No hay equipos conectados"
-                res = response(command, Status.ERROR.name, data)
-                returnResult(res)
-                continue
-            if command == GET_DATA:
-                json_data = get_data(session)
-                returnResult(json_data)
 
-            if command == PROGRAM:
+        res, session = check_connection2(session)
+        parsed_res = json.loads(res)
+        if not parsed_res["data"]["probe"]:
+            data = {}
+            data["error"] = "No hay equipos conectados"
+            res = response(command, Status.ERROR.name, data)
+            returnResult(res)
+            continue
+
+        if command == CONNECTION:
+            returnResult(res)
+        else:
+            json_data = None
+            if command == CONNECT_TARGET:
+                json_data, session = connect_target(session)
+
+            elif command == DISCONNECT_TARGET:
+                json_data, session = disconnect_target(session)
+
+            elif command == GET_DATA:
+                json_data = get_data()
+
+            elif command == PROGRAM:
                 path = parsed_stream_data['path']
                 json_data = program_firmware(session, path)
-                returnResult(json_data)
 
-            if command == 'PRENDER':
+            elif command == 'PRENDER':
                 variable = parsed_stream_data['variable']
                 json_data = light_led(session, variable)
-                returnResult(json_data)
             
-            
-            #session = check_connection(session)
+            returnResult(json_data)
 
+def connect_target(session):
+    if session is None:
+        session = ConnectHelper.session_with_chosen_probe(blocking=False)
+        session.open()
+    
+    target = session.board.target
+
+    value = target.read32(0xE0042000)
+    revision_id = (value >> 16) & 0xFFFF 
+    device_id = value & 0xFFF
+
+    data = {}
+    revision_string = revision_map.get(revision_id, "Desconocido")
+    device_string = device_map.get(device_id, "Desconocido")
+    revision = {}
+    revision["id"] = revision_id
+    revision["name"] = revision_string
+    device = {}
+    device["id"] = device_id
+    device["name"] = device_string
+    data["revision"] = revision
+    data["device"] = device
+
+    return response(CONNECT_TARGET, Status.OK.name, data), session
+
+def disconnect_target(session):
+    session.close()
+    return response(DISCONNECT_TARGET, Status.OK.name, {}), None
+    
 def is_connected(session):
     #Check if the target is still alive
     try:
@@ -96,6 +141,13 @@ def check_connection(session):
         return response(CONNECTION, Status.ERROR.name, {}), None
     else:
         return response(CONNECTION, Status.OK.name, {}), session
+
+def check_connection2(session):
+    if len(ConnectHelper.get_all_connected_probes(blocking=False)) < 1:
+        session = None
+        return response(CONNECTION, Status.OK.name, {'probe': False, 'target': False}), session
+
+    return response(CONNECTION, Status.OK.name, {'probe': True, 'target': session is not None}), session
 
 def returnResult(result):
     print(TOKEN+result)
@@ -128,8 +180,9 @@ def program_firmware(session, path):
         data["path"] = path
         return response(PROGRAM, Status.OK.name, data)
 
-def get_data(session):
-    serial_number = session.probe.unique_id
+def get_data():
+    probe = ConnectHelper.get_all_connected_probes(blocking=False).pop(0)
+    serial_number = probe.unique_id
     firmware_revision = "no se"
 
     data = {}
@@ -138,30 +191,15 @@ def get_data(session):
     stlink["firmware_revision"] = firmware_revision
     data["stlink"] = stlink
 
-    target = session.board.target
-
-    value = target.read32(0xE0042000)
-    revision_id = (value >> 16) & 0xFFFF 
-    device_id = value & 0xFFF
-
-    revision_string = revision_map.get(revision_id, "Desconocido")
-    device_string = device_map.get(device_id, "Desconocido")
-    revision = {}
-    revision["id"] = revision_id
-    revision["name"] = revision_string
-    device = {}
-    device["id"] = device_id
-    device["name"] = device_string
-    data["revision"] = revision
-    data["device"] = device
     return response(GET_DATA, Status.OK.name, data)
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        response = {
-            "result":"Ocurrió un error inesperado",
-            "exception": repr(e)
-        }
-        returnResult(json.dumps(response))
+    main()
+    # try:
+    #     main()
+    # except Exception as e:
+    #     response = {
+    #         "result":"Ocurrió un error inesperado",
+    #         "exception": repr(e)
+    #     }
+    #     returnResult(json.dumps(response))

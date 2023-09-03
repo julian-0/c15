@@ -6,7 +6,7 @@ from pyocd.debug.elf.symbols import ELFSymbolProvider
 import time
 
 def list_connected_probes():
-    probes = ConnectHelper.get_all_connected_probes()
+    probes = ConnectHelper.get_all_connected_probes(blocking=False)
     print("Probes size: " + str(len(probes)))
     p = probes.pop(0)
     

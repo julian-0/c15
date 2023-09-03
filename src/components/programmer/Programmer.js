@@ -26,7 +26,8 @@ class Programmer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            connected: false,
+            probeConnected: false,
+            targetConnected: false,
             serialNumber: '',
             firmwareRevision: '--',
             revName: '--',
@@ -37,6 +38,8 @@ class Programmer extends React.Component {
         this.getData = this.getData.bind(this);
         this.programEfl = this.programEfl.bind(this);
         this.updateFile = this.updateFile.bind(this);
+        this.toggleConexion = this.toggleConexion.bind(this);
+        this.disableConnection = this.disableConnection.bind(this);
     }
 
     componentDidMount() {
@@ -53,6 +56,12 @@ class Programmer extends React.Component {
                 case "CONNECTION":
                     this.processCheckConnectionResult(data);
                     break;
+                case "CONNECT_TARGET":
+                    this.processConnectResult(data);
+                    break;
+                case "DISCONNECT_TARGET":
+                    this.processDisconnectResult(data);
+                    break;
                 default:
                     console.log("Unknown command: " + data.command);
             }
@@ -65,14 +74,18 @@ class Programmer extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.intervalId); // Limpia el intervalo cuando el componente se desmonta
+        if(this.state.targetConnected){
+            this.disableConnection();
+        }
         // 4. Remove all output listeners before app shuts down
         ipcRenderer.removeAllListeners('CONTROLLER_RESULT');
     }
 
     processCheckConnectionResult(response) {
-        if (response.status === 'ERROR') {
+        if (!response.data.probe) {
             this.setState({
-                connected: false,
+                probeConnected: false,
+                targetConnected: false,
                 serialNumber: '',
                 firmwareRevision: '--',
                 revName: '--',
@@ -81,10 +94,19 @@ class Programmer extends React.Component {
             });
             return;
         }
-        if (this.state.connected === false) {
+        if (!response.data.target) {
+            this.setState({
+                targetConnected: false,
+                revName: '--',
+                devName: '--',
+                eflPath: undefined
+            });
+        }
+
+        if (this.state.probeConnected === false) {
             this.getData();
         }
-        this.setState({ connected: true });
+        this.setState({ probeConnected: true });
     }
 
     checkConnection() {
@@ -105,13 +127,40 @@ class Programmer extends React.Component {
 
         let data = response.data;
         this.setState({
-            connected: true,
+            probeConnected: true,
             serialNumber: data.stlink.serial_number,
-            firmwareRevision: data.stlink.firmware_revision,
+            firmwareRevision: data.stlink.firmware_revision
+        });
+        toast.success('Conectado al probe', Programmer.toastProperties);
+    }
+
+    processConnectResult(response) {
+        if (response.status === 'ERROR') {
+            toast.error('Error conectandose al micro', Programmer.toastProperties)
+            return;
+        }
+
+        let data = response.data;
+        this.setState({
+            targetConnected: true,
             revName: data.revision.name,
             devName: data.device.name
         });
-        toast.success('Conectado al programador', Programmer.toastProperties);
+        toast.success('Conectado al target', Programmer.toastProperties);
+    }
+
+    processDisconnectResult(response) {
+        if (response.status === 'ERROR') {
+            toast.error('Error desconectandose del target', Programmer.toastProperties)
+            return;
+        }
+
+        this.setState({
+            targetConnected: false,
+            revName: '--',
+            devName: '--'
+        });
+        toast.success('Desconectado del target', Programmer.toastProperties);
     }
 
     processProgramResult(response) {
@@ -150,6 +199,32 @@ class Programmer extends React.Component {
         this.setState({ eflPath: eflPath });
     }
 
+    toggleConexion() {
+        if (this.state.targetConnected) {
+            return;
+        }
+        loadBalancer.sendData(
+            ipcRenderer,
+            'controller',
+            {
+                command: "CONNECT_TARGET"
+            }
+        );
+    }
+
+    disableConnection() {
+        if (!this.state.targetConnected) {
+            return;
+        }
+        loadBalancer.sendData(
+            ipcRenderer,
+            'controller',
+            {
+                command: "DISCONNECT_TARGET"
+            }
+        );
+    }
+
     render() {
         return (
             <div className='programmer card col-md-4'>
@@ -172,19 +247,31 @@ class Programmer extends React.Component {
                         <div className='d-flex justify-content-between'>
                             <span className='card-text text-secondary'>
                                 {
-                                    this.state.connected ?
+                                    this.state.targetConnected ?
                                         <span className='online'>● Conectado</span> :
                                         <span className='offline'>● Desconectado</span>
                                 }
                             </span>
-                            <label
-                                className={this.state.connected ? 'offline' : null}
-                                //onClick={toggleConexion}
-                                style={{ cursor: this.state.connected ? 'pointer' : 'not-allowed' }}
-                            >
-                                <FaPowerOff className="icon" />  
-                                Desconectar
-                            </label>
+                            {
+                                this.state.targetConnected ?
+                                    <label
+                                        className='offline'
+                                        onClick={this.disableConnection}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <FaPowerOff className="icon" />
+                                        Desconectar
+                                    </label>
+                                    :
+                                    <label
+                                        className={this.state.probeConnected ? 'online' : 'disabled'}
+                                        onClick={this.toggleConexion}
+                                        style={{ cursor: this.state.probeConnected ? 'pointer' : 'not-allowed' }}
+                                    >
+                                        <FaPowerOff className="icon" />
+                                        Conectar
+                                    </label>
+                            }
                         </div>
                         <div className='d-flex justify-content-between'>
                             <span className='card-text text-secondary'>Modelo:</span>
