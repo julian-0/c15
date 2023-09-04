@@ -14,6 +14,7 @@ KILL = 'KILL'
 CONNECTION = 'CONNECTION'
 CONNECT_TARGET = 'CONNECT_TARGET'
 DISCONNECT_TARGET = 'DISCONNECT_TARGET'
+SET_ELF_FILE = 'SET_ELF_FILE'
 
 class Status(Enum):
     OK, ERROR = range(2)
@@ -81,6 +82,10 @@ def main():
             elif command == GET_DATA:
                 json_data = get_data()
 
+            elif command == SET_ELF_FILE:
+                path = parsed_stream_data['path']
+                json_data = set_elf_file(session, path)
+
             elif command == PROGRAM:
                 path = parsed_stream_data['path']
                 json_data = program_firmware(session, path)
@@ -90,6 +95,10 @@ def main():
                 json_data = light_led(session, variable)
             
             returnResult(json_data)
+
+def set_elf_file(session, path):
+    session.board.target.elf = path
+    return response(SET_ELF_FILE, Status.OK.name, {})
 
 def connect_target(session):
     if session is None:

@@ -32,11 +32,11 @@ class Programmer extends React.Component {
             firmwareRevision: '--',
             revName: '--',
             devName: '--',
-            eflPath: undefined
+            elfPath: undefined
         };
         this.intervalId = null;
         this.getData = this.getData.bind(this);
-        this.programEfl = this.programEfl.bind(this);
+        this.programElf = this.programElf.bind(this);
         this.updateFile = this.updateFile.bind(this);
         this.toggleConexion = this.toggleConexion.bind(this);
         this.disableConnection = this.disableConnection.bind(this);
@@ -74,7 +74,7 @@ class Programmer extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.intervalId); // Limpia el intervalo cuando el componente se desmonta
-        if(this.state.targetConnected){
+        if (this.state.targetConnected) {
             this.disableConnection();
         }
         // 4. Remove all output listeners before app shuts down
@@ -90,7 +90,7 @@ class Programmer extends React.Component {
                 firmwareRevision: '--',
                 revName: '--',
                 devName: '--',
-                eflPath: undefined
+                elfPath: undefined
             });
             return;
         }
@@ -99,7 +99,7 @@ class Programmer extends React.Component {
                 targetConnected: false,
                 revName: '--',
                 devName: '--',
-                eflPath: undefined
+                elfPath: undefined
             });
         }
 
@@ -165,7 +165,7 @@ class Programmer extends React.Component {
 
     processProgramResult(response) {
         if (response.status !== 'OK') {
-            toast.error('Error programando el .efl', Programmer.toastProperties)
+            toast.error('Error programando el .elf', Programmer.toastProperties)
             return;
         }
         toast.success('Programa cargado correctamente', Programmer.toastProperties);
@@ -182,21 +182,29 @@ class Programmer extends React.Component {
         );
     }
 
-    programEfl() {
-        if (!this.state.eflPath || this.state.eflPath === '')
+    programElf() {
+        if (!this.state.elfPath || this.state.elfPath === '')
             return;
         loadBalancer.sendData(
             ipcRenderer,
             'controller',
             {
                 command: "PROGRAM",
-                path: this.state.eflPath
+                path: this.state.elfPath
             }
         );
     }
 
-    updateFile(eflPath) {
-        this.setState({ eflPath: eflPath });
+    updateFile(elfPath) {
+        this.setState({ elfPath: elfPath });
+        loadBalancer.sendData(
+            ipcRenderer,
+            'controller',
+            {
+                command: "SET_ELF_FILE",
+                path: elfPath
+            }
+        );
     }
 
     toggleConexion() {
@@ -279,10 +287,10 @@ class Programmer extends React.Component {
                         </div>
                         <div className='d-flex justify-content-between'>
                             <span className='card-text text-secondary'>Versión de firmware:</span>
-                            <FileInput parentCallback={this.updateFile} />
+                            <FileInput targetConnected={this.state.targetConnected} parentCallback={this.updateFile} />
                         </div>
                         <div className='btn-record d-flex justify-content-end'>
-                            <button type="button" className='btn btn-warning' onClick={this.programEfl}>Grabar</button>
+                            <button type="button" className='btn btn-warning' onClick={this.programElf}>Grabar</button>
                         </div>
                     </div>
                     <div className='container action-buttons d-flex justify-content-between flex-md-row flex-column'>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
 import './FileInput.css';
 
-const FileInput = ({ parentCallback }) => {
+const FileInput = ({ targetConnected, parentCallback }) => {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const handleFileChange = (event) => {
@@ -24,6 +24,7 @@ const FileInput = ({ parentCallback }) => {
                 className="input"
                 onChange={handleFileChange}
                 hidden
+                disabled={!targetConnected}
             />
             <label htmlFor="upload" className='file-label text-secondary-emphasis'>{!selectedFile ? 'Archivo .efl' : selectedFile.name}</label>
         </div>
