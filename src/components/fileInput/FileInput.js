@@ -7,6 +7,7 @@ const FileInput = ({ targetConnected, parentCallback }) => {
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
+        if(!file) return;
         setSelectedFile(file);
         parentCallback(file.path);
     };
