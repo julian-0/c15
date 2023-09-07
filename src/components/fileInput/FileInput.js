@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUpload } from 'react-icons/fa';
 import './FileInput.css';
 
@@ -10,6 +10,13 @@ const FileInput = ({ targetConnected, parentCallback }) => {
         setSelectedFile(file);
         parentCallback(file.path);
     };
+
+    useEffect(() => {
+        // Cuando targetConnected cambia a false, limpiamos el selectedFile
+        if (!targetConnected) {
+            setSelectedFile(null);
+        }
+    }, [targetConnected]);
 
     return (
         <div className="file-input">
