@@ -32,7 +32,8 @@ class Programmer extends React.Component {
             firmwareRevision: '--',
             revName: '--',
             devName: '--',
-            elfPath: undefined
+            elfPath: undefined,
+            paused: false
         };
         this.intervalId = null;
         this.getData = this.getData.bind(this);
@@ -40,6 +41,9 @@ class Programmer extends React.Component {
         this.updateFile = this.updateFile.bind(this);
         this.toggleConexion = this.toggleConexion.bind(this);
         this.disableConnection = this.disableConnection.bind(this);
+        this.reset = this.reset.bind(this);
+        this.halt = this.halt.bind(this);
+        this.resume = this.resume.bind(this);
     }
 
     componentDidMount() {
@@ -62,6 +66,15 @@ class Programmer extends React.Component {
                 case "DISCONNECT_TARGET":
                     this.processDisconnectResult(data);
                     break;
+                case "RESET":
+                    this.processResetResult(data);
+                    break;
+                case "HALT":
+                    this.processHaltResult(data);
+                    break;
+                case "RESUME":
+                    this.processResumeResult(data);
+                    break;
                 default:
                     console.log("Unknown command: " + data.command);
             }
@@ -79,6 +92,27 @@ class Programmer extends React.Component {
         }
         // 4. Remove all output listeners before app shuts down
         ipcRenderer.removeAllListeners('CONTROLLER_RESULT');
+    }
+
+    processResetResult(response) {
+        if (response.status === 'OK') {
+            toast.success('Reseteado', Programmer.toastProperties);
+            //this.setState({ paused: true });
+        }
+    }
+
+    processHaltResult(response) {
+        if (response.status === 'OK') {
+            toast.success('Pausado', Programmer.toastProperties);
+            this.setState({ paused: true });
+        }
+    }
+
+    processResumeResult(response) {
+        if (response.status === 'OK') {
+            toast.success('Reaunudado', Programmer.toastProperties);
+            this.setState({ paused: false });
+        }
     }
 
     processCheckConnectionResult(response) {
@@ -233,6 +267,38 @@ class Programmer extends React.Component {
         );
     }
 
+    reset() {
+        if (!this.state.targetConnected)
+            return;
+
+        this.sendCommand("RESET");
+    }
+
+    halt() {
+        if (!this.state.targetConnected || this.state.paused)
+            return;
+
+        this.sendCommand("HALT");
+    }
+
+
+    resume() {
+        if (!this.state.targetConnected || !this.state.paused)
+            return;
+
+        this.sendCommand("RESUME");
+    }
+
+    sendCommand(command) {
+        loadBalancer.sendData(
+            ipcRenderer,
+            'controller',
+            {
+                command: command
+            }
+        );
+    }
+
     render() {
         return (
             <div className='programmer card col-md-4'>
@@ -294,9 +360,27 @@ class Programmer extends React.Component {
                         </div>
                     </div>
                     <div className='container action-buttons d-flex justify-content-between flex-md-row flex-column'>
-                        <button type="button" className='btn btn-primary'>Reiniciar</button>
-                        <button type="button" className='btn btn-danger'>Pausar</button>
-                        <button type="button" className='btn btn-success'>Reaunudar</button>
+                        <button
+                            type="button"
+                            className='btn btn-primary'
+                            disabled={(!this.state.targetConnected)}
+                            onClick={this.reset}>
+                            Reiniciar
+                        </button>
+                        <button
+                            type="button"
+                            className='btn btn-danger'
+                            disabled={(!this.state.targetConnected || this.state.paused)}
+                            onClick={this.halt}>
+                            Pausar
+                        </button>
+                        <button
+                            type="button"
+                            className='btn btn-success'
+                            disabled={(!this.state.targetConnected || !this.state.paused)}
+                            onClick={this.resume}>
+                            Reaunudar
+                        </button>
                     </div>
                 </div>
             </div>

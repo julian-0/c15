@@ -12,7 +12,7 @@ def list_connected_probes():
 
 def main():
     # Crear una instancia del programador ST-Link
-    with ConnectHelper.session_with_chosen_probe() as session:
+    with ConnectHelper.session_with_chosen_probe(options={"chip_erase": "chip", "target_override": "STM32L4P5ZGTx"}) as session:
         # Obtener información sobre el programador
         probe = session.probe
 
@@ -80,10 +80,10 @@ def main():
         for i in range(0, 10):
             target.write32(led_azul_addr, 1)
             target.write32(led_rojo_addr, 0)
-            time.sleep(0)
+            time.sleep(1)
             target.write32(led_azul_addr, 0)
             target.write32(led_rojo_addr, 1)
-            time.sleep(0)
+            time.sleep(1)
             value = target.read32(0xE0042000)
             print("value: %d" % value)
 

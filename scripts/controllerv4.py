@@ -15,6 +15,9 @@ CONNECTION = 'CONNECTION'
 CONNECT_TARGET = 'CONNECT_TARGET'
 DISCONNECT_TARGET = 'DISCONNECT_TARGET'
 SET_ELF_FILE = 'SET_ELF_FILE'
+RESET = 'RESET'
+HALT = 'HALT'
+RESUME = 'RESUME'
 
 class Status(Enum):
     OK, ERROR = range(2)
@@ -90,11 +93,35 @@ def main():
                 path = parsed_stream_data['path']
                 json_data = program_firmware(session, path)
 
+            elif command == RESET:#TODO: reset solo o reset and halt?
+                json_data = reset(session)
+
+            elif command == HALT:
+                json_data = halt(session)
+
+            elif command == RESUME:
+                json_data = resume(session)
+
             elif command == 'PRENDER':
                 variable = parsed_stream_data['variable']
                 json_data = light_led(session, variable)
             
             returnResult(json_data)
+
+def reset(session):
+    target = session.board.target
+    target.reset()
+    return response(RESET, Status.OK.name, {})
+
+def halt(session):
+    target = session.board.target
+    target.halt()
+    return response(HALT, Status.OK.name, {})
+
+def resume(session):
+    target = session.board.target
+    target.resume()
+    return response(RESUME, Status.OK.name, {})
 
 def set_elf_file(session, path):
     session.board.target.elf = path
@@ -102,7 +129,7 @@ def set_elf_file(session, path):
 
 def connect_target(session):
     if session is None:
-        session = ConnectHelper.session_with_chosen_probe(blocking=False)
+        session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "chip", "target_override": "STM32L4P5ZGTx"})
         session.open()
     
     target = session.board.target
@@ -174,17 +201,29 @@ def light_led(session, variable):
         target.resume()
         provider = ELFSymbolProvider(target.elf)
         variable_addr = provider.get_symbol_value(variable)
+        print(variable + "addr: 0x%X" % variable_addr)
         target.write32(variable_addr, 1)
         time.sleep(3)
+        print(variable + ": %d" % target.read32(variable_addr))
         target.write32(variable_addr, 0)
         
+        uwTick_addr = provider.get_symbol_value("uwTick")
+        print("uwTick: %d" % target.read32(uwTick_addr))
+
+
+        uwTickFreq_addr = provider.get_symbol_value("uwTickFreq")
+        print("uwTickFreq: %d" % target.read32(uwTickFreq_addr))
+
         data = {}
         data["variable"] = variable
         return response("PRENDER", Status.OK.name, data)
 
 def program_firmware(session, path):
+        target = session.board.target
         FileProgrammer(session).program(path)
-        session.board.target.elf = path
+        target.elf = path
+        target.reset_and_halt()
+        target.resume()
         data = {}
         data["path"] = path
         return response(PROGRAM, Status.OK.name, data)
