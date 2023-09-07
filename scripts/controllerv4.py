@@ -201,19 +201,10 @@ def light_led(session, variable):
         target.resume()
         provider = ELFSymbolProvider(target.elf)
         variable_addr = provider.get_symbol_value(variable)
-        print(variable + "addr: 0x%X" % variable_addr)
         target.write32(variable_addr, 1)
         time.sleep(3)
-        print(variable + ": %d" % target.read32(variable_addr))
         target.write32(variable_addr, 0)
         
-        uwTick_addr = provider.get_symbol_value("uwTick")
-        print("uwTick: %d" % target.read32(uwTick_addr))
-
-
-        uwTickFreq_addr = provider.get_symbol_value("uwTickFreq")
-        print("uwTickFreq: %d" % target.read32(uwTickFreq_addr))
-
         data = {}
         data["variable"] = variable
         return response("PRENDER", Status.OK.name, data)
