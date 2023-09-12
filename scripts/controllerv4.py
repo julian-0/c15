@@ -18,6 +18,7 @@ SET_ELF_FILE = 'SET_ELF_FILE'
 RESET = 'RESET'
 HALT = 'HALT'
 RESUME = 'RESUME'
+MONITOR = 'MONITOR'
 
 class Status(Enum):
     OK, ERROR = range(2)
@@ -101,12 +102,31 @@ def main():
 
             elif command == RESUME:
                 json_data = resume(session)
+            
+            elif command == MONITOR:
+                variables = parsed_stream_data['variables']
+                json_data = read_variables(session, variables)
 
             elif command == 'PRENDER':
                 variable = parsed_stream_data['variable']
                 json_data = light_led(session, variable)
             
             returnResult(json_data)
+
+def read_variables(session, variables):
+    target = session.board.target
+    provider = ELFSymbolProvider(target.elf)
+
+    variables_res = []
+    for variable in variables:
+        variable_addr = provider.get_symbol_value(variable)
+        value = target.read32(variable_addr)
+        variables_res.append({"name": variable, "value": value})
+
+    data = {}
+    data["variables"] = variables_res
+    return response(MONITOR, Status.OK.name, variables_res)
+
 
 def reset(session):
     target = session.board.target

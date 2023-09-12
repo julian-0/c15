@@ -126,6 +126,7 @@ class Programmer extends React.Component {
                 devName: '--',
                 elfPath: undefined
             });
+            this.props.updateTargetState(false);
             return;
         }
         if (!response.data.target) {
@@ -135,12 +136,17 @@ class Programmer extends React.Component {
                 devName: '--',
                 elfPath: undefined
             });
+            this.props.updateTargetState(false);
         }
 
         if (this.state.probeConnected === false) {
             this.getData();
         }
         this.setState({ probeConnected: true });
+    }
+
+    isTargetReadable(){
+        return this.state.targetConnected && this.state.elfPath;
     }
 
     checkConnection() {
@@ -194,6 +200,7 @@ class Programmer extends React.Component {
             revName: '--',
             devName: '--'
         });
+        this.props.updateTargetState(false);
         toast.success('Desconectado del target', Programmer.toastProperties);
     }
 
@@ -239,6 +246,7 @@ class Programmer extends React.Component {
                 path: elfPath
             }
         );
+        this.props.updateTargetState(true);
     }
 
     toggleConexion() {

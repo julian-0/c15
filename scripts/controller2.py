@@ -24,6 +24,7 @@ def main():
         print(f"Capabilities: {probe.capabilities}")
 
         target = session.board.target
+        print("Target status: " + str(target.get_state()))
 
         # Obtener información sobre el microcontrolador
         print("Información del microcontrolador:")
@@ -33,6 +34,7 @@ def main():
 
         # Load firmware into device.
         FileProgrammer(session).program(firmware_elf_file)
+        print("Target status: " + str(target.get_state()))
 
         target.elf = firmware_elf_file
 
@@ -43,6 +45,7 @@ def main():
 
         # Reset
         target.reset_and_halt()
+        print("Target status: " + str(target.get_state()))
 
         # Read some registers.
         print("led_azul_addr: 0x%X" % led_azul_addr)
@@ -59,9 +62,11 @@ def main():
         print("pc: 0x%X" % target.read_core_register('pc'))
         
         target.resume()
+        print("Target status: " + str(target.get_state()))
         #check if microcontroller is connected
 
         target.halt()
+        print("Target status: " + str(target.get_state()))
     
         target.write32(led_azul_addr, 0)
         print("led_azul: %d" % target.read32(led_azul_addr))
@@ -77,7 +82,7 @@ def main():
         print("led_rojo: %d" % target.read32(led_rojo_addr))
         print("boton: %d" % target.read32(boton_addr))
 
-        for i in range(0, 10):
+        for i in range(0, 1):
             target.write32(led_azul_addr, 1)
             target.write32(led_rojo_addr, 0)
             time.sleep(1)
@@ -92,7 +97,7 @@ def main():
         target.reset_and_halt()
 
         print("Buscando conexiones")
-        for i in range(0, 2):
+        for i in range(0, 0):
             le = len(ConnectHelper.get_all_connected_probes(blocking=False))
             print("Conexiones: " + str(le))
             #print if is_connected
@@ -101,19 +106,10 @@ def main():
             time.sleep(1)
         
         print("Salirendo del for")
-        session.target.selected_core.dump()
-        u_id=probe.unique_id
-        time.sleep(5)
-        session.close()
-        #session2 = ConnectHelper.session_with_chosen_probe()
-        with ConnectHelper.session_with_chosen_probe(blocking=False) as session2:
-            target = session.target
-            if session2 is None:
-                print("session is None")
-            else:
-                print("Session is not None")
-                value = session2.target.read32(0xE0042000)
-                print("value: %d" % value)
+    i = 0;
+    for variable in provider._symbols.symbol_dict:
+        print("Symbol #"+ str(i) + ": " + variable)
+        i = i + 1
 
 def is_connected(session):
     #Check if the session is still alive
