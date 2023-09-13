@@ -93,5 +93,6 @@ ipcMain.on('ONE_SHOT_RESULT', (event, args) => {
   mainWindow.webContents.send('ONE_SHOT_RESULT', args);
 });
 ipcMain.on('CONTROLLER_RESULT', (event, args) => {
-    mainWindow.webContents.send('CONTROLLER_RESULT', args);
+    let eventName = 'CONTROLLER_RESULT_' + args.data.source;
+    mainWindow.webContents.send(eventName, args);
 });//TODO: concatenar CONTROLLER_RESULT_ + args.command

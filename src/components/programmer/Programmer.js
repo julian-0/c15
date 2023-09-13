@@ -36,7 +36,7 @@ class Programmer extends MicroConnected {
 
     componentDidMount() {
         // 3. Setup listener for controller python output (bounced from main process)
-        ipcRenderer.on('CONTROLLER_RESULT', (event, args) => {
+        ipcRenderer.on('CONTROLLER_RESULT_PROGRAMMER', (event, args) => {
             let data = args.data;
             switch (data.command) {
                 case "GET_DATA":

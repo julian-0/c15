@@ -21,7 +21,7 @@ export class DischargeVar extends MicroConnected {
 
     componentDidMount() {
         // 3. Setup listener for controller python output (bounced from main process)
-        ipcRenderer.on('CONTROLLER_RESULT', (event, args) => {
+        ipcRenderer.on('CONTROLLER_RESULT_VARIABLES', (event, args) => {
             let data = args.data;
             switch (data.command) {
                 case "PRENDER":
