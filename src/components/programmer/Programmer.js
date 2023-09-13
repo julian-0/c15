@@ -4,24 +4,12 @@ import { FaPowerOff } from 'react-icons/fa';
 import FileInput from '../fileInput/FileInput'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MicroConnected from '../MicroConnected';
 
-// Electron related imports
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
-const loadBalancer = window.require('electron-load-balancer');
 
-class Programmer extends React.Component {
-
-    static toastProperties = {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-    };
+class Programmer extends MicroConnected {
 
     constructor(props) {
         super(props);
@@ -146,16 +134,6 @@ class Programmer extends React.Component {
             this.getData();
         }
         this.setState({ probeConnected: true });
-    }
-
-    sendToMicro(command, body = {}) {
-        body.command = command;
-        body.source = 'PROGRAMMER'
-        loadBalancer.sendData(
-            ipcRenderer,
-            'controller',
-            body
-        );
     }
 
     checkConnection() {
