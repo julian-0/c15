@@ -7,7 +7,7 @@ const FileInput = ({ targetConnected, parentCallback }) => {
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
-        if(!file) return;
+        if (!file) return;
         setSelectedFile(file);
         parentCallback(file.path);
     };
@@ -33,6 +33,9 @@ const FileInput = ({ targetConnected, parentCallback }) => {
                 onChange={handleFileChange}
                 hidden
                 disabled={!targetConnected}
+                onClick={(event) => {
+                    event.target.value = null
+                }}
             />
             <label htmlFor="upload" className='file-label text-secondary-emphasis'>{!selectedFile ? 'Archivo .efl' : selectedFile.name}</label>
         </div>

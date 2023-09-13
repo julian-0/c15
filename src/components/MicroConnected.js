@@ -15,6 +15,7 @@ export class MicroConnected extends Component {
         draggable: true,
         progress: undefined,
         theme: "colored",
+        pauseOnFocusLoss: false
     };
 
     sendToMicro(command, source, body = {}) {
