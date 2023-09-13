@@ -17,9 +17,9 @@ export class MicroConnected extends Component {
         theme: "colored",
     };
 
-    sendToMicro(command, body = {}) {
+    sendToMicro(command, source, body = {}) {
         body.command = command;
-        body.source = 'PROGRAMMER'
+        body.source = source;
         loadBalancer.sendData(
             ipcRenderer,
             'controller',

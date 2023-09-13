@@ -1,23 +1,13 @@
+import { Mic } from '@material-ui/icons';
 import React, { Component } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MicroConnected from '../MicroConnected';
 // Electron related imports
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
-const loadBalancer = window.require('electron-load-balancer');
 
-export class DischargeVar extends Component {
-
-    static toastProperties = {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-    };
+export class DischargeVar extends MicroConnected {
 
     constructor(props) {
         super(props);
@@ -45,7 +35,7 @@ export class DischargeVar extends Component {
             }
         });
         this.intervalId = setInterval(() => {
-            if(!this.props.targetReadable) return;
+            if (!this.props.targetReadable) return;
             this.monitorVariables();
         }, 100);
     }
@@ -56,19 +46,18 @@ export class DischargeVar extends Component {
         ipcRenderer.removeAllListeners('CONTROLLER_RESULT');
     }
 
+    sendToMicroVariables(command, body) {
+        this.sendToMicro(command, 'VARIABLES', body);
+    }
+
     monitorVariables() {
-        loadBalancer.sendData(
-            ipcRenderer,
-            'controller',
-            {
-                command: "MONITOR",
-                variables: ["led_azul", "led_rojo", "led_verde"]
-            }
-        );
+        this.sendToMicroVariables("MONITOR", {
+            variables: ["led_azul", "led_rojo", "led_verde"]
+        });
     }
 
     processMonitorResult(response) {
-        if (response.status !== 'OK') 
+        if (response.status !== 'OK')
             return;
 
         this.setState({
@@ -91,15 +80,7 @@ export class DischargeVar extends Component {
     }
 
     prenderLed(led) {
-        console.log("Prendiendo " + led)
-        loadBalancer.sendData(
-            ipcRenderer,
-            'controller',
-            {
-                command: "PRENDER",
-                variable: led
-            }
-        );
+        this.sendToMicroVariables("PRENDER", { variable: led });
     }
 
     render() {
@@ -131,7 +112,7 @@ export class DischargeVar extends Component {
                             <input name='led_verde' type="text" value={this.state.led_verde} readOnly />
                         </div>
                         <label htmlFor="targetReadable">Estado del Programador:</label>
-                        <input name='targetReadable' type='text' value={targetReadable ? 'true':'false'} readOnly />
+                        <input name='targetReadable' type='text' value={targetReadable ? 'true' : 'false'} readOnly />
                     </div>
                 </div>
             </div>

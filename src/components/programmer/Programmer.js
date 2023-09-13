@@ -136,8 +136,12 @@ class Programmer extends MicroConnected {
         this.setState({ probeConnected: true });
     }
 
+    sendToMicroProgrammer(command, body) {
+        this.sendToMicro(command, 'PROGRAMMER', body);
+    }
+
     checkConnection() {
-        this.sendToMicro("CONNECTION");
+        this.sendToMicroProgrammer("CONNECTION");
     }
 
     processGetDataResult(response) {
@@ -195,13 +199,13 @@ class Programmer extends MicroConnected {
 
     getData() {
         // 6. Sending data to controller (process already running)
-        this.sendToMicro("GET_DATA");
+        this.sendToMicroProgrammer("GET_DATA");
     }
 
     programElf() {
         if (!this.state.elfPath || this.state.elfPath === '')
             return;
-        this.sendToMicro("PROGRAM", {path: this.state.elfPath});
+        this.sendToMicroProgrammer("PROGRAM", { path: this.state.elfPath });
     }
 
     processSetElfFile(response) {
@@ -213,35 +217,35 @@ class Programmer extends MicroConnected {
 
     updateFile(elfPath) {
         this.setState({ elfPath: elfPath });
-        this.sendToMicro("SET_ELF_FILE", {path: elfPath});
+        this.sendToMicroProgrammer("SET_ELF_FILE", { path: elfPath });
     }
 
     toggleConexion() {
         if (this.state.targetConnected) {
             return;
         }
-        this.sendToMicro("CONNECT_TARGET");
+        this.sendToMicroProgrammer("CONNECT_TARGET");
     }
 
     disableConnection() {
         if (!this.state.targetConnected) {
             return;
         }
-        this.sendToMicro("DISCONNECT_TARGET");
+        this.sendToMicroProgrammer("DISCONNECT_TARGET");
     }
 
     reset() {
         if (!this.state.targetConnected)
             return;
 
-        this.sendToMicro("RESET");
+        this.sendToMicroProgrammer("RESET");
     }
 
     halt() {
         if (!this.state.targetConnected || this.state.paused)
             return;
 
-        this.sendToMicro("HALT");
+        this.sendToMicroProgrammer("HALT");
     }
 
 
@@ -249,7 +253,7 @@ class Programmer extends MicroConnected {
         if (!this.state.targetConnected || !this.state.paused)
             return;
 
-        this.sendToMicro("RESUME");
+        this.sendToMicroProgrammer("RESUME");
     }
 
     render() {
