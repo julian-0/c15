@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 
 const electron = window.require('electron');
 const { ipcRenderer } = electron;

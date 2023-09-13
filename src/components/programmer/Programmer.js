@@ -1,8 +1,8 @@
-import React, { Component, useState } from 'react'
+import React from 'react'
 import './Programmer.css'
 import { FaPowerOff } from 'react-icons/fa';
 import FileInput from '../fileInput/FileInput'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
 

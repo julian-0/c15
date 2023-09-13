@@ -1,6 +1,5 @@
-import { Mic } from '@material-ui/icons';
-import React, { Component } from 'react'
-import { ToastContainer, toast } from 'react-toastify';
+import React from 'react'
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
 // Electron related imports
@@ -30,6 +29,7 @@ export class DischargeVar extends MicroConnected {
                     break;
                 case "MONITOR":
                     this.processMonitorResult(data);
+                    break;
                 default:
                     console.log("Unknown command: " + data.command);
             }
