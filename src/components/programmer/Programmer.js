@@ -66,6 +66,9 @@ class Programmer extends React.Component {
                 case "DISCONNECT_TARGET":
                     this.processDisconnectResult(data);
                     break;
+                case "SET_ELF_FILE":
+                    this.processSetElfFile(data)
+                    break;
                 case "RESET":
                     this.processResetResult(data);
                     break;
@@ -145,7 +148,7 @@ class Programmer extends React.Component {
         this.setState({ probeConnected: true });
     }
 
-    isTargetReadable(){
+    isTargetReadable() {
         return this.state.targetConnected && this.state.elfPath;
     }
 
@@ -236,6 +239,13 @@ class Programmer extends React.Component {
         );
     }
 
+    processSetElfFile(response) {
+        if (response.status === 'OK')
+            this.props.updateTargetState(true);
+        else
+            this.setState({ elfPath: undefined });
+    }
+
     updateFile(elfPath) {
         this.setState({ elfPath: elfPath });
         loadBalancer.sendData(
@@ -246,7 +256,6 @@ class Programmer extends React.Component {
                 path: elfPath
             }
         );
-        this.props.updateTargetState(true);
     }
 
     toggleConexion() {
