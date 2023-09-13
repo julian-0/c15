@@ -148,18 +148,18 @@ class Programmer extends React.Component {
         this.setState({ probeConnected: true });
     }
 
-    isTargetReadable() {
-        return this.state.targetConnected && this.state.elfPath;
-    }
-
-    checkConnection() {
+    sendToMicro(command, body = {}) {
+        body.command = command;
+        body.source = 'PROGRAMMER'
         loadBalancer.sendData(
             ipcRenderer,
             'controller',
-            {
-                command: "CONNECTION"
-            }
+            body
         );
+    }
+
+    checkConnection() {
+        this.sendToMicro("CONNECTION");
     }
 
     processGetDataResult(response) {
@@ -217,26 +217,13 @@ class Programmer extends React.Component {
 
     getData() {
         // 6. Sending data to controller (process already running)
-        loadBalancer.sendData(
-            ipcRenderer,
-            'controller',
-            {
-                command: "GET_DATA"
-            }
-        );
+        this.sendToMicro("GET_DATA");
     }
 
     programElf() {
         if (!this.state.elfPath || this.state.elfPath === '')
             return;
-        loadBalancer.sendData(
-            ipcRenderer,
-            'controller',
-            {
-                command: "PROGRAM",
-                path: this.state.elfPath
-            }
-        );
+        this.sendToMicro("PROGRAM", {path: this.state.elfPath});
     }
 
     processSetElfFile(response) {
@@ -248,54 +235,35 @@ class Programmer extends React.Component {
 
     updateFile(elfPath) {
         this.setState({ elfPath: elfPath });
-        loadBalancer.sendData(
-            ipcRenderer,
-            'controller',
-            {
-                command: "SET_ELF_FILE",
-                path: elfPath
-            }
-        );
+        this.sendToMicro("SET_ELF_FILE", {path: elfPath});
     }
 
     toggleConexion() {
         if (this.state.targetConnected) {
             return;
         }
-        loadBalancer.sendData(
-            ipcRenderer,
-            'controller',
-            {
-                command: "CONNECT_TARGET"
-            }
-        );
+        this.sendToMicro("CONNECT_TARGET");
     }
 
     disableConnection() {
         if (!this.state.targetConnected) {
             return;
         }
-        loadBalancer.sendData(
-            ipcRenderer,
-            'controller',
-            {
-                command: "DISCONNECT_TARGET"
-            }
-        );
+        this.sendToMicro("DISCONNECT_TARGET");
     }
 
     reset() {
         if (!this.state.targetConnected)
             return;
 
-        this.sendCommand("RESET");
+        this.sendToMicro("RESET");
     }
 
     halt() {
         if (!this.state.targetConnected || this.state.paused)
             return;
 
-        this.sendCommand("HALT");
+        this.sendToMicro("HALT");
     }
 
 
@@ -303,17 +271,7 @@ class Programmer extends React.Component {
         if (!this.state.targetConnected || !this.state.paused)
             return;
 
-        this.sendCommand("RESUME");
-    }
-
-    sendCommand(command) {
-        loadBalancer.sendData(
-            ipcRenderer,
-            'controller',
-            {
-                command: command
-            }
-        );
+        this.sendToMicro("RESUME");
     }
 
     render() {
