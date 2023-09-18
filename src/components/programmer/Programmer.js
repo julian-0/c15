@@ -120,15 +120,18 @@ class Programmer extends MicroConnected {
             this.props.updateTargetState(false);
             return;
         }
-        if (!response.data.target) {
+        if (!response.data.target.connected) {
             this.setState({
                 targetConnected: false,
+                targetStatus: undefined,
                 revName: '--',
                 devName: '--',
                 elfPath: undefined
             });
             this.props.updateTargetState(false);
         }
+        else if(response.data.target.status) 
+            this.setState({ paused: response.data.target.status == "HALTED" });
 
         if (this.state.probeConnected === false) {
             this.getData();
@@ -169,7 +172,8 @@ class Programmer extends MicroConnected {
         this.setState({
             targetConnected: true,
             revName: data.revision.name,
-            devName: data.device.name
+            devName: data.device.name,
+            paused: true
         });
         toast.success('Conectado al target', Programmer.toastProperties);
     }

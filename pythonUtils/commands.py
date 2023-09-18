@@ -36,7 +36,7 @@ class TargetCommand(Command):
             data = {}
             data["error"] = "No hay equipos conectados"
             return Status.ERROR.name, data, session
-        if not data["target"]:
+        if not data["target"]["connected"]:
             data = {}
             data["error"] = "No hay un target conectado"
             return Status.ERROR.name, data, session

@@ -33,5 +33,11 @@ def check_connection(session):
     if len(ConnectHelper.get_all_connected_probes(blocking=False)) < 1:
         session = None
         return Status.OK.name, {'probe': False, 'target': False}, session
+    
+    targetConnected = session is not None
+    targetObj = {}
+    targetObj["connected"] = targetConnected
+    if targetConnected:
+        targetObj["state"] = session.target.get_state().name
 
-    return Status.OK.name, {'probe': True, 'target': session is not None}, session
+    return Status.OK.name, {'probe': True, 'target': targetObj}, session
