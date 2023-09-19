@@ -2,6 +2,7 @@ import React from 'react'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
+import './DischargeVar.css';
 // Electron related imports
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
@@ -87,7 +88,7 @@ export class DischargeVar extends MicroConnected {
         const { targetReadable } = this.props;
         return (
             <div>
-                <div className='card'>
+                <div className='card' hidden>
                     <div className='card-body'>
                         <div>
                             <button type="button" className='btn btn-primary' onClick={() => this.prenderLed('led_azul')}>led_azul</button>
@@ -97,7 +98,7 @@ export class DischargeVar extends MicroConnected {
                         </div>
                     </div>
                 </div>
-                <div className='card'>
+                <div className='card' hidden>
                     <div className='card-body'>
                         <div>
                             <label htmlFor="led_azul">led_azul</label>
@@ -111,8 +112,94 @@ export class DischargeVar extends MicroConnected {
                             <label htmlFor="led_verde">led_verde</label>
                             <input name='led_verde' type="text" value={this.state.led_verde} readOnly />
                         </div>
-                        <label htmlFor="targetReadable">Estado del Programador:</label>
-                        <input name='targetReadable' type='text' value={targetReadable ? 'true' : 'false'} readOnly />
+                    </div>
+                </div>
+                <div className='row d-flex justify-content-between'>
+                    <div className='card col'>
+                        <h4 className='card-header text-center'>Paletas</h4>
+                        <div className='card-body'>
+                            <div className='d-flex justify-content-between'>
+                                <span className='card-text text-secondary'>Tipo</span>
+                                <span className='card-text text-secondary-emphasis'>Externas</span>
+                            </div>
+                            <hr />
+                            <div>
+                                <h5 className='card-title text-center'>Teclas</h5>
+                                <div className='d-flex justify-content-between'>
+                                    <span className='card-text text-secondary-emphasis option selected'>Shock</span>
+                                    <span className='card-text text-secondary-emphasis option'>Carga</span>
+                                    <span className='card-text text-secondary-emphasis option'>Registro</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='card col'>
+                        <div className='card-body'>
+                            <div>
+                                <div className='d-flex justify-content-between'>
+                                    <span className='card-text text-secondary'>VCAP</span>
+                                    <span className='card-text text-secondary-emphasis'>Value</span>
+                                </div>
+                                <div className='d-flex justify-content-between'>
+                                    <span className='card-text text-secondary'>Tiempo de carga</span>
+                                    <span className='card-text text-secondary-emphasis'>Value</span>
+                                </div>
+                                <div className='d-flex justify-content-between'>
+                                    <span className='card-text text-secondary'>Temperatura</span>
+                                    <span className='card-text text-secondary-emphasis'>Value</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className='row'>
+                    <div className='card col'>
+                        <h4 className='card-header text-center'>Selectora</h4>
+                        <div className='card-body'>
+                            <div>
+                                <span className='card-text text-secondary-emphasis row option selected'>DEA</span>
+                                <span className='card-text text-secondary-emphasis row option'>Apagado</span>
+                                <span className='card-text text-secondary-emphasis row option'>Monitor</span>
+                                <span className='card-text text-secondary-emphasis row option'>Desfibrilador Manual</span>
+                                <span className='card-text text-secondary-emphasis row option'>Marcapasos</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='card col'>
+                        <h4 className='card-header text-center'>Alimentación</h4>
+                        <div className='card-body'>
+                            <div>
+                                <div className='d-flex justify-content-between'>
+                                    <span className='card-text text-secondary'>Tensión</span>
+                                    <span className='card-text text-secondary-emphasis'>Value</span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div>
+                                <h5 className='card-title text-center'>Red</h5>
+                                <div className='d-flex justify-content-between'>
+                                    <span className='card-text text-secondary-emphasis'>Estado</span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div>
+                                <h5 className='card-title text-center'>Bateria 1</h5>
+                                <div className='d-flex justify-content-between'>
+                                    <span className='card-text text-secondary-emphasis option selected'>Presente</span>
+                                    <span className='card-text text-secondary-emphasis option'>Estado</span>
+                                    <span className='card-text text-secondary-emphasis option'>Carga</span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div>
+                                <h5 className='card-title text-center'>Bateria 2</h5>
+                                <div className='d-flex justify-content-between'>
+                                    <span className='card-text text-secondary-emphasis option selected'>Presente</span>
+                                    <span className='card-text text-secondary-emphasis option selected'>Estado</span>
+                                    <span className='card-text text-secondary-emphasis option selected'>Carga</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
