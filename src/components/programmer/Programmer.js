@@ -130,7 +130,7 @@ class Programmer extends MicroConnected {
             });
             this.props.updateTargetState(false);
         }
-        else if(response.data.target.status) 
+        else if (response.data.target.status)
             this.setState({ paused: response.data.target.status == "HALTED" });
 
         if (this.state.probeConnected === false) {
@@ -262,89 +262,92 @@ class Programmer extends MicroConnected {
 
     render() {
         return (
-            <div className='programmer card col-md-4'>
-                <h4 className='card-header text-center'>Programador</h4>
-                <div className='card-body'>
-                    <div className='stlink'>
-                        <h5 className='card-title text-center'>STLink</h5>
-                        <div className='d-flex justify-content-between'>
-                            <span className='text-secondary'>Número de serie:</span>
-                            <input type="text" className='text-secondary-emphasis' value={this.state.serialNumber} disabled />
+            <div className='col-4'>
+                <div className='programmer card'>
+                    <h4 className='card-header text-center'>Programador</h4>
+                    <div className='card-body'>
+                        <div className='stlink'>
+                            <h5 className='card-title text-center'>STLink</h5>
+                            <div className='d-flex justify-content-between'>
+                                <span className='text-secondary'>Número de serie:</span>
+                                <input type="text" className='text-secondary-emphasis' value={this.state.serialNumber} disabled />
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <span className='card-text text-secondary'>Versión de firmware:</span>
+                                <span className='card-text text-secondary-emphasis'>{this.state.firmwareRevision}</span>
+                            </div>
                         </div>
-                        <div className='d-flex justify-content-between'>
-                            <span className='card-text text-secondary'>Versión de firmware:</span>
-                            <span className='card-text text-secondary-emphasis'>{this.state.firmwareRevision}</span>
-                        </div>
-                    </div>
-                    <hr />
-                    <div className='microcontrolador'>
-                        <h5 className='card-title text-center'>Microcontrolador</h5>
-                        <div className='d-flex justify-content-between'>
-                            <span className='card-text text-secondary'>
+                        <hr />
+                        <div className='microcontrolador'>
+                            <h5 className='card-title text-center'>Microcontrolador</h5>
+                            <div className='d-flex justify-content-between'>
+                                <span className='card-text text-secondary'>
+                                    {
+                                        this.state.targetConnected ?
+                                            <span className='online'>● Conectado</span> :
+                                            <span className='offline'>● Desconectado</span>
+                                    }
+                                </span>
                                 {
                                     this.state.targetConnected ?
-                                        <span className='online'>● Conectado</span> :
-                                        <span className='offline'>● Desconectado</span>
+                                        <label
+                                            className='offline'
+                                            onClick={this.disableConnection}
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            <FaPowerOff className="icon" />
+                                            Desconectar
+                                        </label>
+                                        :
+                                        <label
+                                            className={this.state.probeConnected ? 'online' : 'disabled'}
+                                            onClick={this.toggleConexion}
+                                            style={{ cursor: this.state.probeConnected ? 'pointer' : 'not-allowed' }}
+                                        >
+                                            <FaPowerOff className="icon" />
+                                            Conectar
+                                        </label>
                                 }
-                            </span>
-                            {
-                                this.state.targetConnected ?
-                                    <label
-                                        className='offline'
-                                        onClick={this.disableConnection}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <FaPowerOff className="icon" />
-                                        Desconectar
-                                    </label>
-                                    :
-                                    <label
-                                        className={this.state.probeConnected ? 'online' : 'disabled'}
-                                        onClick={this.toggleConexion}
-                                        style={{ cursor: this.state.probeConnected ? 'pointer' : 'not-allowed' }}
-                                    >
-                                        <FaPowerOff className="icon" />
-                                        Conectar
-                                    </label>
-                            }
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <span className='card-text text-secondary'>Modelo:</span>
+                                <span className='card-text text-secondary-emphasis'>{this.state.devName + ' ' + this.state.revName}</span>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <span className='card-text text-secondary'>Versión de firmware:</span>
+                                <FileInput targetConnected={this.state.targetConnected} parentCallback={this.updateFile} />
+                            </div>
+                            <div className='btn-record d-flex justify-content-end'>
+                                <button type="button" className='btn btn-warning' onClick={this.programElf}>Grabar</button>
+                            </div>
                         </div>
-                        <div className='d-flex justify-content-between'>
-                            <span className='card-text text-secondary'>Modelo:</span>
-                            <span className='card-text text-secondary-emphasis'>{this.state.devName + ' ' + this.state.revName}</span>
+                        <div className='container action-buttons d-flex justify-content-between flex-md-row flex-column'>
+                            <button
+                                type="button"
+                                className='btn btn-primary'
+                                disabled={(!this.state.targetConnected)}
+                                onClick={this.reset}>
+                                Reiniciar
+                            </button>
+                            <button
+                                type="button"
+                                className='btn btn-danger'
+                                disabled={(!this.state.targetConnected || this.state.paused)}
+                                onClick={this.halt}>
+                                Pausar
+                            </button>
+                            <button
+                                type="button"
+                                className='btn btn-success'
+                                disabled={(!this.state.targetConnected || !this.state.paused)}
+                                onClick={this.resume}>
+                                Reaunudar
+                            </button>
                         </div>
-                        <div className='d-flex justify-content-between'>
-                            <span className='card-text text-secondary'>Versión de firmware:</span>
-                            <FileInput targetConnected={this.state.targetConnected} parentCallback={this.updateFile} />
-                        </div>
-                        <div className='btn-record d-flex justify-content-end'>
-                            <button type="button" className='btn btn-warning' onClick={this.programElf}>Grabar</button>
-                        </div>
-                    </div>
-                    <div className='container action-buttons d-flex justify-content-between flex-md-row flex-column'>
-                        <button
-                            type="button"
-                            className='btn btn-primary'
-                            disabled={(!this.state.targetConnected)}
-                            onClick={this.reset}>
-                            Reiniciar
-                        </button>
-                        <button
-                            type="button"
-                            className='btn btn-danger'
-                            disabled={(!this.state.targetConnected || this.state.paused)}
-                            onClick={this.halt}>
-                            Pausar
-                        </button>
-                        <button
-                            type="button"
-                            className='btn btn-success'
-                            disabled={(!this.state.targetConnected || !this.state.paused)}
-                            onClick={this.resume}>
-                            Reaunudar
-                        </button>
                     </div>
                 </div>
             </div>
+
         )
     }
 }

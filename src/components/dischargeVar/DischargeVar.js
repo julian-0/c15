@@ -87,7 +87,7 @@ export class DischargeVar extends MicroConnected {
     render() {
         const { targetReadable } = this.props;
         return (
-            <div>
+            <div className='col'>
                 <div className='card' hidden>
                     <div className='card-body'>
                         <div>
