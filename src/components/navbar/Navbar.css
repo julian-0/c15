@@ -76,3 +76,7 @@ span{
     align-items: center;
     width: 120px;
 }
+
+.active {
+    background-color: #1a83ff;
+  }

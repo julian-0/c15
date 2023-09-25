@@ -13,10 +13,7 @@ function Discharge() {
 
     return (
         <div className="discharge container text-center d-flex flex-column">
-            <div className='row'>
-                <h1 className='align-self-start'>Descarga</h1>
-            </div>
-            <div className='row flex-grow-1'>
+            <div className='row flex-grow-1 mt-5'>
                 <div className='container'>
                     <div className='row d-flex align-items-center justify-content-around'>
                         <DischargeVar targetReadable={targetReadable} />

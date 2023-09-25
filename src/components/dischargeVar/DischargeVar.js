@@ -114,8 +114,8 @@ export class DischargeVar extends MicroConnected {
                         </div>
                     </div>
                 </div>
-                <div className='row d-flex justify-content-between'>
-                    <div className='card col'>
+                <div className='container d-flex justify-content-around my-3'>
+                    <div className='card col-5'>
                         <h4 className='card-header text-center'>Paletas</h4>
                         <div className='card-body'>
                             <div className='d-flex justify-content-between'>
@@ -133,7 +133,7 @@ export class DischargeVar extends MicroConnected {
                             </div>
                         </div>
                     </div>
-                    <div className='card col'>
+                    <div className='card col-5'>
                         <div className='card-body'>
                             <div>
                                 <div className='d-flex justify-content-between'>
@@ -152,20 +152,20 @@ export class DischargeVar extends MicroConnected {
                         </div>
                     </div>
                 </div>
-                <div className='row'>
-                    <div className='card col'>
+                <div className='container d-flex justify-content-around my-3'>
+                    <div className='card col-5'>
                         <h4 className='card-header text-center'>Selectora</h4>
                         <div className='card-body'>
                             <div>
-                                <span className='card-text text-secondary-emphasis row option selected'>DEA</span>
-                                <span className='card-text text-secondary-emphasis row option'>Apagado</span>
-                                <span className='card-text text-secondary-emphasis row option'>Monitor</span>
-                                <span className='card-text text-secondary-emphasis row option'>Desfibrilador Manual</span>
-                                <span className='card-text text-secondary-emphasis row option'>Marcapasos</span>
+                                <p className='card-text text-secondary-emphasis option selected'>DEA</p>
+                                <p className='card-text text-secondary-emphasis option'>Apagado</p>
+                                <p className='card-text text-secondary-emphasis option'>Monitor</p>
+                                <p className='card-text text-secondary-emphasis option'>Desfibrilador Manual</p>
+                                <p className='card-text text-secondary-emphasis option'>Marcapasos</p>
                             </div>
                         </div>
                     </div>
-                    <div className='card col'>
+                    <div className='card col-5'>
                         <h4 className='card-header text-center'>Alimentación</h4>
                         <div className='card-body'>
                             <div>
