@@ -42,3 +42,9 @@ h5 {
   background-color: #094067;
   border-radius: 3px;
 }
+
+.appName{
+  color: #285ca4;
+  font-size: 90px;
+  font-weight: bold;
+}

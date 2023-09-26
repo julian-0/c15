@@ -1,4 +1,5 @@
 import React from 'react';
+import eymLogo from './imgs/eymBlue.png'
 
 // Electron related imports
 const electron = window.require('electron');
@@ -75,39 +76,45 @@ class Home extends React.Component {
 
     render() {
         return (
-            <div style={{
-                padding: '16px'
-            }}>
-                <div>
-                    <button onClick={this.startOneShot}>
-                        <span>Calculate Once - 100!</span>
-                    </button>
-                </div>
-                {
-                    this.state.single ? <div style={{
-                        margin: '8px 0px 0px 0px'
-                    }}>{this.state.single}</div> : null
-                }
+            <div className='col h-100 d-flex align-items-center text-center'>
                 <div style={{
-                    margin: '16px 0px 0px 0px'
-                }}>
-                    <button onClick={this.startPreemptiveLoop}>
-                        <span>Start Calculation Thead - x! for x ∈ [0, 100]</span>
-                    </button>
+                    padding: '16px'
+                }} hidden>
+                    <div>
+                        <button onClick={this.startOneShot}>
+                            <span>Calculate Once - 100!</span>
+                        </button>
+                    </div>
+                    {
+                        this.state.single ? <div style={{
+                            margin: '8px 0px 0px 0px'
+                        }}>{this.state.single}</div> : null
+                    }
+                    <div style={{
+                        margin: '16px 0px 0px 0px'
+                    }}>
+                        <button onClick={this.startPreemptiveLoop}>
+                            <span>Start Calculation Thead - x! for x ∈ [0, 100]</span>
+                        </button>
+                    </div>
+                    {
+                        Object.keys(this.state.thread).map(key => {
+                            return (
+                                <div style={{
+                                    margin: '8px 0px 0px 0px'
+                                }} key={key}>
+                                    {
+                                        `${key} : ${this.state.thread[key]}`
+                                    }
+                                </div>
+                            )
+                        })
+                    }
                 </div>
-                {
-                    Object.keys(this.state.thread).map(key => {
-                        return (
-                            <div style={{
-                                margin: '8px 0px 0px 0px'
-                            }} key={key}>
-                                {
-                                    `${key} : ${this.state.thread[key]}`
-                                }
-                            </div>
-                        )
-                    })
-                }
+                <div class="container ">
+                    <img src={eymLogo} alt="eym logo" />
+                    <h1 className='appName mt-2'>C15</h1>
+                </div>
             </div>
         )
     }
