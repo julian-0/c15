@@ -111,7 +111,7 @@ class Home extends React.Component {
                         })
                     }
                 </div>
-                <div class="container ">
+                <div className="container">
                     <img src={eymLogo} alt="eym logo" />
                     <h1 className='appName mt-2'>C15</h1>
                 </div>
