@@ -19,7 +19,7 @@ function Navbar() {
                 <nav id='sidebar' className="nav-menu">
                     <ul className="nav-menu-items">
                         <li className="navbar-home">
-                            <Link to="/" className="menu-bars">
+                            <Link to="/" className="menu-bars" onClick={() => handleClick('')}>
                                 <img src={eymLogo} alt="eym logo" className="eym-logo" />
                             </Link>
                         </li>

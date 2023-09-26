@@ -131,7 +131,7 @@ class Programmer extends MicroConnected {
             this.props.updateTargetState(false);
         }
         else if (response.data.target.status)
-            this.setState({ paused: response.data.target.status == "HALTED" });
+            this.setState({ paused: response.data.target.status === "HALTED" });
 
         if (this.state.probeConnected === false) {
             this.getData();
