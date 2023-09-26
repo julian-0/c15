@@ -82,7 +82,7 @@ class Programmer extends MicroConnected {
             this.disableConnection();
         }
         // 4. Remove all output listeners before app shuts down
-        ipcRenderer.removeAllListeners('CONTROLLER_RESULT');
+        ipcRenderer.removeAllListeners('CONTROLLER_RESULT_PROGRAMMER');
     }
 
     processResetResult(response) {

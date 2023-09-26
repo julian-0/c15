@@ -44,7 +44,7 @@ export class DischargeVar extends MicroConnected {
     componentWillUnmount() {
         clearInterval(this.intervalId); // Limpia el intervalo cuando el componente se desmonta
         // 4. Remove all output listeners before app shuts down
-        ipcRenderer.removeAllListeners('CONTROLLER_RESULT');
+        ipcRenderer.removeAllListeners('CONTROLLER_RESULT_VARIABLES');
     }
 
     sendToMicroVariables(command, body) {
@@ -88,32 +88,6 @@ export class DischargeVar extends MicroConnected {
         const { targetReadable } = this.props;
         return (
             <div className='col'>
-                <div className='card' hidden>
-                    <div className='card-body'>
-                        <div>
-                            <button type="button" className='btn btn-primary' onClick={() => this.prenderLed('led_azul')}>led_azul</button>
-                        </div>
-                        <div>
-                            <button type="button" className='btn btn-danger' onClick={() => this.prenderLed('led_rojo')}>led_rojo</button>
-                        </div>
-                    </div>
-                </div>
-                <div className='card' hidden>
-                    <div className='card-body'>
-                        <div>
-                            <label htmlFor="led_azul">led_azul</label>
-                            <input name='led_azul' type="text" value={this.state.led_azul} readOnly />
-                        </div>
-                        <div>
-                            <label htmlFor="led_rojo">led_rojo</label>
-                            <input name='led_rojo' type="text" value={this.state.led_rojo} readOnly />
-                        </div>
-                        <div>
-                            <label htmlFor="led_verde">led_verde</label>
-                            <input name='led_verde' type="text" value={this.state.led_verde} readOnly />
-                        </div>
-                    </div>
-                </div>
                 <div className='container d-flex justify-content-around my-3'>
                     <div className='card col-5'>
                         <h4 className='card-header text-center'>Paletas</h4>
@@ -156,7 +130,7 @@ export class DischargeVar extends MicroConnected {
                     <div className='card col-5'>
                         <h4 className='card-header text-center'>Selectora</h4>
                         <div className='card-body'>
-                            <div>
+                            <div className='col'>
                                 <p className='card-text text-secondary-emphasis option selected'>DEA</p>
                                 <p className='card-text text-secondary-emphasis option'>Apagado</p>
                                 <p className='card-text text-secondary-emphasis option'>Monitor</p>
@@ -198,6 +172,34 @@ export class DischargeVar extends MicroConnected {
                                     <span className='card-text text-secondary-emphasis option selected'>Estado</span>
                                     <span className='card-text text-secondary-emphasis option selected'>Carga</span>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className='row'>
+                    <div className='card' >
+                        <div className='card-body'>
+                            <div>
+                                <button type="button" className='btn btn-primary' onClick={() => this.prenderLed('led_azul')}>led_azul</button>
+                            </div>
+                            <div>
+                                <button type="button" className='btn btn-danger' onClick={() => this.prenderLed('led_rojo')}>led_rojo</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='card' >
+                        <div className='card-body'>
+                            <div>
+                                <label htmlFor="led_azul">led_azul</label>
+                                <input name='led_azul' type="text" value={this.state.led_azul} readOnly />
+                            </div>
+                            <div>
+                                <label htmlFor="led_rojo">led_rojo</label>
+                                <input name='led_rojo' type="text" value={this.state.led_rojo} readOnly />
+                            </div>
+                            <div>
+                                <label htmlFor="led_verde">led_verde</label>
+                                <input name='led_verde' type="text" value={this.state.led_verde} readOnly />
                             </div>
                         </div>
                     </div>
