@@ -12,7 +12,7 @@ function Discharge() {
     };
 
     return (
-        <div className="discharge container text-center d-flex flex-column">
+        <div className="h100 container text-center d-flex flex-column">
             <div className='row flex-grow-1 mt-5'>
                 <div className='container'>
                     <div className='row d-flex align-items-center justify-content-around'>

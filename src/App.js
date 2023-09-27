@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css';
 import Discharge from './pages/Discharge';
+import Cpu from './pages/Cpu';
 
 // Electron related imports
 const electron = window.require('electron');
@@ -42,6 +43,7 @@ class App extends React.Component {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/discharge" element={<Discharge />} />
+              <Route path="/cpu" element={<Cpu />} />
             </Routes>
           </div>
         </Router>
