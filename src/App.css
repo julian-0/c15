@@ -5,6 +5,10 @@
   font-family: 'Source Sans Pro', sans-serif !important;
 }
 
+body {
+  font-size: 16px;
+}
+
 .App {
   width: 100vw;
   height: 100vh;
