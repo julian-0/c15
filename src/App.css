@@ -33,6 +33,14 @@ h4 {
   color: white !important;
 }
 
+h6.card-header {
+  color: white !important;
+}
+
+h6.card-title{
+  color: #094067 !important;
+}
+
 h5 {
   color: #094067 !important;
 }
@@ -51,4 +59,8 @@ h5 {
   color: #285ca4;
   font-size: 90px;
   font-weight: bold;
+}
+
+hr{
+  margin: 0.5rem 0;
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
+import './CpuVar.css';
 // Electron related imports
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
@@ -49,11 +50,11 @@ export class CpuVar extends MicroConnected {
     render() {
         const { targetReadable } = this.props;
         return (
-            <div className='col'>
+            <div className='col cpuvar'>
                 <div className='row'>
                     <div className='col-3 my-1'>
                         <div className='card row'>
-                            <h4 className='card-header text-center'>General</h4>
+                            <h6 className='card-header text-center'>General</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <span className='card-text text-secondary'>Modelo</span>
@@ -66,7 +67,7 @@ export class CpuVar extends MicroConnected {
                             </div>
                         </div>
                         <div className='card row'>
-                            <h4 className='card-header text-center'>Pantalla</h4>
+                            <h6 className='card-header text-center'>Pantalla</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <span className='card-text text-secondary'>Idioma</span>
@@ -79,7 +80,7 @@ export class CpuVar extends MicroConnected {
                             </div>
                         </div>
                         <div className='card row'>
-                            <h4 className='card-header text-center'>Registrador</h4>
+                            <h6 className='card-header text-center'>Registrador</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <span className='card-text text-secondary'>Grilla</span>
@@ -92,7 +93,7 @@ export class CpuVar extends MicroConnected {
                             </div>
                         </div>
                         <div className='card row'>
-                            <h4 className='card-header text-center'>Desfibrilador manual</h4>
+                            <h6 className='card-header text-center'>Desfibrilador manual</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <span className='card-text text-secondary'>Energia paletas ext</span>
@@ -109,7 +110,7 @@ export class CpuVar extends MicroConnected {
                             </div>
                         </div>
                         <div className='card row'>
-                            <h4 className='card-header text-center'>Marcapasos</h4>
+                            <h6 className='card-header text-center'>Marcapasos</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <span className='card-text text-secondary'>Modo</span>
@@ -128,7 +129,7 @@ export class CpuVar extends MicroConnected {
                     </div>
                     <div className='col-3 my-1'>
                         <div className='card row'>
-                            <h4 className='card-header text-center'>SpO2</h4>
+                            <h6 className='card-header text-center'>SpO2</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <span className='card-text text-secondary'>Saturometro</span>
@@ -136,7 +137,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <hr />
                                 <div>
-                                    <h5 className='card-title text-center'>Alarma set 1</h5>
+                                    <h6 className='card-title text-center'>Alarma set 1</h6>
                                     <div className='d-flex justify-content-between'>
                                         <span className='card-text text-secondary-emphasis'>BPM</span>
                                     </div>
@@ -162,7 +163,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <hr />
                                 <div>
-                                    <h5 className='card-title text-center'>Alarma set 2</h5>
+                                    <h6 className='card-title text-center'>Alarma set 2</h6>
                                     <div className='d-flex justify-content-between'>
                                         <span className='card-text text-secondary-emphasis'>BPM</span>
                                     </div>
@@ -189,7 +190,7 @@ export class CpuVar extends MicroConnected {
                             </div>
                         </div>
                         <div className='card row'>
-                            <h4 className='card-header text-center'>Audio</h4>
+                            <h6 className='card-header text-center'>Audio</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <span className='card-text text-secondary'>Modo</span>
@@ -204,7 +205,7 @@ export class CpuVar extends MicroConnected {
                     </div>
                     <div className='col-3 my-1'>
                         <div className='card row'>
-                            <h4 className='card-header text-center'>ECG</h4>
+                            <h6 className='card-header text-center'>ECG</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <span className='card-text text-secondary'>Cant Electrodos</span>
@@ -224,7 +225,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <hr />
                                 <div>
-                                    <h5 className='card-title text-center'>Alarma set 1</h5>
+                                    <h6 className='card-title text-center'>Alarma set 1</h6>
                                     <div className='d-flex justify-content-between'>
                                         <span className='card-text text-secondary-emphasis'>BPM</span>
                                     </div>
@@ -250,7 +251,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <hr />
                                 <div>
-                                    <h5 className='card-title text-center'>Alarma set 2</h5>
+                                    <h6 className='card-title text-center'>Alarma set 2</h6>
                                     <div className='d-flex justify-content-between'>
                                         <span className='card-text text-secondary-emphasis'>BPM</span>
                                     </div>
@@ -278,9 +279,9 @@ export class CpuVar extends MicroConnected {
                         </div>
 
                     </div>
-                    <div className='col-3 my-1'>
+                    <div className='col-3 my-1 d-flex flex-column'>
                         <div className='card row'>
-                            <h4 className='card-header text-center'>General</h4>
+                            <h6 className='card-header text-center'>General</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <span className='card-text text-secondary'>Energía 1</span>
@@ -310,6 +311,18 @@ export class CpuVar extends MicroConnected {
                                     <span className='card-text text-secondary'>Grabación de audio</span>
                                     <input type='checkbox' className='form-check-input' />
                                 </div>
+                            </div>
+                        </div>
+                        <div className='row mt-auto'>
+                            <div className='col'>
+                                <button
+                                    type="button"
+                                    className='btn btn-primary'
+                                //disabled={(!this.state.targetConnected)}
+                                //onClick={this.reset}
+                                >
+                                    Guardar
+                                </button>
                             </div>
                         </div>
                     </div>

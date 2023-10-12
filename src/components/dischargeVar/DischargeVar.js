@@ -12,20 +12,17 @@ export class DischargeVar extends MicroConnected {
     constructor(props) {
         super(props);
         this.state = {
-            led_azul: undefined,
-            led_rojo: undefined,
-            led_verde: undefined,
             targetReadable: props.targetReadable,
             variables: []
         };
         this.intervalId = null;
         this.variableNames = [
             'paddleType',
-            'paddleSwitch',
+            'paddlePressedButtons',
             'vcap',
             'chargeTime',
             'temperature',
-            'mainSwitch',
+            'selector',
             'tension',
             'networkState',
             'b1Present',
@@ -33,10 +30,24 @@ export class DischargeVar extends MicroConnected {
             'b1Charge',
             'b2Present',
             'b2State',
-            'b2Charge',
-            'led_azul',
-            'led_rojo',
-            'led_verde'
+            'b2Charge'
+        ];
+        this.variablesInfo = [
+            { name: 'paddleType', pointer: 'tipo_paletas_ptr', size: 1, type: 'char' },
+            { name: 'paddlePressedButtons', pointer: 'teclas_presionadas_ptr', size: 1, type: 'bits' },
+            { name: 'shock', pointer: 'tecla_shock_ptr', size: 1, type: 'char' },
+            { name: 'vcap', pointer: 'vcap_ptr', size: 4, type: 'float' },
+            { name: 'chargeTime', pointer: 'estado_actual_ptr', size: 1, type: 'char' },//esto tengo que leer la variable estado y monitorear sus cambios
+            { name: 'temperature', pointer: 'temperatura_ptr', size: 4, type: 'float' },
+            { name: 'selector', pointer: 'estado_actual_ptr', size: 1, type: 'char' },
+            { name: 'tension', pointer: 'tension_pwr_ptr', size: 4, type: 'float' },
+            { name: 'networkState', pointer: 'red_presente_ptr', size: 1, type: 'char' },
+            { name: 'b1Present', pointer: 'presente_bat1_ptr', size: 1, type: 'char' },
+            { name: 'b1State', pointer: 'cargando_bat1_ptr', size: 1, type: 'char' },
+            { name: 'b1Charge', pointer: 'carga_bat1_ptr', size: 1, type: 'char' },
+            { name: 'b2Present', pointer: 'presente_bat2_ptr', size: 1, type: 'char' },
+            { name: 'b2State', pointer: 'cargando_bat2_ptr', size: 1, type: 'char' },
+            { name: 'b2Charge', pointer: 'carga_bat2_ptr', size: 1, type: 'char' }
         ];
     }
 
@@ -77,47 +88,28 @@ export class DischargeVar extends MicroConnected {
 
     monitorVariables() {
         this.sendToMicroVariables("MONITOR", {
-            variables: ["led_azul", "led_rojo", "led_verde"]
+            variables: this.variablesInfo
         });
     }
 
     processMonitorResult(response) {
         if (response.status !== 'OK')
             return;
-        let data = response.data;
-        data.push(
-            { name: 'paddleType', value: 'Externa' },
-            { name: 'paddleSwitch', value: 'Shock' },
-            { name: 'vcap', value: '1111' },
-            { name: 'chargeTime', value: '10' },
-            { name: 'temperature', value: '10º' },
-            { name: 'mainSwitch', value: 'DEA' },
-            { name: 'tension', value: '10' },
-            { name: 'paddleSwitch', value: 'Shock' },
-            { name: 'networkState', value: 'Connected' },
-            { name: 'battery1State', value: 'Presente' },
-            { name: 'battery2State', value: 'Shock' },
-            { name: 'b1Present', value: 'Sí'},
-            { name: 'b1State', value: 'Bueno'},
-            { name: 'b1Charge', value: '100'},
-            { name: 'b2Present', value: 'No'},
-            { name: 'b2State', value: 'Malo'},
-            { name: 'b2Charge', value: '0'});
         this.setVariables(response.data)
     }
 
     setVariables(data) {
         const newState = {};
-        this.variableNames.forEach(name => {
-            newState[name] = this.findVariableValueByName(name, data);
+        this.variablesInfo.forEach(v => {
+            newState[v.name] = this.findVariableValueByName(v.name, data);
         });
         this.setState(newState);
     }
 
     clearVariables() {
         const newState = {};
-        this.variableNames.forEach(name => {
-            newState[name] = undefined;
+        this.variablesInfo.forEach(v => {
+            newState[v.name] = undefined;
         });
         this.setState(newState);
     }
@@ -138,15 +130,58 @@ export class DischargeVar extends MicroConnected {
         this.sendToMicroVariables("PRENDER", { variable: led });
     }
 
+    renderPaddleType(paddleType) {
+        switch (paddleType) {
+            case 0:
+                return 'Parches'
+            case 1:
+                return 'Paletas externas'
+            case 2:
+                return 'Paletas internas'
+            case 3:
+                return 'Desconectadas'
+            default:
+                return '--'
+        }
+    }
+
+    isBatteryPresent(bt) {
+        if (bt !== undefined) {
+            if (bt === 1)
+                return 'Sí';
+            else
+                return 'No';
+        }
+        return bt;
+    }
+
+    parseBatteryState(state) {
+        if (state !== undefined) {
+            switch (state) {
+                case 0:
+                    return 'Stand by';
+                case 1:
+                    return 'Cargando';
+                default:
+                    return '--';
+            }
+        }
+        return state;
+    }
+
     render() {
         const { targetReadable } = this.props;
-        const paddleType = this.state.paddleType ? this.state.paddleType : '--';
-        const paddleSwitch = this.state.paddleSwitch;
-        const vcap = this.state.vcap ? this.state.vcap : '--';
+        const paddleType = this.state.paddleType !== undefined ? this.state.paddleType : '--';
+        const paddlePressedButtons = this.state.paddlePressedButtons;
+        const shock = this.state.shock;
+        const registerPressed = paddlePressedButtons ? paddlePressedButtons.charAt(7) : '0';
+        const shockPressed = paddlePressedButtons ? paddlePressedButtons.charAt(6) : '0';
+        const chargePressed = paddlePressedButtons ? paddlePressedButtons.charAt(5) : '0';
+        const vcap = this.state.vcap ? Math.trunc(this.state.vcap) + ' V' : '--';
         const chargeTime = this.state.chargeTime ? this.state.chargeTime : '--';
-        const temperature = this.state.temperature ? this.state.temperature : '--';
-        const mainSwitch = this.state.mainSwitch;
-        const tension = this.state.tension ? this.state.tension : '--';
+        const temperature = this.state.temperature ? this.state.temperature.toFixed(2) + ' ºC' : '--';
+        const selector = this.state.selector;
+        const tension = this.state.tension ? this.state.tension.toFixed(2) + ' V' : '--';
         const networkState = this.state.networkState;
         const b1Present = this.state.b1Present;
         const b1State = this.state.b1State;
@@ -154,7 +189,7 @@ export class DischargeVar extends MicroConnected {
         const b2Present = this.state.b2Present;
         const b2State = this.state.b2State;
         const b2Charge = this.state.b2Charge;
-        
+
 
         return (
             <div className='col'>
@@ -164,20 +199,23 @@ export class DischargeVar extends MicroConnected {
                         <div className='card-body'>
                             <div className='d-flex justify-content-between'>
                                 <p className='card-text text-secondary'>Tipo</p>
-                                <p className='card-text text-secondary-emphasis'>{paddleType}</p>
+                                <p className='card-text text-secondary-emphasis'>{this.renderPaddleType(paddleType)}</p>
                             </div>
                             <hr />
                             <div>
                                 <h5 className='card-title text-center'>Teclas</h5>
-                                <div className='d-flex justify-content-between'>
-                                    <p className={`card-text text-secondary-emphasis option ${paddleSwitch === 'Shock' ? 'selected' : ''}`} >
+                                <div className='col align-items-center d-flex justify-content-between'>
+                                    <p className={`px-1 mb-0 card-text text-secondary-emphasis option ${shockPressed === '1' ? 'selected' : ''}`} >
                                         Shock
                                     </p>
-                                    <p className={`card-text text-secondary-emphasis option ${paddleSwitch === 'Carga' ? 'selected' : ''}`} >
+                                    <p className={`px-1 mb-0 card-text text-secondary-emphasis option ${chargePressed === '1' ? 'selected' : ''}`} >
                                         Carga
                                     </p>
-                                    <p className={`card-text text-secondary-emphasis option ${paddleSwitch === 'Registro' ? 'selected' : ''}`} >
+                                    <p className={`px-1 mb-0 card-text text-secondary-emphasis option ${registerPressed === '1' ? 'selected' : ''}`} >
                                         Registro
+                                    </p>
+                                    <p className={`px-1 mb-0 card-text text-secondary-emphasis option ${shock === 1 ? 'selected' : ''}`} >
+                                        Shock frontal
                                     </p>
                                 </div>
                             </div>
@@ -186,15 +224,15 @@ export class DischargeVar extends MicroConnected {
                     <div className='card col-5'>
                         <div className='card-body'>
                             <div>
-                                <div className='d-flex justify-content-between'>
+                                <div className='row d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>VCAP</p>
                                     <p className='card-text text-secondary-emphasis'>{vcap}</p>
                                 </div>
-                                <div className='d-flex justify-content-between'>
+                                <div className='row d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Tiempo de carga</p>
                                     <p className='card-text text-secondary-emphasis'>{chargeTime}</p>
                                 </div>
-                                <div className='d-flex justify-content-between'>
+                                <div className='row d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Temperatura</p>
                                     <p className='card-text text-secondary-emphasis'>{temperature}</p>
                                 </div>
@@ -205,23 +243,38 @@ export class DischargeVar extends MicroConnected {
                 <div className='container d-flex justify-content-around my-3'>
                     <div className='card col-5'>
                         <h4 className='card-header text-center'>Selectora</h4>
-                        <div className='card-body'>
-                            <div className='col'>
-                                <p className={`card-text text-secondary-emphasis option ${mainSwitch === 'DEA' ? 'selected' : ''}`} >
-                                    DEA
-                                </p>
-                                <p className={`card-text text-secondary-emphasis option ${mainSwitch === 'Apagado' ? 'selected' : ''}`} >
-                                    Apagado
-                                </p>
-                                <p className={`card-text text-secondary-emphasis option ${mainSwitch === 'Registro' ? 'selected' : ''}`} >
-                                    Monitor
-                                </p>
-                                <p className={`card-text text-secondary-emphasis option ${mainSwitch === 'Desfibrilador Manual' ? 'selected' : ''}`} >
-                                    Desfibrilador Manual
-                                </p>
-                                <p className={`card-text text-secondary-emphasis option ${mainSwitch === 'Marcapasos' ? 'selected' : ''}`} >
-                                    Marcapasos
-                                </p>
+                        <div className='card-body d-flex flex-column align-items-center'>
+                            <div className='col d-flex flex-column justify-content-around'>
+                                <div className='row'>
+                                    <p className={`card-text text-secondary-emphasis option ${selector === 1 ? 'selected' : ''}`} >
+                                        DEA
+                                    </p>
+                                </div>
+                                <div className='row'>
+                                    <p className={`card-text text-secondary-emphasis option ${selector === 0 ? 'selected' : ''}`} >
+                                        Apagado
+                                    </p>
+                                </div>
+                                <div className='row'>
+                                    <p className={`card-text text-secondary-emphasis option ${selector === 2 ? 'selected' : ''}`} >
+                                        Monitor
+                                    </p>
+                                </div>
+                                <div className='row'>
+                                    <p className={`card-text text-secondary-emphasis option ${selector === 3 ? 'selected' : ''}`} >
+                                        Desfibrilador Manual
+                                    </p>
+                                </div>
+                                <div className='row'>
+                                    <p className={`card-text text-secondary-emphasis option ${selector === 4 ? 'selected' : ''}`} >
+                                        Marcapasos
+                                    </p>
+                                </div>
+                                <div className='row'>
+                                    <p className={`card-text text-secondary-emphasis option ${selector === 5 ? 'selected' : ''}`} >
+                                        Error
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -240,7 +293,7 @@ export class DischargeVar extends MicroConnected {
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Estado</p>
                                     {
-                                        networkState === 'Connected' ?
+                                        networkState === 1 ?
                                             <p className='online' >Conectado </p>
                                             :
                                             <p className='offline'> Desconectado </p>
@@ -256,9 +309,9 @@ export class DischargeVar extends MicroConnected {
                                     <p className='card-text text-secondary'>Carga</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <p className='card-text text-secondary-emphasis'>{b1Present}</p>
-                                    <p className='card-text text-secondary-emphasis'>{b1State}</p>
-                                    <p className='card-text text-secondary-emphasis'>{b1Charge?b1Charge+'%':b1Charge}</p>
+                                    <p className='card-text text-secondary-emphasis'>{this.isBatteryPresent(b1Present)}</p>
+                                    <p className='card-text text-secondary-emphasis'>{this.parseBatteryState(b1State)}</p>
+                                    <p className='card-text text-secondary-emphasis'>{b1Charge ? b1Charge + '%' : b1Charge}</p>
                                 </div>
                             </div>
                             <hr />
@@ -270,38 +323,10 @@ export class DischargeVar extends MicroConnected {
                                     <p className='card-text text-secondary'>Carga</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <p className='card-text text-secondary-emphasis'>{b2Present}</p>
-                                    <p className='card-text text-secondary-emphasis'>{b2State}</p>
-                                    <p className='card-text text-secondary-emphasis'>{b2Charge?b2Charge+'%':b2Charge}</p>
+                                    <p className='card-text text-secondary-emphasis'>{this.isBatteryPresent(b2Present)}</p>
+                                    <p className='card-text text-secondary-emphasis'>{this.parseBatteryState(b2State)}</p>
+                                    <p className='card-text text-secondary-emphasis'>{b2Charge ? b2Charge + '%' : b2Charge}</p>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className='row'>
-                    <div className='card' >
-                        <div className='card-body'>
-                            <div>
-                                <button type="button" className='btn btn-primary' onClick={() => this.prenderLed('led_azul')}>led_azul</button>
-                            </div>
-                            <div>
-                                <button type="button" className='btn btn-danger' onClick={() => this.prenderLed('led_rojo')}>led_rojo</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='card' >
-                        <div className='card-body'>
-                            <div>
-                                <label htmlFor="led_azul">led_azul</label>
-                                <input name='led_azul' type="text" value={this.state.led_azul} readOnly />
-                            </div>
-                            <div>
-                                <label htmlFor="led_rojo">led_rojo</label>
-                                <input name='led_rojo' type="text" value={this.state.led_rojo} readOnly />
-                            </div>
-                            <div>
-                                <label htmlFor="led_verde">led_verde</label>
-                                <input name='led_verde' type="text" value={this.state.led_verde} readOnly />
                             </div>
                         </div>
                     </div>

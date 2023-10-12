@@ -30,10 +30,10 @@ def main():
         print("Información del microcontrolador:")
         print(f"Part number: {target.part_number}")
         print("pc: 0x%X" % target.read_core_register('pc'))
-        firmware_elf_file = "../firmwares/ejemplo_basico.elf"
+        firmware_elf_file = "../firmwares/Descarga.elf"
 
         # Load firmware into device.
-        FileProgrammer(session).program(firmware_elf_file)
+        #FileProgrammer(session).program(firmware_elf_file)
         print("Target status: " + str(target.get_state()))
 
         target.elf = firmware_elf_file

@@ -1,6 +1,7 @@
 from pythonUtils.utils import *
 from pyocd.flash.file_programmer import FileProgrammer
 from pyocd.debug.elf.symbols import ELFSymbolProvider
+import struct
 
 
 class Command:
@@ -136,14 +137,61 @@ class MonitorCommand(TargetCommand):
 
         variables_res = []
         for variable in variables:
-            variable_addr = provider.get_symbol_value(variable)
-            value = target.read32(variable_addr)
-            variables_res.append({"name": variable, "value": value})
+            variable_addr = provider.get_symbol_value(variable["pointer"])
+            value=0
+            if variable_addr is None:
+                res = 0
+                #TODO: agregar error
+                print("Variable no encontrada " + variable["name"])
+            else:
+                value = target.read32(variable_addr)
+                size = variable["size"]
+                res=0
+                try:
+                    if size == 1:
+                        res = target.read8(value)
+                    elif size == 2:
+                        res = target.read16(value)
+                    elif size == 4:
+                        res = target.read32(value)
+
+                    if variable["type"] == "float":
+                        res = struct.unpack('f', struct.pack('I', res))[0]
+                    elif variable["type"] == "char":
+                        res = struct.pack('B', res)[0]
+                    elif variable["type"] == "bits":
+                        res = '{0:08b}'.format(struct.pack('B', res)[0])
+                        
+                except Exception as e:
+                    res = "error"
+
+            variables_res.append({"name": variable["name"], "value": res})
 
         data = {}
         data["variables"] = variables_res
         return Status.OK.name, variables_res, session
 
+# class MonitorCommand(TargetCommand):
+#     def execute2(self, session, request, source):
+#         variables = request['variables']
+#         target = session.board.target
+#         provider = ELFSymbolProvider(target.elf)
+
+#         variables_res = []
+#         for variable in variables:
+#             variable_addr = provider.get_symbol_value(variable)
+#             value=0
+#             if variable_addr is None:
+#                 value = 0
+#                 #TODO: agregar error
+#             else:
+#                 value = target.read32(variable_addr)
+#             variables_res.append({"name": variable, "value": value})
+
+#         data = {}
+#         data["variables"] = variables_res
+#         return Status.OK.name, variables_res, session
+    
 class LightLedCommand(TargetCommand):
     def execute2(self, session, request, source):
         variable = request['variable']

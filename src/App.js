@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import Discharge from './pages/Discharge';
 import Cpu from './pages/Cpu';
+import Ecg from './pages/Ecg';
 
 // Electron related imports
 const electron = window.require('electron');
@@ -39,11 +40,12 @@ class App extends React.Component {
       <>
         <Router>
           <Navbar />
-          <div className="content">
+          <div className="content d-flex align-items-center">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/discharge" element={<Discharge />} />
               <Route path="/cpu" element={<Cpu />} />
+              <Route path="/ecg" element={<Ecg />} />
             </Routes>
           </div>
         </Router>
