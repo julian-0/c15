@@ -13,6 +13,9 @@ export class DischargeVar extends MicroConnected {
         super(props);
         this.state = {
             targetReadable: props.targetReadable,
+            oldChargeStatus: undefined,
+            loadingStartTime: undefined,
+            loadingTime: undefined,
             variables: []
         };
         this.intervalId = null;
@@ -20,7 +23,7 @@ export class DischargeVar extends MicroConnected {
             'paddleType',
             'paddlePressedButtons',
             'vcap',
-            'chargeTime',
+            'chargeStatus',
             'temperature',
             'selector',
             'tension',
@@ -37,7 +40,7 @@ export class DischargeVar extends MicroConnected {
             { name: 'paddlePressedButtons', pointer: 'teclas_presionadas_ptr', size: 1, type: 'bits' },
             { name: 'shock', pointer: 'tecla_shock_ptr', size: 1, type: 'char' },
             { name: 'vcap', pointer: 'vcap_ptr', size: 4, type: 'float' },
-            { name: 'chargeTime', pointer: 'estado_actual_ptr', size: 1, type: 'char' },//esto tengo que leer la variable estado y monitorear sus cambios
+            { name: 'chargeStatus', pointer: 'estado_descarga_ptr', size: 1, type: 'char' },//esto tengo que leer la variable estado y monitorear sus cambios
             { name: 'temperature', pointer: 'temperatura_ptr', size: 4, type: 'float' },
             { name: 'selector', pointer: 'estado_actual_ptr', size: 1, type: 'char' },
             { name: 'tension', pointer: 'tension_pwr_ptr', size: 4, type: 'float' },
@@ -95,7 +98,10 @@ export class DischargeVar extends MicroConnected {
     processMonitorResult(response) {
         if (response.status !== 'OK')
             return;
+
+        this.setState({ oldChargeStatus: this.state.chargeStatus });
         this.setVariables(response.data)
+        this.updateDeviceStatus();
     }
 
     setVariables(data) {
@@ -169,6 +175,24 @@ export class DischargeVar extends MicroConnected {
         return state;
     }
 
+    updateDeviceStatus() {
+        const { oldChargeStatus, chargeStatus, loadingStartTime } = this.state;
+
+        switch (chargeStatus) {
+            case 2: // Cargando
+                if (oldChargeStatus === 1) {
+                    this.setState({ loadingStartTime: Date.now() });
+                }
+                break;
+            case 3: // Cargado
+                if (oldChargeStatus === 2) {
+                    this.setState({ loadingTime: Date.now() - loadingStartTime });
+                }
+                break;
+            // Agregar más casos según tus necesidades
+        }
+    }
+
     render() {
         const { targetReadable } = this.props;
         const paddleType = this.state.paddleType !== undefined ? this.state.paddleType : '--';
@@ -178,7 +202,7 @@ export class DischargeVar extends MicroConnected {
         const shockPressed = paddlePressedButtons ? paddlePressedButtons.charAt(6) : '0';
         const chargePressed = paddlePressedButtons ? paddlePressedButtons.charAt(5) : '0';
         const vcap = this.state.vcap ? Math.trunc(this.state.vcap) + ' V' : '--';
-        const chargeTime = this.state.chargeTime ? this.state.chargeTime : '--';
+        const loadingTime = this.state.loadingTime ? (this.state.loadingTime / 1000).toFixed(2) + ' seg' : '--';
         const temperature = this.state.temperature ? this.state.temperature.toFixed(2) + ' ºC' : '--';
         const selector = this.state.selector;
         const tension = this.state.tension ? this.state.tension.toFixed(2) + ' V' : '--';
@@ -222,17 +246,17 @@ export class DischargeVar extends MicroConnected {
                         </div>
                     </div>
                     <div className='card col-5'>
-                        <div className='card-body'>
-                            <div>
-                                <div className='row d-flex justify-content-between'>
+                        <div className='card-body d-flex flex-column justify-content-end'>
+                            <div className="col d-flex flex-column justify-content-between">
+                                <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>VCAP</p>
                                     <p className='card-text text-secondary-emphasis'>{vcap}</p>
                                 </div>
-                                <div className='row d-flex justify-content-between'>
+                                <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Tiempo de carga</p>
-                                    <p className='card-text text-secondary-emphasis'>{chargeTime}</p>
+                                    <p className='card-text text-secondary-emphasis'>{loadingTime}</p>
                                 </div>
-                                <div className='row d-flex justify-content-between'>
+                                <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Temperatura</p>
                                     <p className='card-text text-secondary-emphasis'>{temperature}</p>
                                 </div>
@@ -304,14 +328,26 @@ export class DischargeVar extends MicroConnected {
                             <div>
                                 <h5 className='card-title text-center'>Bateria 1</h5>
                                 <div className='d-flex justify-content-between'>
-                                    <p className='card-text text-secondary'>Presente</p>
-                                    <p className='card-text text-secondary'>Estado</p>
-                                    <p className='card-text text-secondary'>Carga</p>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary'>Presente</p>
+                                    </div>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary'>Estado</p>
+                                    </div>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary'>Carga</p>
+                                    </div>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <p className='card-text text-secondary-emphasis'>{this.isBatteryPresent(b1Present)}</p>
-                                    <p className='card-text text-secondary-emphasis'>{this.parseBatteryState(b1State)}</p>
-                                    <p className='card-text text-secondary-emphasis'>{b1Charge ? b1Charge + '%' : b1Charge}</p>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary-emphasis'>{this.isBatteryPresent(b1Present)}</p>
+                                    </div>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary-emphasis'>{this.parseBatteryState(b1State)}</p>
+                                    </div>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary-emphasis'>{b1Charge ? b1Charge + '%' : b1Charge}</p>
+                                    </div>
                                 </div>
                             </div>
                             <hr />

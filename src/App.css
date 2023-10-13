@@ -48,11 +48,11 @@ h5 {
 .option {
   color: white !important;
   background-color: #9fbace;
+  border-radius: 3px;
 }
 
 .selected {
   background-color: #094067;
-  border-radius: 3px;
 }
 
 .appName{
