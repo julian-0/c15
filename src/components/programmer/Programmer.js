@@ -269,12 +269,8 @@ class Programmer extends MicroConnected {
                         <div className='stlink'>
                             <h5 className='card-title text-center'>STLink</h5>
                             <div className='d-flex justify-content-between'>
-                                <span className='text-secondary'>Número de serie:</span>
+                                <span className='text-secondary'>Nº de serie:</span>
                                 <input type="text" className='text-secondary-emphasis' value={this.state.serialNumber} disabled />
-                            </div>
-                            <div className='d-flex justify-content-between'>
-                                <span className='card-text text-secondary'>Versión de firmware:</span>
-                                <span className='card-text text-secondary-emphasis'>{this.state.firmwareRevision}</span>
                             </div>
                         </div>
                         <hr />

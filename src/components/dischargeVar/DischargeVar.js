@@ -158,7 +158,7 @@ export class DischargeVar extends MicroConnected {
             else
                 return 'No';
         }
-        return bt;
+        return '--';
     }
 
     parseBatteryState(state) {
@@ -172,7 +172,7 @@ export class DischargeVar extends MicroConnected {
                     return '--';
             }
         }
-        return state;
+        return '--';
     }
 
     updateDeviceStatus() {
@@ -346,7 +346,7 @@ export class DischargeVar extends MicroConnected {
                                         <p className='card-text text-secondary-emphasis'>{this.parseBatteryState(b1State)}</p>
                                     </div>
                                     <div className='col'>
-                                        <p className='card-text text-secondary-emphasis'>{b1Charge ? b1Charge + '%' : b1Charge}</p>
+                                        <p className='card-text text-secondary-emphasis'>{b1Charge ? b1Charge + '%' : '--'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -354,14 +354,26 @@ export class DischargeVar extends MicroConnected {
                             <div>
                                 <h5 className='card-title text-center'>Bateria 2</h5>
                                 <div className='d-flex justify-content-between'>
-                                    <p className='card-text text-secondary'>Presente</p>
-                                    <p className='card-text text-secondary'>Estado</p>
-                                    <p className='card-text text-secondary'>Carga</p>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary'>Presente</p>
+                                    </div>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary'>Estado</p>
+                                    </div>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary'>Carga</p>
+                                    </div>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <p className='card-text text-secondary-emphasis'>{this.isBatteryPresent(b2Present)}</p>
-                                    <p className='card-text text-secondary-emphasis'>{this.parseBatteryState(b2State)}</p>
-                                    <p className='card-text text-secondary-emphasis'>{b2Charge ? b2Charge + '%' : b2Charge}</p>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary-emphasis'>{this.isBatteryPresent(b2Present)}</p>
+                                    </div>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary-emphasis'>{this.parseBatteryState(b2State)}</p>
+                                    </div>
+                                    <div className='col'>
+                                        <p className='card-text text-secondary-emphasis'>{b2Charge ? b2Charge + '%' : '--'}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

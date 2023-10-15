@@ -2,7 +2,7 @@ from pythonUtils.utils import *
 from pyocd.flash.file_programmer import FileProgrammer
 from pyocd.debug.elf.symbols import ELFSymbolProvider
 import struct
-
+import logging
 
 class Command:
     def execute(self, session, request, source):
@@ -49,30 +49,37 @@ class ConnectionCommand(ProbeCommand):
     
 class ConnectTargetCommand(ProbeCommand):
     def execute2(self, session, request, source):
-        if session is None:
-            session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "chip", "target_override": "STM32L4P5ZGTx"})
-            session.open()
-        
-        target = session.board.target
+        try:
+            if session is None:
+                session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "chip", "target_override": "STM32L4P5ZGTx"})
+                session.open()
+            
+            target = session.board.target
 
-        value = target.read32(0xE0042000)
-        revision_id = (value >> 16) & 0xFFFF 
-        device_id = value & 0xFFF
+            value = target.read32(0xE0042000)
+            revision_id = (value >> 16) & 0xFFFF 
+            device_id = value & 0xFFF
 
-        data = {}
-        revision_string = revision_map.get(revision_id, "Desconocido")
-        device_string = device_map.get(device_id, "Desconocido")
-        revision = {}
-        revision["id"] = revision_id
-        revision["name"] = revision_string
-        device = {}
-        device["id"] = device_id
-        device["name"] = device_string
-        data["revision"] = revision
-        data["device"] = device
-        status = Status.OK.name
+            data = {}
+            revision_string = revision_map.get(revision_id, "Desconocido")
+            device_string = device_map.get(device_id, "Desconocido")
+            print("device 0x%X" %  device_id)
+            revision = {}
+            revision["id"] = revision_id
+            revision["name"] = revision_string
+            device = {}
+            device["id"] = device_id
+            device["name"] = device_string
+            data["revision"] = revision
+            data["device"] = device
+            status = Status.OK.name
 
-        return status, data, session
+            return status, data, session
+        except Exception as e:
+            logging.exception(e)
+            data = {}
+            data["error"] = repr(e)
+            return Status.ERROR.name, data, None
 
 class DisconnectTargetCommand(ProbeCommand):
     def execute2(self, session, request, source):

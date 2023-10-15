@@ -1,5 +1,7 @@
 from pythonUtils.commands import *
 import json
+import logging
+import sys
 
 # Identificador de resultados
 TOKEN = "#result# "
@@ -46,6 +48,8 @@ def returnResult(result):
     print(TOKEN+result)
 
 if __name__ == "__main__":
+    #logging.basicConfig(filename='application.log', level=logging.DEBUG)
+    #logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
     main()
     # try:
     #     main()

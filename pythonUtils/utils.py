@@ -17,8 +17,11 @@ revision_map = {
 
 device_map = {
     0x470: "STM32L4R",
-    0x471: "STM32L4P5"
+    0x471: "STM32L4P5",
     # ...otros valores de dispositivo...
+    0x435: "STM32L4(3|4)",
+    0x462: "STM32L4(5|6)",
+    0x464: "STM32L4(1|2)"
 }
 
 def response(command, status, data, source):
