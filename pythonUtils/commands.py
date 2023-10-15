@@ -63,7 +63,6 @@ class ConnectTargetCommand(ProbeCommand):
             data = {}
             revision_string = revision_map.get(revision_id, "Desconocido")
             device_string = device_map.get(device_id, "Desconocido")
-            print("device 0x%X" %  device_id)
             revision = {}
             revision["id"] = revision_id
             revision["name"] = revision_string
