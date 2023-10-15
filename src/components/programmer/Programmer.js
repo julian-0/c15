@@ -262,7 +262,7 @@ class Programmer extends MicroConnected {
 
     render() {
         return (
-            <div className='col-4'>
+            <div className='col-3'>
                 <div className='programmer card'>
                     <h4 className='card-header text-center'>Programador</h4>
                     <div className='card-body'>
@@ -270,7 +270,7 @@ class Programmer extends MicroConnected {
                             <h5 className='card-title text-center'>STLink</h5>
                             <div className='d-flex justify-content-between'>
                                 <span className='text-secondary'>Nº de serie:</span>
-                                <input type="text" className='text-secondary-emphasis' value={this.state.serialNumber} disabled />
+                                <input type="text" className='col-7 text-secondary-emphasis' value={this.state.serialNumber} disabled />
                             </div>
                         </div>
                         <hr />

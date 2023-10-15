@@ -57,12 +57,12 @@ export class CpuVar extends MicroConnected {
                             <h6 className='card-header text-center'>General</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Modelo</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Modelo</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Fecha y hora</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Fecha y hora</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                             </div>
                         </div>
@@ -70,12 +70,12 @@ export class CpuVar extends MicroConnected {
                             <h6 className='card-header text-center'>Pantalla</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Idioma</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Idioma</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Velocidad</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Velocidad</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                             </div>
                         </div>
@@ -83,12 +83,12 @@ export class CpuVar extends MicroConnected {
                             <h6 className='card-header text-center'>Registrador</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Grilla</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Grilla</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Velocidad</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Velocidad</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                             </div>
                         </div>
@@ -96,16 +96,16 @@ export class CpuVar extends MicroConnected {
                             <h6 className='card-header text-center'>Desfibrilador manual</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Energia paletas ext</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Energia paletas ext</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Energia paletas int</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Energia paletas int</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Derivacion</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Derivacion</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                             </div>
                         </div>
@@ -113,16 +113,16 @@ export class CpuVar extends MicroConnected {
                             <h6 className='card-header text-center'>Marcapasos</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Modo</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Modo</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Frecuencia</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Frecuencia</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Amplitud</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Amplitud</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                             </div>
                         </div>
@@ -132,59 +132,59 @@ export class CpuVar extends MicroConnected {
                             <h6 className='card-header text-center'>SpO2</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Saturometro</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Saturometro</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <hr />
                                 <div>
                                     <h6 className='card-title text-center'>Alarma set 1</h6>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary-emphasis'>BPM</span>
+                                        <p className='card-text text-secondary-emphasis'>BPM</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Alta</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Alta</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Baja</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Baja</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary-emphasis'>Saturación</span>
+                                        <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Alta</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Alta</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Baja</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Baja</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                 </div>
                                 <hr />
                                 <div>
                                     <h6 className='card-title text-center'>Alarma set 2</h6>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary-emphasis'>BPM</span>
+                                        <p className='card-text text-secondary-emphasis'>BPM</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Alta</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Alta</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Baja</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Baja</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary-emphasis'>Saturación</span>
+                                        <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Alta</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Alta</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Baja</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Baja</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                 </div>
                             </div>
@@ -193,12 +193,12 @@ export class CpuVar extends MicroConnected {
                             <h6 className='card-header text-center'>Audio</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Modo</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Modo</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Frecuencia</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Frecuencia</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                             </div>
                         </div>
@@ -208,71 +208,71 @@ export class CpuVar extends MicroConnected {
                             <h6 className='card-header text-center'>ECG</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Cant Electrodos</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Cant Electrodos</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Derivación</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Derivación</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Amplitud</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Amplitud</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Filtro de linea</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Filtro de linea</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <hr />
                                 <div>
                                     <h6 className='card-title text-center'>Alarma set 1</h6>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary-emphasis'>BPM</span>
+                                        <p className='card-text text-secondary-emphasis'>BPM</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Alta</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Alta</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Baja</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Baja</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary-emphasis'>Saturación</span>
+                                        <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Alta</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Alta</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Baja</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Baja</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                 </div>
                                 <hr />
                                 <div>
                                     <h6 className='card-title text-center'>Alarma set 2</h6>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary-emphasis'>BPM</span>
+                                        <p className='card-text text-secondary-emphasis'>BPM</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Alta</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Alta</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Baja</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Baja</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary-emphasis'>Saturación</span>
+                                        <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Alta</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Alta</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
-                                        <span className='card-text text-secondary'>Baja</span>
-                                        <span className='card-text text-secondary-emphasis'>valor</span>
+                                        <p className='card-text text-secondary'>Baja</p>
+                                        <p className='card-text text-secondary-emphasis'>valor</p>
                                     </div>
                                 </div>
                             </div>
@@ -284,31 +284,31 @@ export class CpuVar extends MicroConnected {
                             <h6 className='card-header text-center'>General</h6>
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Energía 1</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Energía 1</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Energía 2</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Energía 2</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Energía 3</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Energía 3</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Intervalo de audio</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Intervalo de audio</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Pausa inicial</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Pausa inicial</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Tiempo de RCP</span>
-                                    <span className='card-text text-secondary-emphasis'>valor</span>
+                                    <p className='card-text text-secondary'>Tiempo de RCP</p>
+                                    <p className='card-text text-secondary-emphasis'>valor</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <span className='card-text text-secondary'>Grabación de audio</span>
+                                    <p className='card-text text-secondary'>Grabación de audio</p>
                                     <input type='checkbox' className='form-check-input' />
                                 </div>
                             </div>
