@@ -10,6 +10,7 @@ import './App.css';
 import Discharge from './pages/Discharge';
 import Cpu from './pages/Cpu';
 import Ecg from './pages/Ecg';
+import Audio from './pages/Audio';
 
 // Electron related imports
 const electron = window.require('electron');
@@ -46,6 +47,7 @@ class App extends React.Component {
               <Route path="/discharge" element={<Discharge />} />
               <Route path="/cpu" element={<Cpu />} />
               <Route path="/ecg" element={<Ecg />} />
+              <Route path="/audio" element={<Audio />} />
             </Routes>
           </div>
         </Router>

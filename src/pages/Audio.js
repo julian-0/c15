@@ -1,11 +1,26 @@
-import React, { Component } from 'react'
+//Download component
+import React, { useState } from 'react';
+import Programmer from '../components/programmer/Programmer';
+//import './Audio.css';
 
-export class Audio extends Component {
-  render() {
+function Audio() {
+    const [targetReadable, setTargetReadable] = useState(false);
+
+    const updateTargetState = (newState) => {
+        setTargetReadable(newState);
+    };
+
     return (
-      <div>Audio</div>
+        <div className="h100 container text-center d-flex flex-column">
+            <div className='row flex-grow-1 mt-1'>
+                <div className='container'>
+                    <div className='row d-flex align-items-center justify-content-around'>
+                        <Programmer targetReadable={targetReadable} updateTargetState={updateTargetState} />
+                    </div>
+                </div>
+            </div>
+        </div>
     )
-  }
 }
 
 export default Audio
