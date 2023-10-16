@@ -6,6 +6,10 @@
     font-size: 10px;
 }
 
+.programmer .card-text {
+    font-size: 0.8rem;
+}
+
 .action-buttons {
     padding: 5px 12px;
 }

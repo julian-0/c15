@@ -291,7 +291,7 @@ class Programmer extends MicroConnected {
                                             onClick={this.disableConnection}
                                             style={{ cursor: 'pointer' }}
                                         >
-                                            <FaPowerOff className="icon" />
+                                            <FaPowerOff className="icon mx-1" />
                                             Desconectar
                                         </label>
                                         :
@@ -300,7 +300,7 @@ class Programmer extends MicroConnected {
                                             onClick={this.toggleConexion}
                                             style={{ cursor: this.state.probeConnected ? 'pointer' : 'not-allowed' }}
                                         >
-                                            <FaPowerOff className="icon" />
+                                            <FaPowerOff className="icon mx-1" />
                                             Conectar
                                         </label>
                                 }

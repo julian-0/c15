@@ -1,8 +1,35 @@
-.card-text {
-    font-size: 0.9rem;
+.cpuvar .card-text {
+    font-size: 0.8rem;
 }
 
 /* select p elements inside div of .cpuvar and put margin-bottom 0.3rem */
 .cpuvar p {
     margin-bottom: 0.3rem;
 }
+
+.cpuvar label{
+    font-size: 0.8rem;
+}
+
+.cpuvar select{
+    border-radius: 3px;
+    border-color: #094067;
+    background-color: white;
+    font-size: 0.9rem;
+}
+
+.cpuvar input{
+    border-radius: 3px;
+    border-color: #094067;
+    border-width: 1px;
+    background-color: white;
+    font-size: 0.8rem;
+}
+
+#date{
+    font-size: 0.8rem;
+}
+
+.cpuvar input[type="datetime-local"]:disabled {
+    background: #dddddd;
+  }
