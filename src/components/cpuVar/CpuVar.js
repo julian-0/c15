@@ -309,6 +309,8 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Filtro de linea</p>
+                                </div>
+                                <div className='d-flex justify-content-between'>
                                     <select aria-label="Modelo select">
                                         <option value="0">Desactivado</option>
                                         <option value="1">50 Hz</option>
@@ -385,6 +387,8 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Intervalo de audio</p>
+                                </div>
+                                <div className='d-flex justify-content-between'>
                                     <select aria-label="Modelo select">
                                         <option value="0">Desactivado</option>
                                         <option value="1">30 seg</option>
@@ -394,6 +398,8 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Pausa inicial</p>
+                                </div>
+                                <div className='d-flex justify-content-between'>
                                     <select aria-label="Modelo select">
                                         <option value="0">Desactivado</option>
                                         <option value="1">30 seg</option>
