@@ -16,7 +16,6 @@ export class CpuVar extends MicroConnected {
             inputDate: undefined,
             targetReadable: props.targetReadable,
         };
-        this.intervalId = null;
 
         this.frecuencyOptions = [];
         for (let i = 30; i <= 180; i += 10) {
@@ -54,6 +53,9 @@ export class CpuVar extends MicroConnected {
             { value: 18, label: '300J' },
             { value: 19, label: '360J' }
         ];
+
+        this.variablesInfo = [
+        ];
     }
 
     componentDidMount() {
@@ -71,14 +73,9 @@ export class CpuVar extends MicroConnected {
                     console.log("Unknown command: " + data.command);
             }
         });
-        this.intervalId = setInterval(() => {
-            if (!this.props.targetReadable) return;
-            this.monitorVariables();
-        }, 100);
     }
 
     componentWillUnmount() {
-        clearInterval(this.intervalId); // Limpia el intervalo cuando el componente se desmonta
         // 4. Remove all output listeners before app shuts down
         ipcRenderer.removeAllListeners('CONTROLLER_RESULT_VARIABLES');
     }
@@ -86,6 +83,66 @@ export class CpuVar extends MicroConnected {
     componentDidUpdate(prevProps, prevState) {
         if (this.state.actualDateCheck !== prevState.actualDateCheck && this.state.actualDateCheck) {
             this.setState({ inputDate: '' });
+        }
+    }
+
+    sendToMicroVariables(command, body) {
+        this.sendToMicro(command, 'VARIABLES', body);
+    }
+
+    monitorVariables() {
+        this.sendToMicroVariables("MONITOR", {
+            variables: this.variablesInfo
+        });
+    }
+
+    processMonitorResult(response) {
+        if (response.status !== 'OK')
+            return;
+
+        this.setVariables(response.data)
+    }
+
+    setVariables(data) {
+        const newState = {};
+        this.variablesInfo.forEach(v => {
+            newState[v.name] = this.findVariableValueByName(v.name, data);
+        });
+        this.setState(newState);
+    }
+
+    clearVariables() {
+        const newState = {};
+        this.variablesInfo.forEach(v => {
+            newState[v.name] = undefined;
+        });
+        this.setState(newState);
+    }
+
+    findVariableValueByName(name, variables) {
+        return variables.find(variable => variable.name === name).value;
+    }
+
+    writeVariables() {
+        this.sendToMicroVariables("WRITE_FLASH", {
+            pointer: "cte_calibracion_imp",
+            size: 4,
+            value: 1
+        });
+    }
+
+    processWriteResult(response) {
+        if (response.status !== 'OK') {
+            toast.error('Error al calibrar');
+            return;
+        }
+
+        toast.success('Calibración realizada con éxito');
+    }
+
+    validateOnlyNumbers(event) {
+        if (!/[0-9]/.test(event.key)) {
+            event.preventDefault();
         }
     }
 
@@ -213,9 +270,11 @@ export class CpuVar extends MicroConnected {
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Saturómetro</p>
+                                </div>
+                                <div className='d-flex justify-content-between'>
                                     <select aria-label="Modelo select">
-                                        <option value="0">Opc 1</option>
-                                        <option value="1">Opc 2</option>
+                                        <option value="0">Apexar BAT100</option>
+                                        <option value="1" disabled>UNICARE UN02</option>
                                     </select>
                                 </div>
                                 <hr />
@@ -226,22 +285,22 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' />
+                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' />
+                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' />
+                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' />
+                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
                                     </div>
                                 </div>
                                 <hr />
@@ -252,22 +311,22 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' />
+                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' />
+                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' />
+                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' />
+                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
                                     </div>
                                 </div>
                             </div>
@@ -488,16 +547,16 @@ export class CpuVar extends MicroConnected {
                         <button
                             type="button"
                             className='mx-1 btn btn-warning'
-                        //disabled={(!this.state.targetConnected)}
-                        //onClick={this.reset}
+                            disabled={!targetReadable}
+                            onClick={this.monitorVariables}
                         >
                             Recargar
                         </button>
                         <button
                             type="button"
                             className='mx-1 btn btn-primary'
-                        //disabled={(!this.state.targetConnected)}
-                        //onClick={this.reset}
+                            disabled={!targetReadable}
+                            onClick={this.writeVariables}
                         >
                             Guardar
                         </button>

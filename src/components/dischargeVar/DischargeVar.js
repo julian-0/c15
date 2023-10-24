@@ -19,22 +19,6 @@ export class DischargeVar extends MicroConnected {
             variables: []
         };
         this.intervalId = null;
-        this.variableNames = [
-            'paddleType',
-            'paddlePressedButtons',
-            'vcap',
-            'chargeStatus',
-            'temperature',
-            'selector',
-            'tension',
-            'networkState',
-            'b1Present',
-            'b1State',
-            'b1Charge',
-            'b2Present',
-            'b2State',
-            'b2Charge'
-        ];
         this.variablesInfo = [
             { name: 'paddleType', pointer: 'tipo_paletas_ptr', size: 1, type: 'char' },
             { name: 'paddlePressedButtons', pointer: 'teclas_presionadas_ptr', size: 1, type: 'bits' },

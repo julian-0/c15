@@ -177,26 +177,47 @@ class MonitorCommand(TargetCommand):
         data["variables"] = variables_res
         return Status.OK.name, variables_res, session
 
-# class MonitorCommand(TargetCommand):
+# class WriteMemoryCommand(TargetCommand):
 #     def execute2(self, session, request, source):
-#         variables = request['variables']
+#         pointer = request['pointer']
+#         address = target.read32(pointer)
+#         value = request['value']
+#         size = request['size']
 #         target = session.board.target
-#         provider = ELFSymbolProvider(target.elf)
+#         if size == 1:
+#             target.write8(address, value)
+#         elif size == 2:
+#             target.write16(address, value)
+#         elif size == 4:
+#             target.write32(address, value)
+#         return Status.OK.name, {}, session
 
-#         variables_res = []
-#         for variable in variables:
-#             variable_addr = provider.get_symbol_value(variable)
-#             value=0
-#             if variable_addr is None:
-#                 value = 0
-#                 #TODO: agregar error
-#             else:
-#                 value = target.read32(variable_addr)
-#             variables_res.append({"name": variable, "value": value})
+class WriteMemoryCommand(TargetCommand):
+    def execute2(self, session, request, source):
+        target = session.board.target
+        pointer = request['pointer']
+        address = target.read32(pointer)
+        value = request['value']
+        size = request['size']
+        v_type = request['type'] 
+        #erase the page
+        target.erase_sector(address)
+        #transform value to bytes according the type
+        if v_type == "float":
+            value = struct.unpack('I', struct.pack('f', value))[0]
+        elif v_type == "char":
+            value = struct.unpack('B', struct.pack('c', value))[0]
+        elif v_type == "bits":
+            value = struct.unpack('B', struct.pack('b', value))[0]
+        #write data
+        if size == 1:
+            target.write8(address, value)
+        elif size == 2:
+            target.write16(address, value)
+        elif size == 4:
+            target.write32(address, value)
 
-#         data = {}
-#         data["variables"] = variables_res
-#         return Status.OK.name, variables_res, session
+        return Status.OK.name, {}, session
     
 class LightLedCommand(TargetCommand):
     def execute2(self, session, request, source):
