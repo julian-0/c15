@@ -17,7 +17,8 @@ export class EcgVar extends MicroConnected {
         };
         this.intervalId = null;
         this.variablesInfo = [
-            { name: 'impedancia', pointer: 'impedancia_base_ptr', size: 4, type: 'float' },//TODO: es este puntero o impedancia_medida_ptr?
+            { name: 'impedancia', pointer: 'impedancia_base_ptr', size: 4, type: 'float' },
+            { name: 'impedanciaMedida', pointer: 'impedancia_medida_ptr', size: 4, type: 'float' },
             { name: 'frecuenciaCardiaca', pointer: 'frecuencia_cardiaca_ptr', size: 2, type: 'int' },
             { name: 'derivacion', pointer: 'derivacion_ptr', size: 1, type: 'char' },
             { name: 'ganancia', pointer: 'ganancia_ptr', size: 1, type: 'char' },
@@ -106,7 +107,7 @@ export class EcgVar extends MicroConnected {
     }
 
     writeCalibrationValue() {
-        const kc = 50 - this.state.impedancia;
+        const kc = 50 - this.state.impedanciaMedida;
         this.sendToMicroVariables("WRITE_FLASH", {
             pointer: "cte_calibracion_imp",
             size: 4,

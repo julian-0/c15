@@ -2,6 +2,7 @@ import React from 'react'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
+import NumericInput from '../numericInput/NumericInput';
 import './CpuVar.css';
 // Electron related imports
 const electron = window.require('electron');
@@ -15,6 +16,45 @@ export class CpuVar extends MicroConnected {
             actualDateCheck: false,
             inputDate: undefined,
             targetReadable: props.targetReadable,
+            form: {
+                // model: 2,
+                // date: '2020-10-10T10:10',
+                // language: 0,
+                // speed: 1,
+                // grid: true,
+                // source: 0,
+                // externalEnergy: 0,
+                // internalEnergy: 0,
+                // spo2: 0,
+                // bpmHigh1: 200,
+                // bpmLow1: 50,
+                // spo2High1: 90,
+                // spo2Low1: 85,
+                // bpmHigh2: 200,
+                // bpmLow2: 50,
+                // spo2High2: 99,
+                // spo2Low2: 81,
+                // ecgElectrodes: 3,
+                // ecgDerivation: 0,
+                // ecgAmplitude: 0,
+                // ecgLineFilter: 0,
+                // ecgHigh1: 0,
+                // ecgLow1: 0,
+                // ecgHigh2: 0,
+                // ecgLow2: 0,
+                // deaEnergy1: 0,
+                // deaEnergy2: 0,
+                // deaEnergy3: 0,
+                // deaAudioInterval: 0,
+                // deaInitialPause: 0,
+                // deaRcpTime: 0,
+                // deaAudioRecord: true,
+                // pacemakerMode: 0,
+                // pacemakerFrecuency: 0,
+                // pacemakerAmplitude: 0,
+                // audioBip: 0,
+                // audioAlarm: 0
+            }
         };
 
         this.frecuencyOptions = [];
@@ -56,6 +96,9 @@ export class CpuVar extends MicroConnected {
 
         this.variablesInfo = [
         ];
+
+        this.monitorVariables = this.monitorVariables.bind(this);
+        this.updateFormValue = this.updateFormValue.bind(this);
     }
 
     componentDidMount() {
@@ -73,6 +116,7 @@ export class CpuVar extends MicroConnected {
                     console.log("Unknown command: " + data.command);
             }
         });
+        this.monitorVariables();
     }
 
     componentWillUnmount() {
@@ -90,10 +134,59 @@ export class CpuVar extends MicroConnected {
         this.sendToMicro(command, 'VARIABLES', body);
     }
 
+    getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+
     monitorVariables() {
-        this.sendToMicroVariables("MONITOR", {
-            variables: this.variablesInfo
+        //fill form with mock data
+        this.setState({
+            form: {
+                model: this.getRandomInt(1, 4),
+                date: '2020-10-10T10:10',
+                language: this.getRandomInt(0, 3),
+                speed: this.getRandomInt(0, 3),
+                grid: true,
+                source: 0,
+                externalEnergy: 0,
+                internalEnergy: 0,
+                spo2: 0,
+                bpmHigh1: this.getRandomInt(30, 256),
+                bpmLow1: 50,
+                spo2High1: 90,
+                spo2Low1: 85,
+                bpmHigh2: 200,
+                bpmLow2: 50,
+                spo2High2: 99,
+                spo2Low2: 81,
+                ecgElectrodes: "3",
+                ecgDerivation: 0,
+                ecgAmplitude: 0,
+                ecgLineFilter: 0,
+                ecgHigh1: 0,
+                ecgLow1: 0,
+                ecgHigh2: 0,
+                ecgLow2: 0,
+                deaEnergy1: 0,
+                deaEnergy2: 0,
+                deaEnergy3: 0,
+                deaAudioInterval: 0,
+                deaInitialPause: 0,
+                deaRcpTime: 0,
+                deaAudioRecord: true,
+                pacemakerMode: 0,
+                pacemakerFrecuency: 0,
+                pacemakerAmplitude: 0,
+                audioBip: 0,
+                audioAlarm: 0
+            }
         });
+
+        // this.sendToMicroVariables("MONITOR", {
+        //     variables: this.variablesInfo
+        // });
     }
 
     processMonitorResult(response) {
@@ -146,10 +239,28 @@ export class CpuVar extends MicroConnected {
         }
     }
 
+    handleInputChange = (fieldName, value) => {
+        //set form[fieldName] with value
+        const form = this.state.form;
+        form[fieldName] = value;
+        this.setState({ form });
+    }
+
+    updateFormValue(key, value) {
+        const oldForm = { ...this.state.form };
+
+        oldForm[key] = value;
+        this.setState({
+            form: oldForm,
+        });
+    }
+
+
     render() {
         const { targetReadable } = this.props;
         const actualDateCheck = this.state.actualDateCheck;
         const inputDate = this.state.inputDate;
+        const form = this.state.form;
 
         return (
             <div className='col cpuvar'>
@@ -160,7 +271,7 @@ export class CpuVar extends MicroConnected {
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Modelo</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.model} onChange={(e) => this.updateFormValue('model', e.target.value)}>
                                         <option value="1">One</option>
                                         <option value="2">Two</option>
                                         <option value="3">Three</option>
@@ -169,7 +280,7 @@ export class CpuVar extends MicroConnected {
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Fecha y hora</p>
                                     <div>
-                                        <label for='date-check' className='mx-1'>Actual</label>
+                                        <label htmlFor='date-check' className='mx-1'>Actual</label>
                                         <input
                                             id='date-check'
                                             type='checkbox'
@@ -202,7 +313,7 @@ export class CpuVar extends MicroConnected {
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Idioma</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.language} onChange={(e) => this.updateFormValue('language', e.target.value)}>
                                         <option value="0">Español</option>
                                         <option value="1">Inglés</option>
                                         <option value="2">Portugués</option>
@@ -210,9 +321,9 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Velocidad</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.speed} onChange={(e) => this.updateFormValue('speed', e.target.value)}>
                                         <option value="0">12,5 mm/s</option>
-                                        <option value="1" selected>25 mm/s</option>
+                                        <option value="1">25 mm/s</option>
                                         <option value="2">50 mm/s</option>
                                     </select>
                                 </div>
@@ -223,11 +334,11 @@ export class CpuVar extends MicroConnected {
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Grilla</p>
-                                    <input type='checkbox' className='form-check-input' />
+                                    <input checked={form.grid ? form.grid : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('grid', e.target.checked)}/>
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Fuente</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.source} onChange={(e) => this.updateFormValue('source', e.target.value)}>
                                         <option value="0">ECG</option>
                                         <option value="1">SpO2</option>
                                         <option value="2">ECG+SpO2</option>
@@ -243,7 +354,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Externas</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.externalEnergy} onChange={(e) => this.updateFormValue('externalEnergy', e.target.value)}>
                                         {this.energyOptions.map((option) => (
                                             <option key={option.value} value={option.value}>
                                                 {option.label}
@@ -253,7 +364,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Internas</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.internalEnergy} onChange={(e) => this.updateFormValue('internalEnergy', e.target.value)}>
                                         {this.intenalEnergyOptions.map((option) => (
                                             <option key={option.value} value={option.value}>
                                                 {option.label}
@@ -272,7 +383,7 @@ export class CpuVar extends MicroConnected {
                                     <p className='card-text text-secondary'>Saturómetro</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.spo2} onChange={(e) => this.updateFormValue('spo2', e.target.value)}>
                                         <option value="0">Apexar BAT100</option>
                                         <option value="1" disabled>UNICARE UN02</option>
                                     </select>
@@ -285,22 +396,22 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
+                                        <NumericInput value={form.bpmHigh1} min={30} max={255} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('bpmHigh1', value)} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
+                                        <NumericInput value={form.bpmLow1} min={30} max={255} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('bpmLow1', value)} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
+                                        <NumericInput value={form.spo2High1} min={80} max={100} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('spo2High1', value)} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
+                                        <NumericInput value={form.spo2Low1} min={80} max={100} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('spo2Low1', value)} />
                                     </div>
                                 </div>
                                 <hr />
@@ -311,22 +422,22 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
+                                        <NumericInput value={form.bpmHigh2} min={30} max={255} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('bpmHigh2', value)} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='30' max='255' className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
+                                        <NumericInput value={form.bpmLow2} min={30} max={255} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('bpmLow2', value)} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
+                                        <NumericInput value={form.spo2High2} min={80} max={100} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('spo2High2', value)} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='80' max="100" className='col-4 text-secondary-emphasis' onKeyPress={this.validateOnlyNumbers} />
+                                        <NumericInput value={form.spo2Low2} min={80} max={100} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('spo2Low2', value)} />
                                     </div>
                                 </div>
                             </div>
@@ -339,27 +450,27 @@ export class CpuVar extends MicroConnected {
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Cant Electrodos</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.ecgElectrodes} onChange={(e) => this.updateFormValue('ecgElectrodes', e.target.value)}>
                                         <option value="3">3 hilos</option>
                                         <option value="5">5 hilos</option>
                                     </select>
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Derivación</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.ecgDerivation} onChange={(e) => this.updateFormValue('ecgDerivation', e.target.value)}>
                                         <option value="0">DI</option>
                                         <option value="1">DII</option>
                                         <option value="2">DIII</option>
-                                        <option value="3">aVR</option>
-                                        <option value="4">aVL</option>
-                                        <option value="5">aVF</option>
-                                        <option value="6">V</option>
+                                        <option disabled={form.ecgElectrodes === "3"} value="3">aVR</option>
+                                        <option disabled={form.ecgElectrodes === "3"} value="4">aVL</option>
+                                        <option disabled={form.ecgElectrodes === "3"} value="5">aVF</option>
+                                        <option disabled={form.ecgElectrodes === "3"} value="6">V</option>
                                         <option value="100">Paletas</option>
                                     </select>
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Amplitud</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.ecgAmplitude} onChange={(e) => this.updateFormValue('ecgAmplitude', e.target.value)}>
                                         <option value="0">x0.25</option>
                                         <option value="1">x0.5</option>
                                         <option value="2">x1</option>
@@ -370,7 +481,7 @@ export class CpuVar extends MicroConnected {
                                     <p className='card-text text-secondary'>Filtro de linea</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.ecgLineFilter} onChange={(e) => this.updateFormValue('ecgLineFilter', e.target.value)}>
                                         <option value="0">Desactivado</option>
                                         <option value="1">50 Hz</option>
                                         <option value="2">60 Hz</option>
@@ -384,11 +495,11 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='20' max='250' className='col-4 text-secondary-emphasis' />
+                                        <NumericInput value={form.ecgHigh1} min={20} max={250} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgHigh1', value)} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='20' max='250' className='col-4 text-secondary-emphasis' />
+                                        <NumericInput value={form.ecgLow1} min={20} max={250} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgLow1', value)} />
                                     </div>
                                 </div>
                                 <hr />
@@ -399,11 +510,11 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <input type="number" min='20' max='250' className='col-4 text-secondary-emphasis' />
+                                        <NumericInput value={form.ecgHigh2} min={20} max={250} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgHigh2', value)} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <input type="number" min='20' max='250' className='col-4 text-secondary-emphasis' />
+                                        <NumericInput value={form.ecgLow2} min={20} max={250} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgLow2', value)} />
                                     </div>
                                 </div>
                             </div>
@@ -416,7 +527,7 @@ export class CpuVar extends MicroConnected {
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Energía 1</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.deaEnergy1} onChange={(e) => this.updateFormValue('deaEnergy1', e.target.value)}>
                                         {this.energyOptions.map((option) => (
                                             <option key={option.value} value={option.value}>
                                                 {option.label}
@@ -426,7 +537,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Energía 2</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.deaEnergy2} onChange={(e) => this.updateFormValue('deaEnergy2', e.target.value)}>
                                         {this.energyOptions.map((option) => (
                                             <option key={option.value} value={option.value}>
                                                 {option.label}
@@ -436,7 +547,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Energía 3</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.deaEnergy3} onChange={(e) => this.updateFormValue('deaEnergy3', e.target.value)}>
                                         {this.energyOptions.map((option) => (
                                             <option key={option.value} value={option.value}>
                                                 {option.label}
@@ -448,7 +559,7 @@ export class CpuVar extends MicroConnected {
                                     <p className='card-text text-secondary'>Intervalo de audio</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.deaAudioInterval} onChange={(e) => this.updateFormValue('deaAudioInterval', e.target.value)}>
                                         <option value="0">Desactivado</option>
                                         <option value="1">30 seg</option>
                                         <option value="2">60 seg</option>
@@ -459,7 +570,7 @@ export class CpuVar extends MicroConnected {
                                     <p className='card-text text-secondary'>Pausa inicial</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.deaInitialPause} onChange={(e) => this.updateFormValue('deaInitialPause', e.target.value)}>
                                         <option value="0">Desactivado</option>
                                         <option value="1">30 seg</option>
                                         <option value="2">60 seg</option>
@@ -468,7 +579,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Tiempo de RCP</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.deaRcpTime} onChange={(e) => this.updateFormValue('deaRcpTime', e.target.value)}>
                                         <option value="0">30 seg</option>
                                         <option value="1">60 seg</option>
                                         <option value="2">90 seg</option>
@@ -477,7 +588,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Grabación de audio</p>
-                                    <input type='checkbox' className='form-check-input' />
+                                    <input checked={form.deaAudioRecord ? form.deaAudioRecord : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('deaAudioRecord', e.target.checked)}/>
                                 </div>
                             </div>
                         </div>
@@ -487,14 +598,14 @@ export class CpuVar extends MicroConnected {
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Modo</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.pacemakerMode} onChange={(e) => this.updateFormValue('pacemakerMode', e.target.value)}>
                                         <option value="0">Demanda</option>
                                         <option value="1">Fijo</option>
                                     </select>
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Frecuencia</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.pacemakerFrecuency} onChange={(e) => this.updateFormValue('pacemakerFrecuency', e.target.value)}>
                                         {this.frecuencyOptions.map((option) => (
                                             <option key={option} value={option}>
                                                 {option + ' PPM'}
@@ -505,7 +616,7 @@ export class CpuVar extends MicroConnected {
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Amplitud</p>
                                     {/* TODO:de 10 a 200 con incrementos de 10 unidad mA */}
-                                    <select aria-label="Modelo select">
+                                    <select value={form.pacemakerAmplitude} onChange={(e) => this.updateFormValue('pacemakerAmplitude', e.target.value)}>
                                         {this.amplitudOptions.map((option) => (
                                             <option key={option} value={option}>
                                                 {option + ' mA'}
@@ -523,7 +634,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>BIP</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.audioBip} onChange={(e) => this.updateFormValue('audioBip', e.target.value)}>
                                         <option value="0">Silencio</option>
                                         <option value="10">Bajo</option>
                                         <option value="50">Medio</option>
@@ -532,7 +643,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Alarma</p>
-                                    <select aria-label="Modelo select">
+                                    <select value={form.audioAlarm} onChange={(e) => this.updateFormValue('audioAlarm', e.target.value)}>
                                         <option value="10">Bajo</option>
                                         <option value="50">Medio</option>
                                         <option value="99">Alto</option>
@@ -547,7 +658,7 @@ export class CpuVar extends MicroConnected {
                         <button
                             type="button"
                             className='mx-1 btn btn-warning'
-                            disabled={!targetReadable}
+                            //disabled={!targetReadable}
                             onClick={this.monitorVariables}
                         >
                             Recargar
