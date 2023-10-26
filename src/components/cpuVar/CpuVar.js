@@ -13,9 +13,11 @@ export class CpuVar extends MicroConnected {
     constructor(props) {
         super(props);
         this.state = {
-            actualDateCheck: false,
-            inputDate: undefined,
             targetReadable: props.targetReadable,
+            bpm1Error: false,
+            sat1Error: false,
+            sat2Error: false,
+            bpm2Error: false,
             form: {
                 // model: 2,
                 // date: '2020-10-10T10:10',
@@ -54,7 +56,9 @@ export class CpuVar extends MicroConnected {
                 // pacemakerAmplitude: 0,
                 // audioBip: 0,
                 // audioAlarm: 0
-            }
+                date: undefined
+            },
+            actualDateCheck: false
         };
 
         this.frecuencyOptions = [];
@@ -98,6 +102,7 @@ export class CpuVar extends MicroConnected {
         ];
 
         this.monitorVariables = this.monitorVariables.bind(this);
+        this.writeVariables = this.writeVariables.bind(this);
         this.updateFormValue = this.updateFormValue.bind(this);
     }
 
@@ -126,7 +131,7 @@ export class CpuVar extends MicroConnected {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.state.actualDateCheck !== prevState.actualDateCheck && this.state.actualDateCheck) {
-            this.setState({ inputDate: '' });
+            this.updateFormValue('date', '');
         }
     }
 
@@ -217,11 +222,33 @@ export class CpuVar extends MicroConnected {
     }
 
     writeVariables() {
-        this.sendToMicroVariables("WRITE_FLASH", {
-            pointer: "cte_calibracion_imp",
-            size: 4,
-            value: 1
-        });
+        const form = this.state.form;
+        const errorBpm = 'El valor de BPM alta no puede ser menor que el de baja.\n';
+        const errorSat = 'El valor de saturación alta no puede ser menor que el de baja.\n';
+        var error = '';
+        //validate that Alarma alta is greater than Alarma baja
+        if (form.bpmHigh1 < form.bpmLow1) {
+            error += 'Alarma 1: ' + errorBpm;
+        }
+        if (form.spo2High1 < form.spo2Low1) {
+            error += 'Alarma 1: ' + errorSat;
+        }
+        if (form.bpmHigh2 < form.bpmLow2) {
+            error += 'Alarma 2: ' + errorBpm;
+        }
+        if (form.spo2High2 < form.spo2Low2) {
+            error += 'Alarma 2: ' + errorSat;
+        }
+
+        if (error) {
+            toast.error(error, CpuVar.toastProperties);
+            return;
+        }
+        // this.sendToMicroVariables("WRITE_FLASH", {
+        //     pointer: "cte_calibracion_imp",
+        //     size: 4,
+        //     value: 1
+        // });
     }
 
     processWriteResult(response) {
@@ -259,7 +286,6 @@ export class CpuVar extends MicroConnected {
     render() {
         const { targetReadable } = this.props;
         const actualDateCheck = this.state.actualDateCheck;
-        const inputDate = this.state.inputDate;
         const form = this.state.form;
 
         return (
@@ -289,7 +315,7 @@ export class CpuVar extends MicroConnected {
                                             onChange={() => {
                                                 if (actualDateCheck) {
                                                     //setText('')
-                                                    this.setState({ inputDate: '' })
+                                                    this.updateFormValue('date', '');
                                                 }
                                                 this.setState({ actualDateCheck: !actualDateCheck });
                                             }
@@ -301,10 +327,11 @@ export class CpuVar extends MicroConnected {
                                     <input
                                         id='date'
                                         type="datetime-local"
-                                        value={inputDate}
+                                        value={actualDateCheck ? '' : form.date}
                                         className='text-secondary-emphasis'
                                         disabled={actualDateCheck}
-                                        onChange={e => this.setState({ inputDate: e.target.value })} />
+                                        title='Formato mm/dd/yyyy hh:mm'
+                                        onChange={e => this.updateFormValue('date', e.target.value)} />
                                 </div>
                             </div>
                         </div>
@@ -334,7 +361,7 @@ export class CpuVar extends MicroConnected {
                             <div className='card-body'>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Grilla</p>
-                                    <input checked={form.grid ? form.grid : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('grid', e.target.checked)}/>
+                                    <input checked={form.grid ? form.grid : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('grid', e.target.checked)} />
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Fuente</p>
@@ -588,7 +615,7 @@ export class CpuVar extends MicroConnected {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Grabación de audio</p>
-                                    <input checked={form.deaAudioRecord ? form.deaAudioRecord : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('deaAudioRecord', e.target.checked)}/>
+                                    <input checked={form.deaAudioRecord ? form.deaAudioRecord : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('deaAudioRecord', e.target.checked)} />
                                 </div>
                             </div>
                         </div>
@@ -666,7 +693,7 @@ export class CpuVar extends MicroConnected {
                         <button
                             type="button"
                             className='mx-1 btn btn-primary'
-                            disabled={!targetReadable}
+                            //disabled={!targetReadable}
                             onClick={this.writeVariables}
                         >
                             Guardar
