@@ -225,25 +225,40 @@ export class CpuVar extends MicroConnected {
 
     writeVariables() {
         const form = this.state.form;
-        const errorBpm = 'El valor de BPM alta no puede ser menor que el de baja.\n';
-        const errorSat = 'El valor de saturación alta no puede ser menor que el de baja.\n';
-        var error = '';
-        //validate that Alarma alta is greater than Alarma baja
-        if (form.bpmHigh1 < form.bpmLow1) {
-            error += 'Alarma 1: ' + errorBpm;
+        const errorMessages = {
+            bpm: 'El valor de BPM alta no puede ser menor que el de baja.',
+            sat: 'El valor de saturación alta no puede ser menor que el de baja.',
+            ecg: 'El valor de ECG alta no puede ser menor que el de baja.'
+        };
+
+        const errors = [];
+
+        if (this.state.bpm1Error) {
+            errors.push(`Alarma 1: ${errorMessages.bpm}`);
         }
-        if (form.spo2High1 < form.spo2Low1) {
-            error += 'Alarma 1: ' + errorSat;
+        if (this.state.sat1Error) {
+            errors.push(`Alarma 1: ${errorMessages.sat}`);
         }
-        if (form.bpmHigh2 < form.bpmLow2) {
-            error += 'Alarma 2: ' + errorBpm;
+        if (this.state.ecg1Error) {
+            errors.push(`Alarma 1: ${errorMessages.ecg}`);
         }
-        if (form.spo2High2 < form.spo2Low2) {
-            error += 'Alarma 2: ' + errorSat;
+        if (this.state.bpm2Error) {
+            errors.push(`Alarma 2: ${errorMessages.bpm}`);
+        }
+        if (this.state.sat2Error) {
+            errors.push(`Alarma 2: ${errorMessages.sat}`);
+        }
+        if (this.state.ecg2Error) {
+            errors.push(`Alarma 2: ${errorMessages.ecg}`);
         }
 
-        if (error) {
-            toast.error(error, CpuVar.toastProperties);
+        if (form.date === undefined || form.date === '') {
+            errors.push('Debe ingresar una fecha y hora válida.');
+        }
+
+        if (errors.length > 0) {
+            const errorMessage = errors.join('\n');
+            toast.error(errorMessage, CpuVar.toastProperties);
             return;
         }
         // this.sendToMicroVariables("WRITE_FLASH", {
@@ -273,14 +288,20 @@ export class CpuVar extends MicroConnected {
         const highFieldName = fieldName.replace('Low', 'High');
         const lowFieldName = fieldName.replace('High', 'Low');
         const errorStateName = fieldName.replace(/High|Low/g, '') + 'Error';
-      
+        const errorStateValue = this.state[errorStateName];
+
         if ((fieldName.includes('High') && value < form[lowFieldName]) ||
             (fieldName.includes('Low') && value > form[highFieldName])) {
-          this.setState({ form, [errorStateName]: true });
+            if (!errorStateValue) {
+                this.setState({ [errorStateName]: true });
+            }
         } else {
-          this.setState({ form, [errorStateName]: false });
+            if (errorStateValue) {
+                this.setState({ [errorStateName]: false });
+            }
         }
-      }
+        this.setState({ form });
+    }
 
     updateFormValue(key, value) {
         const oldForm = { ...this.state.form };
