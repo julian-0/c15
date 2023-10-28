@@ -30,8 +30,6 @@ export class EcgVar extends MicroConnected {
             { name: 'll', pointer: 'LL_ptr', size: 1, type: 'char' },
             { name: 'rl', pointer: 'RL_ptr', size: 1, type: 'char' },
             { name: 'v1', pointer: 'V1_ptr', size: 1, type: 'char' },
-            { name: 'apex', pointer: 'APEX_ptr', size: 1, type: 'char' },
-            { name: 'STRN', pointer: 'strn_ptr', size: 1, type: 'char' },
             { name: 'estadoDea', pointer: 'estado_dea_ptr', size: 1, type: 'char' }
         ];
     }
@@ -127,11 +125,99 @@ export class EcgVar extends MicroConnected {
         toast.success('Calibración realizada con éxito');
     }
 
+    renderDerivation(derivation) {
+        switch (derivation) {
+            case 0:
+                return 'NA';
+            case 1:
+                return 'DI';
+            case 2:
+                return 'DII';
+            case 3:
+                return 'DIII';
+            case 4:
+                return 'aVR';
+            case 5:
+                return 'aVL';
+            case 6:
+                return 'aVF';
+            case 7:
+                return 'V';
+            case 8:
+                return 'PAL';
+            default:
+                return '--';
+        }
+    }
+
+    renderGanancia(ganancia) {
+        switch (ganancia) {
+            case 0:
+                return 'NA';
+            case 1:
+                return 'x0.25';
+            case 2:
+                return 'x0.5';
+            case 3:
+                return 'x1';
+            case 4:
+                return 'x2';
+            default:
+                return '--';
+        }
+    }
+
+    renderElectrodos(cantElectrodos) {
+        switch (cantElectrodos) {
+            case 0:
+                return 'NA';
+            case 1:
+                return '3';
+            case 2:
+                return '5';
+            default:
+                return '--';
+        }
+    }
+
+    renderFiltro(filtro) {
+        switch (filtro) {
+            case 0:
+                return 'NA';
+            case 1:
+                return 'Desactivado';
+            case 2:
+                return '50 Hz';
+            case 3:
+                return '60 Hz';
+            default:
+                return '--';
+        }
+    }
+
+    renderDea(estadoDea) {
+        switch (estadoDea) {
+            case 0:
+                return 'Reposo';
+            case 1:
+                return 'Iniciando análisis';
+            case 2:
+                return 'Reset';
+            case 10:
+                return 'Analizando';
+            case 11:
+                return 'Resultado negativo';
+            case 12:
+                return 'Resultado positivo';
+            default:
+                return '--';
+        }
+    }
+
     render() {
         const { targetReadable } = this.props;
-        const impedancia = this.state.impedancia !== undefined ? this.state.impedancia : '--';
-        const amplitud = this.state.amplitud !== undefined ? this.state.amplitud : '--';
-        const frecuenciaCardiaca = this.state.frecuenciaCardiaca !== undefined ? this.state.frecuenciaCardiaca : '--';
+        const impedancia = this.state.impedancia !== undefined ? this.state.impedancia.toFixed(2) + ' Ω' : '--';
+        const frecuenciaCardiaca = this.state.frecuenciaCardiaca !== undefined ? this.state.frecuenciaCardiaca + ' ppm' : '--';
         const derivacion = this.state.derivacion !== undefined ? this.state.derivacion : '--';
         const ganancia = this.state.ganancia !== undefined ? this.state.ganancia : '--';
         const cantElectrodos = this.state.cantElectrodos !== undefined ? this.state.cantElectrodos : '--';
@@ -143,8 +229,6 @@ export class EcgVar extends MicroConnected {
         const ll = this.state.ll;
         const rl = this.state.rl;
         const v1 = this.state.v1;
-        const apex = this.state.apex;
-        const strn = this.state.strn;
 
         return (
             <div className='col ecgvar'>
@@ -188,35 +272,35 @@ export class EcgVar extends MicroConnected {
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Derivación</p>
-                                    <p className='col card-text text-secondary-emphasis'>{derivacion}</p>
+                                    <p className='col card-text text-secondary-emphasis'>{this.renderDerivation(derivacion)}</p>
                                     <div className='col'>
                                         <p className={`card-text badge bg-${ra === 1 ? 'succes' : 'danger'}`}>RA</p>
                                     </div>
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Amplitud</p>
-                                    <p className='col card-text text-secondary-emphasis'>{amplitud}</p>
+                                    <p className='col card-text text-secondary-emphasis'>{this.renderGanancia(ganancia)}</p>
                                     <div className='col'>
                                         <p className={`card-text badge bg-${la === 1 ? 'succes' : 'danger'}`}>LA</p>
                                     </div>
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Cant electrodos</p>
-                                    <p className='col card-text text-secondary-emphasis'>{cantElectrodos}</p>
+                                    <p className='col card-text text-secondary-emphasis'>{this.renderElectrodos(cantElectrodos)}</p>
                                     <div className='col'>
                                         <p className={`card-text badge bg-${ll === 1 ? 'succes' : 'danger'}`}>LL</p>
                                     </div>
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Filtro de linea</p>
-                                    <p className='col card-text text-secondary-emphasis'>{filtro}</p>
+                                    <p className='col card-text text-secondary-emphasis'>{this.renderFiltro(filtro)}</p>
                                     <div className='col'>
                                         <p className={`card-text badge bg-${v1 === 1 ? 'succes' : 'danger'}`}>V</p>
                                     </div>
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Estado DEA</p>
-                                    <p className='col card-text text-secondary-emphasis'>{estadoDea}</p>
+                                    <p className='col card-text text-secondary-emphasis'>{this.renderDea(estadoDea)}</p>
                                     <div className='col'>
                                         <p className={`card-text badge bg-${rl === 1 ? 'succes' : 'danger'}`}>RL</p>
                                     </div>
