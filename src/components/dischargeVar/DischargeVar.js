@@ -173,12 +173,13 @@ export class DischargeVar extends MicroConnected {
                     this.setState({ loadingTime: Date.now() - loadingStartTime });
                 }
                 break;
-            // Agregar más casos según tus necesidades
+            default:
+                console.log("Unknown charge status: " + chargeStatus);
+                break;
         }
     }
 
     render() {
-        const { targetReadable } = this.props;
         const paddleType = this.state.paddleType !== undefined ? this.state.paddleType : '--';
         const paddlePressedButtons = this.state.paddlePressedButtons;
         const shock = this.state.shock;

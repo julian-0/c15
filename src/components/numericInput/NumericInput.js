@@ -14,13 +14,15 @@ class NumericInput extends Component {
 
     componentDidUpdate(prevProps) {
         // Verifica si la prop 'value' ha cambiado.
-        if (this.props.value && this.props.value !== prevProps.value) {
+        if (!isNaN(this.props.value) && this.props.value !== prevProps.value) {
+            if (this.props.value < this.props.min || this.props.value > this.props.max) {
+                this.setState({ valid: false });
+            } 
             this.setState({ value: this.props.value });
         }
         if (this.props.error !== prevProps.error) {
             this.setState({ error: this.props.error });
         }
-        console.log("update input");
     }
 
     validateOnlyNumbers(event) {
@@ -35,9 +37,9 @@ class NumericInput extends Component {
         if (value < this.props.min || value > this.props.max) {
             this.setState({ valid: false });
         }
-        else {
+        else if (!this.state.valid)
             this.setState({ valid: true });
-        }
+
         this.setState({ value }, () => {
             this.props.onChange(this.state.value); // Notifica al componente principal del cambio.
         });

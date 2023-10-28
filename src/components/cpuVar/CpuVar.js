@@ -21,44 +21,43 @@ export class CpuVar extends MicroConnected {
             sat2Error: false,
             bpm2Error: false,
             form: {
-                // model: 2,
-                // date: '2020-10-10T10:10',
-                // language: 0,
-                // speed: 1,
-                // grid: true,
-                // source: 0,
-                // externalEnergy: 0,
-                // internalEnergy: 0,
-                // spo2: 0,
-                // bpmHigh1: 200,
-                // bpmLow1: 50,
-                // satHigh1: 90,
-                // satLow1: 85,
-                // bpmHigh2: 200,
-                // bpmLow2: 50,
-                // satHigh2: 99,
-                // satLow2: 81,
-                // ecgElectrodes: 3,
-                // ecgDerivation: 0,
-                // ecgAmplitude: 0,
-                // ecgLineFilter: 0,
-                // ecgHigh1: 0,
-                // ecgLow1: 0,
-                // ecgHigh2: 0,
-                // ecgLow2: 0,
-                // deaEnergy1: 0,
-                // deaEnergy2: 0,
-                // deaEnergy3: 0,
-                // deaAudioInterval: 0,
-                // deaInitialPause: 0,
-                // deaRcpTime: 0,
-                // deaAudioRecord: true,
-                // pacemakerMode: 0,
-                // pacemakerFrecuency: 0,
-                // pacemakerAmplitude: 0,
-                // audioBip: 0,
-                // audioAlarm: 0
-                date: undefined
+                model: '',
+                date: '',
+                language: '',
+                speed: '',
+                grid: '',
+                source: '',
+                externalEnergy: '',
+                internalEnergy: '',
+                spo2: '',
+                bpmHigh1: '',
+                bpmLow1: '',
+                satHigh1: '',
+                satLow1: '',
+                bpmHigh2: '',
+                bpmLow2: '',
+                satHigh2: '',
+                satLow2: '',
+                ecgElectrodes: '',
+                ecgDerivation: '',
+                ecgAmplitude: '',
+                ecgLineFilter: '',
+                ecgHigh1: '',
+                ecgLow1: '',
+                ecgHigh2: '',
+                ecgLow2: '',
+                deaEnergy1: '',
+                deaEnergy2: '',
+                deaEnergy3: '',
+                deaAudioInterval: '',
+                deaInitialPause: '',
+                deaRcpTime: '',
+                deaAudioRecord: '',
+                pacemakerMode: '',
+                pacemakerFrecuency: '',
+                pacemakerAmplitude: '',
+                audioBip: '',
+                audioAlarm: ''
             },
             actualDateCheck: false
         };
@@ -721,7 +720,7 @@ export class CpuVar extends MicroConnected {
                         <button
                             type="button"
                             className='mx-1 btn btn-warning'
-                            //disabled={!targetReadable}
+                            disabled={!targetReadable}
                             onClick={this.monitorVariables}
                         >
                             Recargar
@@ -729,7 +728,7 @@ export class CpuVar extends MicroConnected {
                         <button
                             type="button"
                             className='mx-1 btn btn-primary'
-                            //disabled={!targetReadable}
+                            disabled={!targetReadable}
                             onClick={this.writeVariables}
                         >
                             Guardar

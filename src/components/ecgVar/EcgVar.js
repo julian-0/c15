@@ -53,8 +53,10 @@ export class EcgVar extends MicroConnected {
                     break;
                 case "WRITE_FLASH":
                     this.processWriteResult(data);
+                    break;
                 default:
                     console.log("Unknown command: " + data.command);
+                    break;
             }
         });
         this.intervalId = setInterval(() => {
