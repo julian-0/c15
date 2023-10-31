@@ -10,6 +10,8 @@ class NumericInput extends Component {
             value: this.props.value, // Inicializa el valor con el mínimo permitido.
             error: this.props.error
         };
+
+        const onError = this.props.onError;
     }
 
     componentDidUpdate(prevProps) {
@@ -17,6 +19,8 @@ class NumericInput extends Component {
         if (!isNaN(this.props.value) && this.props.value !== prevProps.value) {
             if (this.props.value < this.props.min || this.props.value > this.props.max) {
                 this.setState({ valid: false });
+                //execute the onError function
+                this.props.onError();
             } 
             this.setState({ value: this.props.value });
         }

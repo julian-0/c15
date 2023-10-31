@@ -11,7 +11,7 @@ export class MicroConnected extends Component {
         autoClose: 2500,
         hideProgressBar: false,
         closeOnClick: true,
-        pauseOnHover: false,
+        pauseOnHover: true,
         draggable: true,
         progress: undefined,
         theme: "colored",

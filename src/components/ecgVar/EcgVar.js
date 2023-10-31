@@ -267,42 +267,42 @@ export class EcgVar extends MicroConnected {
                                     <p className='col-6 text-start card-text text-secondary'>Frecuencia cardíaca</p>
                                     <p className='col card-text text-secondary-emphasis'>{frecuenciaCardiaca}</p>
                                     <div className='col'>
-                                        <p className={`card-text badge bg-${insto === 1 ? 'succes' : 'danger'}`}>Insto</p>
+                                        <p className={`card-text badge bg-${insto === 1 ? 'success' : 'danger'}`}>Insto</p>
                                     </div>
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Derivación</p>
                                     <p className='col card-text text-secondary-emphasis'>{this.renderDerivation(derivacion)}</p>
                                     <div className='col'>
-                                        <p className={`card-text badge bg-${ra === 1 ? 'succes' : 'danger'}`}>RA</p>
+                                        <p className={`card-text badge bg-${ra === 1 ? 'success' : 'danger'}`}>RA</p>
                                     </div>
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Amplitud</p>
                                     <p className='col card-text text-secondary-emphasis'>{this.renderGanancia(ganancia)}</p>
                                     <div className='col'>
-                                        <p className={`card-text badge bg-${la === 1 ? 'succes' : 'danger'}`}>LA</p>
+                                        <p className={`card-text badge bg-${la === 1 ? 'success' : 'danger'}`}>LA</p>
                                     </div>
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Cant electrodos</p>
                                     <p className='col card-text text-secondary-emphasis'>{this.renderElectrodos(cantElectrodos)}</p>
                                     <div className='col'>
-                                        <p className={`card-text badge bg-${ll === 1 ? 'succes' : 'danger'}`}>LL</p>
+                                        <p className={`card-text badge bg-${ll === 1 ? 'success' : 'danger'}`}>LL</p>
                                     </div>
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Filtro de linea</p>
                                     <p className='col card-text text-secondary-emphasis'>{this.renderFiltro(filtro)}</p>
                                     <div className='col'>
-                                        <p className={`card-text badge bg-${v1 === 1 ? 'succes' : 'danger'}`}>V</p>
+                                        <p className={`card-text badge bg-${v1 === 1 ? 'success' : 'danger'}`}>V</p>
                                     </div>
                                 </div>
                                 <div className='row'>
                                     <p className='col-6 text-start card-text text-secondary'>Estado DEA</p>
                                     <p className='col card-text text-secondary-emphasis'>{this.renderDea(estadoDea)}</p>
                                     <div className='col'>
-                                        <p className={`card-text badge bg-${rl === 1 ? 'succes' : 'danger'}`}>RL</p>
+                                        <p className={`card-text badge bg-${rl === 1 ? 'success' : 'danger'}`}>RL</p>
                                     </div>
                                 </div>
                             </div>

@@ -225,9 +225,9 @@ export class CpuVar extends MicroConnected {
     writeVariables() {
         const form = this.state.form;
         const errorMessages = {
-            bpm: 'El valor de BPM alta no puede ser menor que el de baja.',
-            sat: 'El valor de saturación alta no puede ser menor que el de baja.',
-            ecg: 'El valor de ECG alta no puede ser menor que el de baja.'
+            bpm: 'SpO2 BPM valores incorrectos',
+            sat: 'SpO2 Saturación valores incorrectos',
+            ecg: 'ECG valores incorrectos'
         };
 
         const errors = [];
@@ -251,7 +251,7 @@ export class CpuVar extends MicroConnected {
             errors.push(`Alarma 2: ${errorMessages.ecg}`);
         }
 
-        if (form.date === undefined || form.date === '') {
+        if ((form.date === undefined || form.date === '') && !this.state.actualDateCheck) {
             errors.push('Debe ingresar una fecha y hora válida.');
         }
 
@@ -458,22 +458,22 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <NumericInput value={form.bpmHigh1} min={30} max={255} error={bpm1Error} className={"col-4 text-secondary-emphasis"} onChange={(value) => this.handleInputChange('bpmHigh1', value)} />
+                                        <NumericInput value={form.bpmHigh1} min={30} max={255} error={bpm1Error} className={"col-4 text-secondary-emphasis"} onChange={(value) => this.handleInputChange('bpmHigh1', value)} onError={() => this.setState({ bpm1Error: true })} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <NumericInput value={form.bpmLow1} min={30} max={255} error={bpm1Error} className={"col-4 text-secondary-emphasis "} onChange={(value) => this.handleInputChange('bpmLow1', value)} />
+                                        <NumericInput value={form.bpmLow1} min={30} max={255} error={bpm1Error} className={"col-4 text-secondary-emphasis "} onChange={(value) => this.handleInputChange('bpmLow1', value)} onError={() => this.setState({ bpm1Error: true })} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <NumericInput value={form.satHigh1} min={80} max={100} error={sat1Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('satHigh1', value)} />
+                                        <NumericInput value={form.satHigh1} min={80} max={100} error={sat1Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('satHigh1', value)} onError={() => this.setState({ sat1Error: true })} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <NumericInput value={form.satLow1} min={80} max={100} error={sat1Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('satLow1', value)} />
+                                        <NumericInput value={form.satLow1} min={80} max={100} error={sat1Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('satLow1', value)} onError={() => this.setState({ sat1Error: true })} />
                                     </div>
                                 </div>
                                 <hr />
@@ -484,22 +484,22 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <NumericInput value={form.bpmHigh2} min={30} max={255} error={bpm2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('bpmHigh2', value)} />
+                                        <NumericInput value={form.bpmHigh2} min={30} max={255} error={bpm2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('bpmHigh2', value)} onError={() => this.setState({ bpm2Error: true })} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <NumericInput value={form.bpmLow2} min={30} max={255} error={bpm2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('bpmLow2', value)} />
+                                        <NumericInput value={form.bpmLow2} min={30} max={255} error={bpm2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('bpmLow2', value)} onError={() => this.setState({ bpm2Error: true })} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary-emphasis'>Saturación</p>
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <NumericInput value={form.satHigh2} min={80} max={100} error={sat2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('satHigh2', value)} />
+                                        <NumericInput value={form.satHigh2} min={80} max={100} error={sat2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('satHigh2', value)} onError={() => this.setState({ sat2Error: true })} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <NumericInput value={form.satLow2} min={80} max={100} error={sat2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('satLow2', value)} />
+                                        <NumericInput value={form.satLow2} min={80} max={100} error={sat2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('satLow2', value)} onError={() => this.setState({ sat2Error: true })} />
                                     </div>
                                 </div>
                             </div>
@@ -557,11 +557,11 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <NumericInput value={form.ecgHigh1} min={20} max={250} error={ecg1Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgHigh1', value)} />
+                                        <NumericInput value={form.ecgHigh1} min={20} max={250} error={ecg1Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgHigh1', value)} onError={() => this.setState({ ecg1Error: true })} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <NumericInput value={form.ecgLow1} min={20} max={250} error={ecg1Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgLow1', value)} />
+                                        <NumericInput value={form.ecgLow1} min={20} max={250} error={ecg1Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgLow1', value)} onError={() => this.setState({ ecg1Error: true })} />
                                     </div>
                                 </div>
                                 <hr />
@@ -572,11 +572,11 @@ export class CpuVar extends MicroConnected {
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Alta</p>
-                                        <NumericInput value={form.ecgHigh2} min={20} max={250} error={ecg2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgHigh2', value)} />
+                                        <NumericInput value={form.ecgHigh2} min={20} max={250} error={ecg2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgHigh2', value)} onError={() => this.setState({ ecg2Error: true })} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Baja</p>
-                                        <NumericInput value={form.ecgLow2} min={20} max={250} error={ecg2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgLow2', value)} />
+                                        <NumericInput value={form.ecgLow2} min={20} max={250} error={ecg2Error} className="col-4 text-secondary-emphasis" onChange={(value) => this.handleInputChange('ecgLow2', value)} onError={() => this.setState({ ecg2Error: true })} />
                                     </div>
                                 </div>
                             </div>
@@ -720,7 +720,7 @@ export class CpuVar extends MicroConnected {
                         <button
                             type="button"
                             className='mx-1 btn btn-warning'
-                            disabled={!targetReadable}
+                            // disabled={!targetReadable}
                             onClick={this.monitorVariables}
                         >
                             Recargar
@@ -728,7 +728,7 @@ export class CpuVar extends MicroConnected {
                         <button
                             type="button"
                             className='mx-1 btn btn-primary'
-                            disabled={!targetReadable}
+                            // disabled={!targetReadable}
                             onClick={this.writeVariables}
                         >
                             Guardar
