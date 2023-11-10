@@ -2,6 +2,11 @@ from pyocd.core.helpers import ConnectHelper
 from pyocd.flash.file_programmer import FileProgrammer
 from pyocd.debug.elf.symbols import ELFSymbolProvider
 from pyocd.debug.elf.decoder import ElfSymbolDecoder
+from pyocd.flash.flash import Flash
+from pyocd.flash.eraser import FlashEraser
+from pyocd.flash.loader import FlashLoader
+import struct
+
 import json
 
 
@@ -14,55 +19,33 @@ def list_connected_probes():
 
 def main():
     # Crear una instancia del programador ST-Link
-    with ConnectHelper.session_with_chosen_probe(options={"chip_erase": "chip", "target_override": "STM32L4P5ZGTx"}) as session:
-        # Obtener información sobre el programador
-        probe = session.probe
-
-        print("Información del programador:")
-        print(f"Vendor name: {probe.vendor_name}")
-        print(f"Product name: {probe.product_name}")
-        print(f"Description: {probe.description}")
-        print(f"Unique id: {probe.unique_id}")
-        print(f"Capabilities: {probe.capabilities}")
-
+    with ConnectHelper.session_with_chosen_probe(options={"chip_erase": "sector", "target_override": "stm32f405rgtx"}) as session:
         target = session.board.target
-        print("Target status: " + str(target.get_state()))
-
-        # Obtener información sobre el microcontrolador
-        print("Información del microcontrolador:")
-        print(f"Part number: {target.part_number}")
-        print("pc: 0x%X" % target.read_core_register('pc'))
-        firmware_elf_file = "../firmwares/SC1902.elf"
-
-        # Load firmware into device.
-        print("Target status: " + str(target.get_state()))
-
+        firmware_elf_file = "../../../firmwares/ecg.elf"
         target.elf = firmware_elf_file
-
         provider = ELFSymbolProvider(target.elf)
 
         # Reset
         target.reset_and_halt()
-        print("Target status: " + str(target.get_state()))
 
-        target.resume()
-        print("Target status: " + str(target.get_state()))
-        #check if microcontroller is connected
+        provider = ELFSymbolProvider(target.elf)
+        
+        pointer = 'cte_calibracion_imp'
+        value = 90
 
-        target.halt()
-        print("Target status: " + str(target.get_state()))
+        address = provider.get_symbol_value(pointer)
+        print("Actual value 0x%X" % target.read32(address))
 
-        target.resume()
+        #transform value to bytes
+        value = struct.unpack('!I', struct.pack('!f', value))[0]
 
-        print(type(target.elf))
-        decoder = target.elf.symbol_decoder
-        print(type(decoder))
-        #i = 0;
-        #for variable, symbol in decoder.symbol_dict.items():
-        #    if symbol.type == "STT_OBJECT":
-        #        print("Symbol #"+ str(i) + ": " + variable + " size: " + str(symbol.size))
-        #        i = i + 1
-        read_pointer_value(decoder, target, "tipo_paletas_ptr")
+        #write data
+        print("Writing in 0x%X" % address + " the value 0x%X" % value)
+        
+        loader = FlashLoader(session=session)
+        loader.add_data(address=address, data=value.to_bytes(4, byteorder='little'))
+        loader.commit()
+        print("Readed 0x%X" % target.read32(address))
 
 def read_pointer_value(decoder, target, pointer_name):
     symbol = decoder.symbol_dict[pointer_name]

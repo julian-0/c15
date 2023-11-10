@@ -24,7 +24,8 @@ def handle_input(session, in_stream_data):
         'HALT': HaltCommand(),
         'RESUME': ResumeCommand(),
         'MONITOR': MonitorCommand(),
-        'PRENDER': LightLedCommand()
+        'PRENDER': LightLedCommand(),
+        'WRITE_FLASH': WriteMemoryCommand()
     }
 
     # Obtén la clase de comando correspondiente y ejecútala
