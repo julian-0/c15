@@ -5,6 +5,10 @@
   font-family: 'Source Sans Pro', sans-serif !important;
 }
 
+:root {
+  --azul: #004a96;
+}
+
 body {
   font-size: 16px;
 }
@@ -26,7 +30,7 @@ body {
 }
 
 .card-header {
-  background-color: #094067;
+  background-color: var(--azul);
 }
 
 h4 {
@@ -38,11 +42,11 @@ h6.card-header {
 }
 
 h6.card-title {
-  color: #094067 !important;
+  color: var(--azul) !important;
 }
 
 h5 {
-  color: #094067 !important;
+  color: var(--azul) !important;
 }
 
 .option {
@@ -52,7 +56,7 @@ h5 {
 }
 
 .selected {
-  background-color: #094067;
+  background-color: var(--azul);
 }
 
 .appName {

@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    border: 1px solid #094067;
+    border: 1px solid var(--azul);
     border-radius: 3px;
     padding: 2px;
 }
@@ -28,5 +28,5 @@
     padding: 2px;
 }
 .logo-container{
-    border-right: 1px solid #094067;
+    border-right: 1px solid var(--azul);
 }

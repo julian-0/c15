@@ -1,0 +1,9 @@
+.ecgvar input{
+    border-radius: 3px;
+    border-color: var(--azul);
+    border-width: 1px;
+    background-color: white;
+    /* font-size: 0.8rem; */
+    text-align: right;
+    height: 70%;
+}

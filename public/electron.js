@@ -25,7 +25,7 @@ if (process.env.DEV) {
     });
 }
 
-const icon = nativeImage.createFromPath(path.join(__dirname, 'eym.png'));
+const icon = nativeImage.createFromPath(path.join(__dirname, 'eymblue.png'));
 let mainWindow;
 
 function createWindow() {
@@ -57,6 +57,8 @@ function createWindow() {
         mainWindow = null;
     });
 }
+
+app.commandLine.appendSwitch('force-color-profile', 'srgb');
 
 app.on('ready', createWindow);
 

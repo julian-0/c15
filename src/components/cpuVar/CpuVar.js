@@ -447,7 +447,7 @@ export class CpuVar extends MicroConnected {
                                 <div className='d-flex justify-content-between'>
                                     <select value={form.spo2} onChange={(e) => this.updateFormValue('spo2', e.target.value)}>
                                         <option value="0">Apexar BAT100</option>
-                                        <option value="1" disabled>UNICARE UN02</option>
+                                        <option value="1">Unicare UN02</option>
                                     </select>
                                 </div>
                                 <hr />

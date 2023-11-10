@@ -1,6 +1,7 @@
 from pythonUtils.utils import *
 from pyocd.flash.file_programmer import FileProgrammer
 from pyocd.debug.elf.symbols import ELFSymbolProvider
+from pyocd.flash.loader import FlashLoader
 import struct
 import logging
 
@@ -50,8 +51,9 @@ class ConnectionCommand(ProbeCommand):
 class ConnectTargetCommand(ProbeCommand):
     def execute2(self, session, request, source):
         try:
+            target = request['target']
             if session is None:
-                session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "chip", "target_override": "STM32L4P5ZGTx"})
+                session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "sector", "target_override": target})
                 session.open()
             
             target = session.board.target
@@ -169,6 +171,7 @@ class MonitorCommand(TargetCommand):
                         res = '{0:08b}'.format(struct.pack('B', res)[0])
                         
                 except Exception as e:
+                    print("Error al leer la variable " + variable["name"] + " " + repr(e))
                     res = "error"
 
             variables_res.append({"name": variable["name"], "value": res})
@@ -177,45 +180,35 @@ class MonitorCommand(TargetCommand):
         data["variables"] = variables_res
         return Status.OK.name, variables_res, session
 
-# class WriteMemoryCommand(TargetCommand):
-#     def execute2(self, session, request, source):
-#         pointer = request['pointer']
-#         address = target.read32(pointer)
-#         value = request['value']
-#         size = request['size']
-#         target = session.board.target
-#         if size == 1:
-#             target.write8(address, value)
-#         elif size == 2:
-#             target.write16(address, value)
-#         elif size == 4:
-#             target.write32(address, value)
-#         return Status.OK.name, {}, session
-
 class WriteMemoryCommand(TargetCommand):
     def execute2(self, session, request, source):
         target = session.board.target
         pointer = request['pointer']
-        address = target.read32(pointer)
+        provider = ELFSymbolProvider(target.elf)
+        variable_addr = provider.get_symbol_value(pointer)
+
+        address = variable_addr
         value = request['value']
+        print("Valor a escribir " + str(value))
         size = request['size']
         v_type = request['type'] 
-        #erase the page
-        target.erase_sector(address)
+
         #transform value to bytes according the type
         if v_type == "float":
-            value = struct.unpack('I', struct.pack('f', value))[0]
+            value = struct.unpack('!I', struct.pack('!f', value))[0]
         elif v_type == "char":
             value = struct.unpack('B', struct.pack('c', value))[0]
         elif v_type == "bits":
             value = struct.unpack('B', struct.pack('b', value))[0]
+
         #write data
-        if size == 1:
-            target.write8(address, value)
-        elif size == 2:
-            target.write16(address, value)
-        elif size == 4:
-            target.write32(address, value)
+        loader = FlashLoader(session=session)
+        loader.add_data(address=address, data=value.to_bytes(size, byteorder='little'))
+        loader.commit()
+        print("Leido 0x%X" % target.read32(address))
+
+        target.reset_and_halt()
+        target.resume()
 
         return Status.OK.name, {}, session
     

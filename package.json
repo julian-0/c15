@@ -1,7 +1,7 @@
 {
     "name": "c15-config",
     "description": "A desktop interface for configuring C15 Defribillator",
-    "version": "2.1.0",
+    "version": "1.0.0",
     "private": true,
     "dependencies": {
         "@material-ui/core": "^4.10.2",
@@ -81,7 +81,7 @@
     },
     "build": {
         "appId": "C15 Configuration Tool",
-        "productName": "C15Config",
+        "productName": "C15-Config",
         "copyright": "Copyright © E&M Electromedicina",
         "asar": false,
         "linux": {

@@ -52,7 +52,7 @@ class Programmer extends MicroConnected {
                     this.processConnectResult(data);
                     break;
                 case "DISCONNECT_TARGET":
-                    this.processDisconnectResult(data);
+                    //this.processDisconnectResult(data);
                     break;
                 case "SET_ELF_FILE":
                     this.processSetElfFile(data)
@@ -130,8 +130,9 @@ class Programmer extends MicroConnected {
             });
             this.props.updateTargetState(false);
         }
-        else if (response.data.target.status)
-            this.setState({ paused: response.data.target.status === "HALTED" });
+        else if (response.data.target.state) {
+            this.setState({ paused: response.data.target.state === "HALTED" });
+        }
 
         if (this.state.probeConnected === false) {
             this.getData();
@@ -228,7 +229,7 @@ class Programmer extends MicroConnected {
         if (this.state.targetConnected) {
             return;
         }
-        this.sendToMicroProgrammer("CONNECT_TARGET");
+        this.sendToMicroProgrammer("CONNECT_TARGET", { target: this.props.target });
     }
 
     disableConnection() {
@@ -236,6 +237,39 @@ class Programmer extends MicroConnected {
             return;
         }
         this.sendToMicroProgrammer("DISCONNECT_TARGET");
+
+        const disconnectPromise = new Promise((resolve, reject) => {
+
+            const proccess = (event, args) => {
+                let data = args.data;
+                switch (data.command) {
+                    case "DISCONNECT_TARGET":
+                        ipcRenderer.removeListener('CONTROLLER_RESULT_PROGRAMMER', proccess);
+                        if (data.status === 'OK') {
+                            resolve(); // Resuelve la promesa cuando la escritura es exitosa
+                        }
+                        else {
+                            reject('Error al desconectar'); // Rechaza la promesa en caso de error
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            };
+
+            ipcRenderer.on('CONTROLLER_RESULT_PROGRAMMER', proccess);
+        });
+
+        // Toast.promise espera que la promesa se complete (resuelta o rechazada) antes de mostrar el mensaje.
+        toast.promise(
+            disconnectPromise,
+            {
+                pending: 'Desconectando...',
+                success: 'Desconectado',
+                error: 'Error al desconectar'
+            },
+            Programmer.toastProperties
+        );
     }
 
     reset() {

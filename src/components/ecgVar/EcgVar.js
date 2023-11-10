@@ -2,7 +2,8 @@ import React from 'react'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
-//import './EcgVar.css';
+import NumericInput from '../numericInput/NumericInput';
+import './EcgVar.css';
 // Electron related imports
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
@@ -13,7 +14,9 @@ export class EcgVar extends MicroConnected {
         super(props);
         this.state = {
             targetReadable: props.targetReadable,
-            variables: []
+            variables: [],
+            reference: 50,
+            writingToastId: undefined
         };
         this.intervalId = null;
         this.variablesInfo = [
@@ -32,6 +35,21 @@ export class EcgVar extends MicroConnected {
             { name: 'v1', pointer: 'V1_ptr', size: 1, type: 'char' },
             { name: 'estadoDea', pointer: 'estado_dea_ptr', size: 1, type: 'char' }
         ];
+        this.toastProperties = {
+            position: "bottom-right",
+            theme: "colored",
+
+            position: "bottom-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            pauseOnFocusLoss: false
+        };
+        this.writeCalibrationValue = this.writeCalibrationValue.bind(this);
     }
 
     getVariableByName(name) {
@@ -50,7 +68,6 @@ export class EcgVar extends MicroConnected {
                     this.processMonitorResult(data);
                     break;
                 case "WRITE_FLASH":
-                    this.processWriteResult(data);
                     break;
                 default:
                     console.log("Unknown command: " + data.command);
@@ -107,22 +124,50 @@ export class EcgVar extends MicroConnected {
     }
 
     writeCalibrationValue() {
-        const kc = 50 - this.state.impedanciaMedida;
+        const reference = this.state.reference;
+        if (isNaN(reference) || reference < 0 || reference > 10000) {
+            toast.error('Valor de calibración inválido', EcgVar.toastProperties);
+            return;
+        }
+        const kc = this.state.reference - this.state.impedanciaMedida;
         this.sendToMicroVariables("WRITE_FLASH", {
             pointer: "cte_calibracion_imp",
             size: 4,
             type: "float",
             value: kc
         });
-    }
 
-    processWriteResult(response) {
-        if (response.status !== 'OK') {
-            toast.error('Error al calibrar');
-            return;
-        }
+        const calibrationPromise = new Promise((resolve, reject) => {
 
-        toast.success('Calibración realizada con éxito');
+            const proccess = (event, args) => {
+                let data = args.data;
+                switch (data.command) {
+                    case "WRITE_FLASH":
+                        ipcRenderer.removeListener('CONTROLLER_RESULT_VARIABLES', proccess);
+                        if (data.status === 'OK') {
+                            resolve();
+                        }
+                        else {
+                            reject('Error al calibrar');
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            };
+
+            ipcRenderer.on('CONTROLLER_RESULT_VARIABLES', proccess);
+        });
+
+        toast.promise(
+            calibrationPromise,
+            {
+                pending: 'Escribiendo valor',
+                success: 'Calibración realizada con éxito',
+                error: 'Error al calibrar'
+            },
+            EcgVar.toastProperties
+        );
     }
 
     renderDerivation(derivation) {
@@ -216,7 +261,7 @@ export class EcgVar extends MicroConnected {
 
     render() {
         const { targetReadable } = this.props;
-        const impedancia = this.state.impedancia !== undefined ? this.state.impedancia.toFixed(2) + ' Ω' : '--';
+        const impedancia = this.state.impedancia !== undefined && typeof this.state.impedancia === 'number' ? this.state.impedancia.toFixed(2) + ' Ω' : '--';
         const frecuenciaCardiaca = this.state.frecuenciaCardiaca !== undefined ? this.state.frecuenciaCardiaca + ' ppm' : '--';
         const derivacion = this.state.derivacion !== undefined ? this.state.derivacion : '--';
         const ganancia = this.state.ganancia !== undefined ? this.state.ganancia : '--';
@@ -240,6 +285,21 @@ export class EcgVar extends MicroConnected {
                                     <h6 className='card-header text-center'>Impedancia</h6>
                                     <div className='card-body'>
                                         <div className='d-flex justify-content-between'>
+                                            <span className='card-text text-secondary'>Patrón</span>
+                                            <div className='d-flex justify-content-end'>
+                                                <input
+                                                    type="number"
+                                                    min={0}
+                                                    max={10000}
+                                                    className={"card-text text-secondary-emphasis"}
+                                                    value={this.state.reference} // Usa el valor del estado local.
+                                                    onChange={(event) => this.setState({ reference: event.target.value })}
+                                                    title={'Entre 0 y 10000'}
+                                                />
+                                                <p> Ω</p>
+                                            </div>
+                                        </div>
+                                        <div className='d-flex justify-content-between'>
                                             <span className='card-text text-secondary'>Valor</span>
                                             <span className='card-text text-secondary-emphasis'>{impedancia}</span>
                                         </div>
@@ -249,7 +309,7 @@ export class EcgVar extends MicroConnected {
                                                     type="button"
                                                     className='btn btn-primary'
                                                     disabled={!targetReadable}
-                                                //onClick={this.writeCalibrationValue}
+                                                    onClick={this.writeCalibrationValue}
                                                 >
                                                     Calibrar
                                                 </button>

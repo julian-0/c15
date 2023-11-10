@@ -3,7 +3,7 @@ ul{
 }
 
 .navbar{
-    background-color: #094067;
+    background-color: var(--azul);
     height: 80px;
     display: flex;
     flex: 0;
@@ -18,7 +18,7 @@ ul{
 }
 
 .nav-menu{
-    background-color: #094067;
+    background-color: var(--azul);
     border-top-right-radius: 80px;
     width: 220px;
     height: 100vh;

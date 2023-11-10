@@ -13,17 +13,18 @@
 
 .cpuvar select{
     border-radius: 3px;
-    border-color: #094067;
+    border-color: var(--azul);
     background-color: white;
     font-size: 0.8rem;
 }
 
 .cpuvar input{
     border-radius: 3px;
-    border-color: #094067;
+    border-color: var(--azul);
     border-width: 1px;
     background-color: white;
     font-size: 0.8rem;
+    text-align: right;
 }
 
 #date{
