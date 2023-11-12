@@ -160,7 +160,6 @@ class Programmer extends MicroConnected {
             serialNumber: data.stlink.serial_number,
             firmwareRevision: data.stlink.firmware_revision
         });
-        toast.success('Conectado al probe', Programmer.toastProperties);
     }
 
     processConnectResult(response) {
@@ -176,7 +175,6 @@ class Programmer extends MicroConnected {
             devName: data.device.name,
             paused: true
         });
-        toast.success('Conectado al target', Programmer.toastProperties);
     }
 
     processDisconnectResult(response) {

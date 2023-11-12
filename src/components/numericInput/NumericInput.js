@@ -55,6 +55,7 @@ class NumericInput extends Component {
                 type="number"
                 min={this.props.min}
                 max={this.props.max}
+                disabled={this.props.disabled}
                 className={this.props.className + (!this.state.valid || this.state.error ? ' invalid' : '')}
                 value={this.state.value} // Usa el valor del estado local.
                 onChange={this.handleInputChange}
