@@ -170,7 +170,7 @@ export class CpuVar extends MicroConnected {
             this.updateFormValue('date', '');
         }
 
-        if(this.props.targetReadable !== prevProps.targetReadable && this.props.targetReadable) {
+        if (this.props.targetReadable !== prevProps.targetReadable && this.props.targetReadable) {
             this.monitorVariables();
         }
     }
@@ -430,7 +430,6 @@ export class CpuVar extends MicroConnected {
                                             checked={actualDateCheck}
                                             onChange={() => {
                                                 if (actualDateCheck) {
-                                                    //setText('')
                                                     this.updateFormValue('date', '');
                                                 }
                                                 this.setState({ actualDateCheck: !actualDateCheck });
@@ -444,7 +443,6 @@ export class CpuVar extends MicroConnected {
                                         id='date'
                                         type="datetime-local"
                                         value={actualDateCheck ? '' : form.date}
-                                        className='text-secondary-emphasis'
                                         disabled={actualDateCheck || !targetReadable}
                                         title='Formato mm/dd/yyyy hh:mm'
                                         onChange={e => this.updateFormValue('date', e.target.value)} />
