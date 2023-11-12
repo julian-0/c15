@@ -130,11 +130,15 @@ export class EcgVar extends MicroConnected {
             return;
         }
         const kc = this.state.reference - this.state.impedanciaMedida;
-        this.sendToMicroVariables("WRITE_FLASH", {
+        const variables = [{
             pointer: "cte_calibracion_imp",
             size: 4,
             type: "float",
             value: kc
+        }];
+
+        this.sendToMicroVariables("WRITE_FLASH", {
+            variables: variables
         });
 
         const calibrationPromise = new Promise((resolve, reject) => {

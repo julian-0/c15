@@ -340,11 +340,10 @@ export class CpuVar extends MicroConnected {
             toast.error(errorMessage, CpuVar.toastProperties);
             return;
         }
-        // this.sendToMicroVariables("WRITE_FLASH", {
-        //     pointer: "cte_calibracion_imp",
-        //     size: 4,
-        //     value: 1
-        // });
+        const variables = this.variablesInfo.map(v => ({ ...v, value: form[v.name] }));
+        this.sendToMicroVariables("WRITE_FLASH", {
+            variables: variables
+        });
     }
 
     processWriteResult(response) {

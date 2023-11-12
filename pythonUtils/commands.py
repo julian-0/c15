@@ -42,7 +42,13 @@ class TargetCommand(Command):
             data = {}
             data["error"] = "No hay un target conectado"
             return Status.ERROR.name, data, session
-        return self.execute2(session, request, source)
+        #try execute2 if error return error
+        try:
+            return self.execute2(session, request, source)
+        except Exception as e:
+            data = {}
+            data["error"] = repr(e)
+            return Status.ERROR.name, data, session
 
 class ConnectionCommand(ProbeCommand):
     def execute2(self, session, request, source):
@@ -183,31 +189,32 @@ class MonitorCommand(TargetCommand):
 class WriteMemoryCommand(TargetCommand):
     def execute2(self, session, request, source):
         target = session.board.target
-        pointer = request['pointer']
         provider = ELFSymbolProvider(target.elf)
-        variable_addr = provider.get_symbol_value(pointer)
-
-        address = variable_addr
-        value = request['value']
-        print("Valor a escribir " + str(value))
-        size = request['size']
-        v_type = request['type'] 
-
-        #transform value to bytes according the type
-        if v_type == "float":
-            value = struct.unpack('!I', struct.pack('!f', value))[0]
-        elif v_type == "char":
-            value = struct.unpack('B', struct.pack('c', value))[0]
-        elif v_type == "bits":
-            value = struct.unpack('B', struct.pack('b', value))[0]
-
-        #write data
         loader = FlashLoader(session=session)
-        loader.add_data(address=address, data=value.to_bytes(size, byteorder='little'))
-        loader.commit()
-        print("Leido 0x%X" % target.read32(address))
+        variables = request['variables']
+        for variable in variables:
+            pointer = variable['pointer']
+            
+            variable_addr = provider.get_symbol_value(pointer)
 
+            address = variable_addr
+            value = variable['value']
+            print("Valor a escribir " + str(value))
+            size = variable['size']
+            v_type = variable['type'] 
+
+            #transform value to bytes according the type
+            if v_type == "float":
+                value = struct.unpack('!I', struct.pack('!f', value))[0]
+            elif v_type == "char":
+                value = struct.unpack('B', struct.pack('c', value))[0]
+            elif v_type == "bits":
+                value = struct.unpack('B', struct.pack('b', value))[0]
+
+            #write data
+            loader.add_data(address=address, data=value.to_bytes(size, byteorder='little'))
         target.reset_and_halt()
+        loader.commit()
         target.resume()
 
         return Status.OK.name, {}, session
