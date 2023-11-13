@@ -43,7 +43,7 @@ class Programmer extends MicroConnected {
                     this.processGetDataResult(data);
                     break;
                 case "PROGRAM":
-                    this.processProgramResult(data);
+                    //this.processProgramResult(data);
                     break;
                 case "CONNECTION":
                     this.processCheckConnectionResult(data);
@@ -52,7 +52,7 @@ class Programmer extends MicroConnected {
                     this.processConnectResult(data);
                     break;
                 case "DISCONNECT_TARGET":
-                    //this.processDisconnectResult(data);
+                    this.processDisconnectResult(data);
                     break;
                 case "SET_ELF_FILE":
                     this.processSetElfFile(data)
@@ -180,7 +180,6 @@ class Programmer extends MicroConnected {
 
     processDisconnectResult(response) {
         if (response.status === 'ERROR') {
-            toast.error('Error desconectandose del target', Programmer.toastProperties)
             return;
         }
 
@@ -190,15 +189,6 @@ class Programmer extends MicroConnected {
             devName: '--'
         });
         this.props.updateTargetState(false);
-        toast.success('Desconectado del target', Programmer.toastProperties);
-    }
-
-    processProgramResult(response) {
-        if (response.status !== 'OK') {
-            toast.error('Error programando el .elf', Programmer.toastProperties)
-            return;
-        }
-        toast.success('Programa cargado correctamente', Programmer.toastProperties);
     }
 
     getData() {
@@ -210,6 +200,41 @@ class Programmer extends MicroConnected {
         if (!this.state.elfPath || this.state.elfPath === '')
             return;
         this.sendToMicroProgrammer("PROGRAM", { path: this.state.elfPath });
+
+        const disconnectPromise = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject('Programar tomó demasiado tiempo');
+            }, 5*60*1000);
+
+            const proccess = (event, args) => {
+                let data = args.data;
+                switch (data.command) {
+                    case "PROGRAM":
+                        if (data.status === 'OK') {
+                            resolve(); // Resuelve la promesa cuando la escritura es exitosa
+                        }
+                        else {
+                            reject('Error al programar'); // Rechaza la promesa en caso de error
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            };
+
+            ipcRenderer.once('CONTROLLER_RESULT_PROGRAMMER', proccess);
+        });
+
+        // Toast.promise espera que la promesa se complete (resuelta o rechazada) antes de mostrar el mensaje.
+        toast.promise(
+            disconnectPromise,
+            {
+                pending: 'Programando firmware...',
+                success: 'Programado',
+                error: 'Error al programar'
+            },
+            Programmer.toastProperties
+        );
     }
 
     processSetElfFile(response) {
@@ -246,7 +271,6 @@ class Programmer extends MicroConnected {
                 let data = args.data;
                 switch (data.command) {
                     case "DISCONNECT_TARGET":
-                        ipcRenderer.removeListener('CONTROLLER_RESULT_PROGRAMMER', proccess);
                         if (data.status === 'OK') {
                             resolve(); // Resuelve la promesa cuando la escritura es exitosa
                         }
