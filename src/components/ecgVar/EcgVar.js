@@ -2,7 +2,6 @@ import React from 'react'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
-import NumericInput from '../numericInput/NumericInput';
 import './EcgVar.css';
 // Electron related imports
 const electron = window.require('electron');
@@ -35,20 +34,6 @@ export class EcgVar extends MicroConnected {
             { name: 'v1', pointer: 'V1_ptr', size: 1, type: 'char' },
             { name: 'estadoDea', pointer: 'estado_dea_ptr', size: 1, type: 'char' }
         ];
-        this.toastProperties = {
-            position: "bottom-right",
-            theme: "colored",
-
-            position: "bottom-right",
-            autoClose: 2500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            pauseOnFocusLoss: false
-        };
         this.writeCalibrationValue = this.writeCalibrationValue.bind(this);
     }
 

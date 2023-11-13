@@ -10,8 +10,6 @@ class NumericInput extends Component {
             value: this.props.value, // Inicializa el valor con el mínimo permitido.
             error: this.props.error
         };
-
-        const onError = this.props.onError;
     }
 
     componentDidUpdate(prevProps) {

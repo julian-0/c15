@@ -21,7 +21,7 @@ export class CpuVar extends MicroConnected {
             sat2Error: false,
             bpm2Error: false,
             form: {
-                model: null,
+                model: '',
                 date: '',
                 language: '',
                 speed: '',

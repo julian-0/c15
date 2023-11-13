@@ -240,7 +240,7 @@ class Programmer extends MicroConnected {
         const disconnectPromise = new Promise((resolve, reject) => {
             setTimeout(() => {
                 reject('Desconectar tomó demasiado tiempo');
-            }, 6000);
+            }, 10000);
 
             const proccess = (event, args) => {
                 let data = args.data;

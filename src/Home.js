@@ -1,15 +1,7 @@
 import React from 'react';
 import eymLogo from './imgs/eymBlue.png'
 
-// Electron related imports
-const electron = window.require('electron');
-const { ipcRenderer } = electron;
-const loadBalancer = window.require('electron-load-balancer');
-
 class Home extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         return (
