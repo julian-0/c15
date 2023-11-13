@@ -38,7 +38,7 @@ class TargetCommand(Command):
             data = {}
             data["error"] = "No hay equipos conectados"
             return Status.ERROR.name, data, session
-        if not data["target"]["connected"]:
+        if not (data["target"] and data["target"]["connected"]):
             data = {}
             data["error"] = "No hay un target conectado"
             return Status.ERROR.name, data, session
@@ -57,9 +57,9 @@ class ConnectionCommand(ProbeCommand):
 class ConnectTargetCommand(ProbeCommand):
     def execute2(self, session, request, source):
         try:
-            target = request['target']
+            target_str = request['target']
             if session is None:
-                session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "sector", "target_override": target})
+                session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "sector", "target_override": target_str})
                 session.open()
             
             target = session.board.target
@@ -69,13 +69,13 @@ class ConnectTargetCommand(ProbeCommand):
             device_id = value & 0xFFF
 
             data = {}
-            revision_string = revision_map.get(revision_id, "Desconocido")
+            revision_string = get_revision(target_str, revision_id)
             device_string = device_map.get(device_id, "Desconocido")
             revision = {}
-            revision["id"] = revision_id
+            revision["id"] = '0x%X' % revision_id
             revision["name"] = revision_string
             device = {}
-            device["id"] = device_id
+            device["id"] = '0x%X' % device_id
             device["name"] = device_string
             data["revision"] = revision
             data["device"] = device

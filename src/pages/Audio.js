@@ -15,7 +15,7 @@ function Audio() {
             <div className='row flex-grow-1 mt-1'>
                 <div className='container'>
                     <div className='row d-flex align-items-center justify-content-around'>
-                        <Programmer target={'STM32L4P5ZGTx'} targetReadable={targetReadable} updateTargetState={updateTargetState} />
+                        <Programmer target={'STM32F405RGTX'} targetReadable={targetReadable} updateTargetState={updateTargetState} />
                     </div>
                 </div>
             </div>

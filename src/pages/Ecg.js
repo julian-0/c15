@@ -17,7 +17,7 @@ function Ecg() {
                 <div className='container'>
                     <div className='row d-flex align-items-center justify-content-around'>
                         <EcgVar targetReadable={targetReadable} />
-                        <Programmer target={'stm32f405rgtx'} targetReadable={targetReadable} updateTargetState={updateTargetState} />
+                        <Programmer target={'STM32F405RGTX'} targetReadable={targetReadable} updateTargetState={updateTargetState} />
                     </div>
                 </div>
             </div>
