@@ -100,6 +100,12 @@ export class CpuVar extends MicroConnected {
             { name: 'audioBip', pointer: 'audioBip_ptr', size: 1, type: 'char' },
             { name: 'audioAlarm', pointer: 'audioAlarm_ptr', size: 1, type: 'char' },
         ];
+
+        this.modelOptions = [];
+        for (let i = 1; i <= 32; i++) {
+            this.modelOptions.push({ value: i-1, label: `DB${i.toString().padStart(4, '0')}` });
+        }
+
         this.frecuencyOptions = [];
         for (let i = 30; i <= 180; i += 10) {
             this.frecuencyOptions.push(i);
@@ -412,9 +418,11 @@ export class CpuVar extends MicroConnected {
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Modelo</p>
                                     <select disabled={!targetReadable} value={form.model} onChange={(e) => this.updateFormValue('model', e.target.value)}>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
+                                        {this.modelOptions.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className='d-flex justify-content-between'>
