@@ -90,7 +90,8 @@ class ConnectTargetCommand(ProbeCommand):
 
 class DisconnectTargetCommand(ProbeCommand):
     def execute2(self, session, request, source):
-        session.close()
+        if session is not None:
+            session.close()
         return Status.OK.name, {}, None
     
 class GetDataCommand(ProbeCommand):

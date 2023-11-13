@@ -46,6 +46,7 @@ function createWindow() {
         minWidth: 500,
         minHeight: 300,
     });
+    !process.env.DEV && mainWindow.removeMenu();
     mainWindow.maximize();
     mainWindow.show();
 

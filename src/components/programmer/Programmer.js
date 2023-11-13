@@ -83,6 +83,7 @@ class Programmer extends MicroConnected {
         }
         // 4. Remove all output listeners before app shuts down
         ipcRenderer.removeAllListeners('CONTROLLER_RESULT_PROGRAMMER');
+        toast.dismiss(); // Close all toasts
     }
 
     processResetResult(response) {
@@ -237,6 +238,9 @@ class Programmer extends MicroConnected {
         this.sendToMicroProgrammer("DISCONNECT_TARGET");
 
         const disconnectPromise = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject('Desconectar tomó demasiado tiempo');
+            }, 6000);
 
             const proccess = (event, args) => {
                 let data = args.data;
@@ -255,7 +259,7 @@ class Programmer extends MicroConnected {
                 }
             };
 
-            ipcRenderer.on('CONTROLLER_RESULT_PROGRAMMER', proccess);
+            ipcRenderer.once('CONTROLLER_RESULT_PROGRAMMER', proccess);
         });
 
         // Toast.promise espera que la promesa se complete (resuelta o rechazada) antes de mostrar el mensaje.
