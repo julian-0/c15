@@ -63,7 +63,7 @@ export class CpuVar extends MicroConnected {
         };
         this.variablesInfo = [
             { name: 'model', pointer: 'model_ptr', size: 1, type: 'char' },
-            { name: 'date', pointer: 'date_ptr', size: 1, type: 'char' },
+            //{ name: 'date', pointer: 'date_ptr', size: 1, type: 'char' },
             { name: 'language', pointer: 'language_ptr', size: 1, type: 'char' },
             { name: 'speed', pointer: 'speed_ptr', size: 1, type: 'char' },
             { name: 'grid', pointer: 'grid_ptr', size: 1, type: 'char' },
@@ -250,7 +250,7 @@ export class CpuVar extends MicroConnected {
     setVariables(data) {
         const mockdata = {
             model: this.getRandomInt(1, 4),
-            date: '2020-10-10T10:10',
+            //date: '2020-10-10T10:10',
             language: this.getRandomInt(0, 3),
             speed: this.getRandomInt(0, 3),
             grid: true,
@@ -430,7 +430,8 @@ export class CpuVar extends MicroConnected {
                                     <div>
                                         <label htmlFor='date-check' className='mx-1'>Actual</label>
                                         <input
-                                            disabled={!targetReadable}
+                                            //disabled={!targetReadable}
+                                            disabled
                                             id='date-check'
                                             type='checkbox'
                                             className='form-check-input'
@@ -450,7 +451,8 @@ export class CpuVar extends MicroConnected {
                                         id='date'
                                         type="datetime-local"
                                         value={actualDateCheck ? '' : form.date}
-                                        disabled={actualDateCheck || !targetReadable}
+                                        //disabled={actualDateCheck || !targetReadable}
+                                        disabled
                                         title='Formato mm/dd/yyyy hh:mm'
                                         onChange={e => this.updateFormValue('date', e.target.value)} />
                                 </div>
