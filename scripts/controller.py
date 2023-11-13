@@ -1,50 +1,62 @@
-from pyocd.core.helpers import ConnectHelper
-from pyocd.flash.file_programmer import FileProgrammer
-from pyocd.debug.elf.symbols import ELFSymbolProvider
+from pythonUtils.commands import *
+import json
+import logging
+import sys
 
+# Identificador de resultados
+TOKEN = "#result# "
 
-import time
+def handle_input(session, in_stream_data):
+    parsed_stream_data = json.loads(in_stream_data)
+    command_name = parsed_stream_data['command']
+    source = parsed_stream_data['source']
 
-def list_connected_probes():
-    probes = ConnectHelper.get_all_connected_probes(blocking=False)
-    print("Probes size: " + str(len(probes)))
-    p = probes.pop(0)
-    
-    print("Probe #0"+": " + p.vendor_name + " " + p.product_name + " " + " " + p.unique_id + " ")
-    return p
+    # Crea un diccionario que mapea nombres de comandos a clases de comandos
+    command_map = {
+        'KILL': KillCommand(),
+        'CONNECTION': ConnectionCommand(),
+        'CONNECT_TARGET': ConnectTargetCommand(),
+        'DISCONNECT_TARGET': DisconnectTargetCommand(),
+        'GET_DATA': GetDataCommand(),
+        'SET_ELF_FILE': SetElfCommand(),
+        'PROGRAM': ProgramCommand(),
+        'RESET': ResetCommand(),
+        'HALT': HaltCommand(),
+        'RESUME': ResumeCommand(),
+        'MONITOR': MonitorCommand(),
+        'PRENDER': LightLedCommand(),
+        'WRITE_FLASH': WriteMemoryCommand()
+    }
+
+    # Obtén la clase de comando correspondiente y ejecútala
+    if command_name in command_map:
+        command = command_map[command_name]
+        status, data, session = command.execute(session, parsed_stream_data, source)
+        return response(command_name, status, data, source), session
+    else:
+        data = {}
+        data["error"] = "Comando desconocido"
+        return response(command_name, Status.ERROR.name, data, source), session
 
 def main():
-    # Crear una instancia del programador ST-Link
-    p = list_connected_probes()
-    with ConnectHelper.session_with_chosen_probe(unique_id=p.unique_id) as session:
-        # Obtener información sobre el programador
-        probe = session.probe
+    session = None
+    while True:
+        in_stream_data = input()
+        result, session = handle_input(session, in_stream_data)
+        returnResult(result)
 
-        print("Información del programador:")
-        print(f"Vendor name: {probe.vendor_name}")
-        print(f"Product name: {probe.product_name}")
-        print(f"Description: {probe.description}")
-        print(f"Unique id: {probe.unique_id}")
-        print(f"Capabilities: {probe.capabilities}")
+def returnResult(result):
+    print(TOKEN+result)
 
-        target = session.board.target
-        session.board.target.read32(0xE0042000)
-        session.close()
-        print("Session closed")
-        session2 = ConnectHelper.session_with_chosen_probe(unique_id=p.unique_id)
-        session2.open()
-        session2.board.target.read32(0xE0042000)
-        session2.close()
-        print("Session2 closed")
-
-
-def is_connected(session):
-    #Check if the session is still alive
-    try:
-        session.board.target.read32(0xE0042000)
-        return True
-    except:
-        return False
-    
 if __name__ == "__main__":
+    #logging.basicConfig(filename='application.log', level=logging.DEBUG)
+    #logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
     main()
+    # try:
+    #     main()
+    # except Exception as e:
+    #     response = {
+    #         "result":"Ocurrió un error inesperado",
+    #         "exception": repr(e)
+    #     }
+    #     returnResult(json.dumps(response))

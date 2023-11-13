@@ -24,15 +24,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // 1. Starting preemptive loop as soon as app starts
-    console.log("preemptive loop started")
-    loadBalancer.start(ipcRenderer, 'preemptive_loop');
     loadBalancer.start(ipcRenderer, 'controller');
   }
 
   componentWillUnmount() {
-    // 2. Shutdown preemptive loop before app stops
-    loadBalancer.stop(ipcRenderer, 'preemptive_loop');
     loadBalancer.stop(ipcRenderer, 'controller');
   }
 

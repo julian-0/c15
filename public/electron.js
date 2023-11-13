@@ -81,21 +81,13 @@ app.on('activate', () => {
 loadBalancer.register(
   ipcMain,
   {
-    preemptive_loop: '/background_tasks/preemptive_loop.html',
-    one_shot: '/background_tasks/one_shot.html',
-    controller: '/background_tasks/controller.html',
+    controller: '/background_tasks/controller.html'
   },
   { debug: false },
 );
 
 // 2. Set up eventlisteners to bounce message from background to UI 
-ipcMain.on('PREEMPTIVE_LOOP_RESULT', (event, args) => {
-  mainWindow.webContents.send('PREEMPTIVE_LOOP_RESULT', args);
-});
-ipcMain.on('ONE_SHOT_RESULT', (event, args) => {
-  mainWindow.webContents.send('ONE_SHOT_RESULT', args);
-});
 ipcMain.on('CONTROLLER_RESULT', (event, args) => {
     let eventName = 'CONTROLLER_RESULT_' + args.data.source;
     mainWindow.webContents.send(eventName, args);
-});//TODO: concatenar CONTROLLER_RESULT_ + args.command
+});
