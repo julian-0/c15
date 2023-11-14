@@ -354,11 +354,14 @@ export class CpuVar extends MicroConnected {
             if (typeof value == "boolean") {
                 value = value ? 1 : 0;
             }
+            else{
+                value = parseInt(value);
+            }
             return { ...v, value };
         });
         //add to variables (checkBytes check_bytes_ptr 1 char 0xAA) and (checkSize check_size_ptr 1 char 0x55)
-        variables.push({ name: 'checkBytes', pointer: 'check_bytes_ptr', size: 1, type: 'char', value: 0xAA });
-        variables.push({ name: 'checkSize', pointer: 'check_size_ptr', size: 1, type: 'char', value: 0x55 });
+        variables.push({ name: 'checkBytes', pointer: 'check_bytes_ptr', size: 2, type: 'char', value: 0x55AA });
+        //variables.push({ name: 'checkSize', pointer: 'check_size_ptr', size: 1, type: 'char', value: 0x55 });
         this.sendToMicroVariables("WRITE_FLASH", {
             variables: variables,
             direct: false

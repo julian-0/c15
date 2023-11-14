@@ -30,7 +30,7 @@ def main():
         provider = ELFSymbolProvider(target.elf)
 
         pointer = 'check_bytes_ptr'
-        # value = 90
+        value_2 = 0xAA
 
         address = provider.get_symbol_value(pointer)
         address = target.read32(address)
@@ -42,15 +42,15 @@ def main():
         # value = struct.unpack('!I', struct.pack('!f', value))[0]
 
         #write data
-        # print("Writing in 0x%X" % address + " the value 0x%X" % value)
+        print("Writing in 0x%X" % address + " the value 0x%X" % value_2)
 
-        # loader = FlashLoader(session=session)
-        eraser = FlashEraser(session=session, mode=FlashEraser.Mode.SECTOR)
-        print("Erasing sector 0x%X" % address)
-        eraser.erase([address])
-        print("Erased")
-        # loader.add_data(address=address, data=value.to_bytes(4, byteorder='little'))
-        # loader.commit()
+        loader = FlashLoader(session=session)
+        # eraser = FlashEraser(session=session, mode=FlashEraser.Mode.SECTOR)
+        # print("Erasing sector 0x%X" % address)
+        # eraser.erase([address])
+        # print("Erased")
+        loader.add_data(address=address, data=value_2.to_bytes(4, byteorder='little'))
+        loader.commit()
         value = target.read8(address)
         print("Value: 0x%X" % value)
 

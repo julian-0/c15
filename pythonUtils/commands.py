@@ -175,10 +175,10 @@ class MonitorCommand(TargetCommand):
                         res = struct.pack('B', res)[0]
                     elif variable["type"] == "bits":
                         res = '{0:08b}'.format(struct.pack('B', res)[0])
-                        
+
                 except Exception as e:
                     print("Error al leer la variable " + variable["name"] + " " + repr(e))
-                    res = "error"
+                    res = None
 
             variables_res.append({"name": variable["name"], "value": res})
 
@@ -222,7 +222,11 @@ class WriteMemoryCommand(TargetCommand):
                 value = struct.unpack('H', struct.pack('H', value))[0]
 
             #write data
-            loader.add_data(address=address, data=value.to_bytes(size, byteorder='little'))
+            try:
+                loader.add_data(address=address, data=value.to_bytes(size, byteorder='little'))
+            except Exception as e:
+                print("Error al escribir la variable " + pointer + " " + repr(e))
+                continue
         target.reset_and_halt()
         loader.commit()
         target.resume()

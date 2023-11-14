@@ -1,4 +1,7 @@
 import json
+from json import JSONEncoder
+import math
+# import numpy as np
 from enum import Enum
 from pyocd.core.helpers import ConnectHelper
 
@@ -76,13 +79,35 @@ device_map = {
     0x419: "STM32F4(2|3)"
 }
 
+
+
+def nan2None(obj):
+    if isinstance(obj, dict):
+        return {k:nan2None(v) for k,v in obj.items()}
+    elif isinstance(obj, list):
+        return [nan2None(v) for v in obj]
+    elif isinstance(obj, float) and math.isnan(obj):
+        return None
+    return obj
+
+class NanConverter(JSONEncoder):
+    def default(self, obj):
+        # possible other customizations here 
+        pass
+    def encode(self, obj, *args, **kwargs):
+        obj = nan2None(obj)
+        return super().encode(obj, *args, **kwargs)
+    def iterencode(self, obj, *args, **kwargs):
+        obj = nan2None(obj)
+        return super().iterencode(obj, *args, **kwargs)
+    
 def response(command, status, data, source):
     response = {}
     response["command"] = command
     response["status"] = status
     response["data"] = data
     response["source"] = source
-    return json.dumps(response)
+    return json.dumps(response, cls=NanConverter)
 
 def check_connection(session):
     if len(ConnectHelper.get_all_connected_probes(blocking=False)) < 1:
