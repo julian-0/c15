@@ -17,7 +17,7 @@ function Cpu() {
                 <div className='container'>
                     <div className='row d-flex align-items-center justify-content-around'>
                         <CpuVar targetReadable={targetReadable} />
-                        <Programmer target={'stm32f429iitx'} targetReadable={targetReadable} updateTargetState={updateTargetState} />
+                        <Programmer target={'STM32F429IITx'} targetReadable={targetReadable} updateTargetState={updateTargetState} />
                     </div>
                 </div>
             </div>

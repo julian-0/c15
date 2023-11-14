@@ -123,7 +123,8 @@ export class EcgVar extends MicroConnected {
         }];
 
         this.sendToMicroVariables("WRITE_FLASH", {
-            variables: variables
+            variables: variables,
+            direct: true
         });
 
         const calibrationPromise = new Promise((resolve, reject) => {

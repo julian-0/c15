@@ -42,13 +42,12 @@ class TargetCommand(Command):
             data = {}
             data["error"] = "No hay un target conectado"
             return Status.ERROR.name, data, session
-        #try execute2 if error return error
-        try:
-            return self.execute2(session, request, source)
-        except Exception as e:
-            data = {}
-            data["error"] = repr(e)
-            return Status.ERROR.name, data, session
+        # try:
+        return self.execute2(session, request, source)
+        # except Exception as e:
+        #     data = {}
+        #     data["error"] = repr(e)
+        #     return Status.ERROR.name, data, session
 
 class ConnectionCommand(ProbeCommand):
     def execute2(self, session, request, source):
@@ -193,24 +192,34 @@ class WriteMemoryCommand(TargetCommand):
         provider = ELFSymbolProvider(target.elf)
         loader = FlashLoader(session=session)
         variables = request['variables']
+        direct_write = request['direct']
         for variable in variables:
             pointer = variable['pointer']
             
-            variable_addr = provider.get_symbol_value(pointer)
-
-            address = variable_addr
+            address = provider.get_symbol_value(pointer)
+            if address is None:
+                print("Variable no encontrada " + pointer)
+                continue
+            if not direct_write:
+                address = target.read32(address)
             value = variable['value']
-            print("Valor a escribir " + str(value))
+            
+            if value is None:
+                print("Valor incorrecto " + pointer)
+                continue
+            print("Variable " + pointer + " encontrada en 0x%X" % address + " a escribir valor " + str(value))
             size = variable['size']
             v_type = variable['type'] 
 
             #transform value to bytes according the type
             if v_type == "float":
                 value = struct.unpack('!I', struct.pack('!f', value))[0]
-            elif v_type == "char":
-                value = struct.unpack('B', struct.pack('c', value))[0]
+            # elif v_type == "char":
+            #     value = struct.unpack('B', struct.pack('c', value))[0]
             elif v_type == "bits":
                 value = struct.unpack('B', struct.pack('b', value))[0]
+            elif v_type == "short":
+                value = struct.unpack('H', struct.pack('H', value))[0]
 
             #write data
             loader.add_data(address=address, data=value.to_bytes(size, byteorder='little'))

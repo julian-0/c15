@@ -62,48 +62,48 @@ export class CpuVar extends MicroConnected {
             actualDateCheck: false
         };
         this.variablesInfo = [
-            { name: 'model', pointer: 'model_ptr', size: 1, type: 'char' },
+            { name: 'model', pointer: 'modelo_ptr', size: 1, type: 'char' },
             //{ name: 'date', pointer: 'date_ptr', size: 1, type: 'char' },
-            { name: 'language', pointer: 'language_ptr', size: 1, type: 'char' },
-            { name: 'speed', pointer: 'speed_ptr', size: 1, type: 'char' },
-            { name: 'grid', pointer: 'grid_ptr', size: 1, type: 'char' },
-            { name: 'source', pointer: 'source_ptr', size: 1, type: 'char' },
-            { name: 'externalEnergy', pointer: 'externalEnergy_ptr', size: 1, type: 'char' },
-            { name: 'internalEnergy', pointer: 'internalEnergy_ptr', size: 1, type: 'char' },
+            { name: 'language', pointer: 'idioma_ptr', size: 1, type: 'char' },
+            { name: 'speed', pointer: 'velocidad_ptr', size: 1, type: 'char' },
+            { name: 'grid', pointer: 'grilla_ptr', size: 1, type: 'char' },
+            { name: 'source', pointer: 'fuente_ptr', size: 1, type: 'char' },
+            { name: 'externalEnergy', pointer: 'energia_externa_ptr', size: 1, type: 'char' },
+            { name: 'internalEnergy', pointer: 'energia_interna_ptr', size: 1, type: 'char' },
             { name: 'spo2', pointer: 'spo2_ptr', size: 1, type: 'char' },
-            { name: 'bpmHigh1', pointer: 'bpmHigh1_ptr', size: 1, type: 'char' },
-            { name: 'bpmLow1', pointer: 'bpmLow1_ptr', size: 1, type: 'char' },
-            { name: 'satHigh1', pointer: 'satHigh1_ptr', size: 1, type: 'char' },
-            { name: 'satLow1', pointer: 'satLow1_ptr', size: 1, type: 'char' },
-            { name: 'bpmHigh2', pointer: 'bpmHigh2_ptr', size: 1, type: 'char' },
-            { name: 'bpmLow2', pointer: 'bpmLow2_ptr', size: 1, type: 'char' },
-            { name: 'satHigh2', pointer: 'satHigh2_ptr', size: 1, type: 'char' },
-            { name: 'satLow2', pointer: 'satLow2_ptr', size: 1, type: 'char' },
-            { name: 'ecgElectrodes', pointer: 'ecgElectrodes_ptr', size: 1, type: 'char' },
-            { name: 'ecgDerivation', pointer: 'ecgDerivation_ptr', size: 1, type: 'char' },
-            { name: 'ecgAmplitude', pointer: 'ecgAmplitude_ptr', size: 1, type: 'char' },
-            { name: 'ecgLineFilter', pointer: 'ecgLineFilter_ptr', size: 1, type: 'char' },
-            { name: 'ecgHigh1', pointer: 'ecgHigh1_ptr', size: 1, type: 'char' },
-            { name: 'ecgLow1', pointer: 'ecgLow1_ptr', size: 1, type: 'char' },
-            { name: 'ecgHigh2', pointer: 'ecgHigh2_ptr', size: 1, type: 'char' },
-            { name: 'ecgLow2', pointer: 'ecgLow2_ptr', size: 1, type: 'char' },
-            { name: 'deaEnergy1', pointer: 'deaEnergy1_ptr', size: 1, type: 'char' },
-            { name: 'deaEnergy2', pointer: 'deaEnergy2_ptr', size: 1, type: 'char' },
-            { name: 'deaEnergy3', pointer: 'deaEnergy3_ptr', size: 1, type: 'char' },
-            { name: 'deaAudioInterval', pointer: 'deaAudioInterval_ptr', size: 1, type: 'char' },
-            { name: 'deaInitialPause', pointer: 'deaInitialPause_ptr', size: 1, type: 'char' },
-            { name: 'deaRcpTime', pointer: 'deaRcpTime_ptr', size: 1, type: 'char' },
-            { name: 'deaAudioRecord', pointer: 'deaAudioRecord_ptr', size: 1, type: 'char' },
-            { name: 'pacemakerMode', pointer: 'pacemakerMode_ptr', size: 1, type: 'char' },
-            { name: 'pacemakerFrecuency', pointer: 'pacemakerFrecuency_ptr', size: 1, type: 'char' },
-            { name: 'pacemakerAmplitude', pointer: 'pacemakerAmplitude_ptr', size: 1, type: 'char' },
-            { name: 'audioBip', pointer: 'audioBip_ptr', size: 1, type: 'char' },
-            { name: 'audioAlarm', pointer: 'audioAlarm_ptr', size: 1, type: 'char' },
+            { name: 'bpmHigh1', pointer: 'spo2_bpm_alto_1_ptr', size: 2, type: 'short' },
+            { name: 'bpmLow1', pointer: 'spo2_bpm_bajo_1_ptr', size: 2, type: 'short' },
+            { name: 'satHigh1', pointer: 'spo2_sat_alta_1_ptr', size: 1, type: 'char' },
+            { name: 'satLow1', pointer: 'spo2_sat_baja_1_ptr', size: 1, type: 'char' },
+            { name: 'bpmHigh2', pointer: 'spo2_bpm_alto_2_ptr', size: 2, type: 'short' },
+            { name: 'bpmLow2', pointer: 'spo2_bpm_bajo_2_ptr', size: 2, type: 'short' },
+            { name: 'satHigh2', pointer: 'spo2_sat_alta_2_ptr', size: 1, type: 'char' },
+            { name: 'satLow2', pointer: 'spo2_sat_baja_2_ptr', size: 1, type: 'char' },
+            { name: 'ecgElectrodes', pointer: 'electrodos_ptr', size: 1, type: 'char' },
+            { name: 'ecgDerivation', pointer: 'derivacion_ptr', size: 1, type: 'char' },
+            { name: 'ecgAmplitude', pointer: 'amplitud_ptr', size: 1, type: 'char' },
+            { name: 'ecgLineFilter', pointer: 'filtro_ptr', size: 1, type: 'char' },
+            { name: 'ecgHigh1', pointer: 'ecg_bpm_alto_1_ptr', size: 2, type: 'short' },
+            { name: 'ecgLow1', pointer: 'ecg_bpm_bajo_1_ptr', size: 2, type: 'short' },
+            { name: 'ecgHigh2', pointer: 'ecg_bpm_alto_2_ptr', size: 2, type: 'short' },
+            { name: 'ecgLow2', pointer: 'ecg_bpm_bajo_2_ptr', size: 2, type: 'short' },
+            { name: 'deaEnergy1', pointer: 'energia_1_ptr', size: 1, type: 'char' },
+            { name: 'deaEnergy2', pointer: 'energia_2_ptr', size: 1, type: 'char' },
+            { name: 'deaEnergy3', pointer: 'energia_3_ptr', size: 1, type: 'char' },
+            { name: 'deaAudioInterval', pointer: 'intervalo_ptr', size: 1, type: 'char' },
+            { name: 'deaInitialPause', pointer: 'pausa_ptr', size: 1, type: 'char' },
+            { name: 'deaRcpTime', pointer: 'rcp_ptr', size: 1, type: 'char' },
+            { name: 'deaAudioRecord', pointer: 'grabacion_ptr', size: 1, type: 'char' },
+            { name: 'pacemakerMode', pointer: 'modo_marcapasos_ptr', size: 1, type: 'char' },
+            { name: 'pacemakerFrecuency', pointer: 'frecuencia_marcapasos_ptr', size: 1, type: 'char' },
+            { name: 'pacemakerAmplitude', pointer: 'amplitud_marcapasos_ptr', size: 1, type: 'char' },
+            { name: 'audioBip', pointer: 'volumen_bip_ptr', size: 1, type: 'char' },
+            { name: 'audioAlarm', pointer: 'volumen_alarma_ptr', size: 1, type: 'char' },
         ];
 
         this.modelOptions = [];
         for (let i = 1; i <= 32; i++) {
-            this.modelOptions.push({ value: i-1, label: `DB${i.toString().padStart(4, '0')}` });
+            this.modelOptions.push({ value: i - 1, label: `DB${i.toString().padStart(4, '0')}` });
         }
 
         this.frecuencyOptions = [];
@@ -158,6 +158,8 @@ export class CpuVar extends MicroConnected {
                     break;
                 case "MONITOR":
                     this.processMonitorResult(data);
+                    break;
+                case "WRITE_FLASH":
                     break;
                 default:
                     console.log("Unknown command: " + data.command);
@@ -248,46 +250,46 @@ export class CpuVar extends MicroConnected {
     }
 
     setVariables(data) {
-        const mockdata = {
-            model: this.getRandomInt(1, 4),
-            //date: '2020-10-10T10:10',
-            language: this.getRandomInt(0, 3),
-            speed: this.getRandomInt(0, 3),
-            grid: true,
-            source: 0,
-            externalEnergy: 0,
-            internalEnergy: 0,
-            spo2: 0,
-            bpmHigh1: this.getRandomInt(30, 256),
-            bpmLow1: 50,
-            satHigh1: 90,
-            satLow1: 85,
-            bpmHigh2: 200,
-            bpmLow2: 50,
-            satHigh2: 99,
-            satLow2: 81,
-            ecgElectrodes: "3",
-            ecgDerivation: 0,
-            ecgAmplitude: 0,
-            ecgLineFilter: 0,
-            ecgHigh1: 0,
-            ecgLow1: 0,
-            ecgHigh2: 0,
-            ecgLow2: 0,
-            deaEnergy1: 0,
-            deaEnergy2: 0,
-            deaEnergy3: 0,
-            deaAudioInterval: 0,
-            deaInitialPause: 0,
-            deaRcpTime: 0,
-            deaAudioRecord: true,
-            pacemakerMode: 0,
-            pacemakerFrecuency: 0,
-            pacemakerAmplitude: 0,
-            audioBip: 0,
-            audioAlarm: 0
-        };
-        data = Object.entries(mockdata).map(([name, value]) => ({ name, value })); //TODO: sacar
+        // const mockdata = {
+        //     model: this.getRandomInt(1, 4),
+        //     //date: '2020-10-10T10:10',
+        //     language: this.getRandomInt(0, 3),
+        //     speed: this.getRandomInt(0, 3),
+        //     grid: true,
+        //     source: 0,
+        //     externalEnergy: 0,
+        //     internalEnergy: 0,
+        //     spo2: 0,
+        //     bpmHigh1: this.getRandomInt(30, 256),
+        //     bpmLow1: 50,
+        //     satHigh1: 90,
+        //     satLow1: 85,
+        //     bpmHigh2: 200,
+        //     bpmLow2: 50,
+        //     satHigh2: 99,
+        //     satLow2: 81,
+        //     ecgElectrodes: "3",
+        //     ecgDerivation: 0,
+        //     ecgAmplitude: 0,
+        //     ecgLineFilter: 0,
+        //     ecgHigh1: 0,
+        //     ecgLow1: 0,
+        //     ecgHigh2: 0,
+        //     ecgLow2: 0,
+        //     deaEnergy1: 0,
+        //     deaEnergy2: 0,
+        //     deaEnergy3: 0,
+        //     deaAudioInterval: 0,
+        //     deaInitialPause: 0,
+        //     deaRcpTime: 0,
+        //     deaAudioRecord: true,
+        //     pacemakerMode: 0,
+        //     pacemakerFrecuency: 0,
+        //     pacemakerAmplitude: 0,
+        //     audioBip: 0,
+        //     audioAlarm: 0
+        // };
+        // data = Object.entries(mockdata).map(([name, value]) => ({ name, value })); //TODO: sacar
 
         const newState = {};
         this.variablesInfo.forEach(v => {
@@ -337,19 +339,62 @@ export class CpuVar extends MicroConnected {
             errors.push(`Alarma 2: ${errorMessages.ecg}`);
         }
 
-        if ((form.date === undefined || form.date === '') && !this.state.actualDateCheck) {
-            errors.push('Debe ingresar una fecha y hora válida.');
-        }
+        // if ((form.date === undefined || form.date === '') && !this.state.actualDateCheck) {
+        //     errors.push('Debe ingresar una fecha y hora válida.');
+        // }
 
         if (errors.length > 0) {
             const errorMessage = errors.join('\n');
             toast.error(errorMessage, CpuVar.toastProperties);
             return;
         }
-        const variables = this.variablesInfo.map(v => ({ ...v, value: form[v.name] }));
-        this.sendToMicroVariables("WRITE_FLASH", {
-            variables: variables
+        //add to variablesInfo the value propertie from the corresonding form value, if the value is boolean replace with 1 or 0
+        const variables = this.variablesInfo.map(v => {
+            let value = form[v.name];
+            if (typeof value == "boolean") {
+                value = value ? 1 : 0;
+            }
+            return { ...v, value };
         });
+        //add to variables (checkBytes check_bytes_ptr 1 char 0xAA) and (checkSize check_size_ptr 1 char 0x55)
+        variables.push({ name: 'checkBytes', pointer: 'check_bytes_ptr', size: 1, type: 'char', value: 0xAA });
+        variables.push({ name: 'checkSize', pointer: 'check_size_ptr', size: 1, type: 'char', value: 0x55 });
+        this.sendToMicroVariables("WRITE_FLASH", {
+            variables: variables,
+            direct: false
+        });
+
+        const calibrationPromise = new Promise((resolve, reject) => {
+
+            const proccess = (event, args) => {
+                let data = args.data;
+                switch (data.command) {
+                    case "WRITE_FLASH":
+                        ipcRenderer.removeListener('CONTROLLER_RESULT_VARIABLES', proccess);
+                        if (data.status === 'OK') {
+                            resolve();
+                        }
+                        else {
+                            reject('Error al escribir');
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            };
+
+            ipcRenderer.on('CONTROLLER_RESULT_VARIABLES', proccess);
+        });
+
+        toast.promise(
+            calibrationPromise,
+            {
+                pending: 'Escribiendo valores',
+                success: 'Escritura realizada con éxito',
+                error: 'Error al escribir'
+            },
+            CpuVar.toastProperties
+        );
     }
 
     processWriteResult(response) {
@@ -389,6 +434,10 @@ export class CpuVar extends MicroConnected {
 
     updateFormValue(key, value) {
         const oldForm = { ...this.state.form };
+
+        if (!(typeof value == "boolean")) {
+            value = parseInt(value);
+        }
 
         oldForm[key] = value;
         this.setState({
