@@ -15,6 +15,7 @@ class KillCommand(Command):
             session.close()
             print("Sesión cerrada")
         except Exception as e:
+            logging.exception(e)
             print("Error al cerrar la sesión " + repr(e))
             print("Saliendo...")
         exit()
@@ -177,6 +178,7 @@ class MonitorCommand(TargetCommand):
                         res = '{0:08b}'.format(struct.pack('B', res)[0])
 
                 except Exception as e:
+                    logging.exception(e)
                     print("Error al leer la variable " + variable["name"] + " " + repr(e))
                     res = None
 
@@ -225,6 +227,7 @@ class WriteMemoryCommand(TargetCommand):
             try:
                 loader.add_data(address=address, data=value.to_bytes(size, byteorder='little'))
             except Exception as e:
+                logging.exception(e)
                 print("Error al escribir la variable " + pointer + " " + repr(e))
                 continue
         target.reset_and_halt()

@@ -4,6 +4,7 @@ import math
 # import numpy as np
 from enum import Enum
 from pyocd.core.helpers import ConnectHelper
+import logging
 
 class Status(Enum):
     OK, ERROR = range(2)
@@ -122,6 +123,8 @@ def check_connection(session):
 
         return Status.OK.name, {'probe': True, 'target': targetObj}, session
     except Exception as e:
+        logging.exception(e)
+        session = None
         return Status.ERROR.name, {'probe': True, 'target': False, 'error': repr(e)}, session
 
 def get_revision(target_str, revision_id):

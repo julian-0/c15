@@ -31,8 +31,14 @@ def handle_input(session, in_stream_data):
     # Obtén la clase de comando correspondiente y ejecútala
     if command_name in command_map:
         command = command_map[command_name]
-        status, data, session = command.execute(session, parsed_stream_data, source)
-        return response(command_name, status, data, source), session
+        try:
+            status, data, session = command.execute(session, parsed_stream_data, source)
+            return response(command_name, status, data, source), session
+        except Exception as e:
+            logging.exception(e)
+            data = {}
+            data["error"] = repr(e)
+            return response(command_name, Status.ERROR.name, data, source), None
     else:
         data = {}
         data["error"] = "Comando desconocido"
@@ -49,14 +55,21 @@ def returnResult(result):
     print(TOKEN+result)
 
 if __name__ == "__main__":
-    #logging.basicConfig(filename='application.log', level=logging.DEBUG)
-    #logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-    main()
-    # try:
-    #     main()
-    # except Exception as e:
-    #     response = {
-    #         "result":"Ocurrió un error inesperado",
-    #         "exception": repr(e)
-    #     }
-    #     returnResult(json.dumps(response))
+    logging.basicConfig(filename='application.log', level=logging.ERROR)
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter("%(asctime)s;%(levelname)s;%(message)s", "%Y-%m-%d %H:%M:%S")
+    ch.setFormatter(formatter)
+    # add ch to logger
+    logging.getLogger().addHandler(ch)
+
+    # main()
+    try:
+        main()
+    except Exception as e:
+        response = {
+            "result":"Ocurrió un error inesperado",
+            "exception": repr(e)
+        }
+        logging.exception(e)
+        returnResult(json.dumps(response))
