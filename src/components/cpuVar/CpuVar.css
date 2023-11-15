@@ -33,4 +33,8 @@
 
 .cpuvar input[type="datetime-local"]:disabled {
     background: #dddddd;
+}
+
+.cpuvar input.red[type=checkbox]:checked:before {
+    background-color: red;
   }

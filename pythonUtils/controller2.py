@@ -44,13 +44,13 @@ def main():
         #write data
         print("Writing in 0x%X" % address + " the value 0x%X" % value_2)
 
-        loader = FlashLoader(session=session)
-        # eraser = FlashEraser(session=session, mode=FlashEraser.Mode.SECTOR)
-        # print("Erasing sector 0x%X" % address)
-        # eraser.erase([address])
+        # loader = FlashLoader(session=session)
+        eraser = FlashEraser(session=session, mode=FlashEraser.Mode.CHIP)
+        print("Erasing sector 0x%X" % address)
+        eraser.erase([address])
         # print("Erased")
-        loader.add_data(address=address, data=value_2.to_bytes(4, byteorder='little'))
-        loader.commit()
+        # loader.add_data(address=address, data=value_2.to_bytes(4, byteorder='little'))
+        # loader.commit()
         value = target.read8(address)
         print("Value: 0x%X" % value)
 
