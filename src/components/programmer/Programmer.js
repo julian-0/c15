@@ -165,9 +165,12 @@ class Programmer extends MicroConnected {
 
     processConnectResult(response) {
         if (response.status === 'ERROR') {
-            //if error message contains USBError show reconnect usb message
             if (response.data.error.includes('USBError')) {
                 toast.error('Reconecte el usb', Programmer.toastProperties)
+                return;
+            }
+            else if (response.data.error.includes('STLink error (9): Get IDCODE')) {
+                toast.error('Revisar alimentación o reiniciar equipo', Programmer.toastProperties)
                 return;
             }
             toast.error('Error conectandose al micro: ' + response.data.error, Programmer.toastProperties)

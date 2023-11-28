@@ -18,9 +18,9 @@ def list_connected_probes():
 
 def main():
     # Crear una instancia del programador ST-Link
-    with ConnectHelper.session_with_chosen_probe(options={"chip_erase": "sector", "target_override": "STM32F429IITx"}) as session:
+    with ConnectHelper.session_with_chosen_probe(options={"chip_erase": "sector", "target_override": "STM32F405RGTX"}) as session:
         target = session.board.target
-        firmware_elf_file = "../../../firmwares/cpu.axf"
+        firmware_elf_file = "../../../firmwares/ecg.elf"
         target.elf = firmware_elf_file
         provider = ELFSymbolProvider(target.elf)
 
@@ -29,11 +29,11 @@ def main():
 
         provider = ELFSymbolProvider(target.elf)
 
-        pointer = 'check_bytes_ptr'
+        pointer = 'cte_calibracion_imp'
         value_2 = 0xAA
 
         address = provider.get_symbol_value(pointer)
-        address = target.read32(address)
+        # address = target.read32(address)
         print("Reading address 0x%X" % address)
         value = target.read8(address)
         print("Value: 0x%X" % value)

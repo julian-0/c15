@@ -307,7 +307,15 @@ export class CpuVar extends MicroConnected {
     }
 
     findVariableValueByName(name, variables) {
-        return variables.find(variable => variable.name === name).value;
+        const value = variables.find(variable => variable.name === name).value;
+        //if name is grid or audioBip and the value is different than 1 or true put false
+        if ((name === 'grid' || name === 'audioBip')) {
+            if (value !== 1 && value !== 0)
+                return false;
+            else
+                return value === 1;
+        }
+        return value;
     }
 
     writeVariables() {
@@ -603,10 +611,10 @@ export class CpuVar extends MicroConnected {
                                     <p className='card-text text-secondary'>Saturómetro</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <select disabled 
-                                    // disabled={!targetReadable}
-                                    className={!isBetween(form.spo2, 0, 1) ? 'invalid' : ''} 
-                                    value={form.spo2} onChange={(e) => this.updateFormValue('spo2', e.target.value)}>
+                                    <select disabled
+                                        // disabled={!targetReadable}
+                                        className={!isBetween(form.spo2, 0, 1) ? 'invalid' : ''}
+                                        value={form.spo2} onChange={(e) => this.updateFormValue('spo2', e.target.value)}>
                                         <option value="-1" hidden>--</option>
                                         <option value="0">Apexar BAT100</option>
                                         <option value="1">Unicare UN02</option>
@@ -900,7 +908,7 @@ export class CpuVar extends MicroConnected {
                             disabled={!targetReadable}
                             onClick={this.monitorVariables}
                         >
-                            Recargar
+                            Leer
                         </button>
                         <button
                             type="button"

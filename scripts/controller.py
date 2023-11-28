@@ -55,7 +55,7 @@ def returnResult(result):
     print(TOKEN+result)
 
 if __name__ == "__main__":
-    logging.basicConfig(filename='application.log', level=logging.ERROR)
+    # logging.basicConfig(filename='application.log', level=logging.ERROR)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
     ch = logging.StreamHandler()
     formatter = logging.Formatter("%(asctime)s;%(levelname)s;%(message)s", "%Y-%m-%d %H:%M:%S")
