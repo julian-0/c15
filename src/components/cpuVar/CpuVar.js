@@ -70,7 +70,7 @@ export class CpuVar extends MicroConnected {
             { name: 'source', pointer: 'fuente_ptr', size: 1, type: 'char' },
             { name: 'externalEnergy', pointer: 'energia_externa_ptr', size: 1, type: 'char' },
             { name: 'internalEnergy', pointer: 'energia_interna_ptr', size: 1, type: 'char' },
-            { name: 'spo2', pointer: 'spo2_ptr', size: 1, type: 'char' },
+            { name: 'spo2', pointer: 'spo2_modelo_ptr', size: 1, type: 'char' },
             { name: 'bpmHigh1', pointer: 'spo2_bpm_alto_1_ptr', size: 2, type: 'short' },
             { name: 'bpmLow1', pointer: 'spo2_bpm_bajo_1_ptr', size: 2, type: 'short' },
             { name: 'satHigh1', pointer: 'spo2_sat_alta_1_ptr', size: 1, type: 'char' },
@@ -308,8 +308,8 @@ export class CpuVar extends MicroConnected {
 
     findVariableValueByName(name, variables) {
         const value = variables.find(variable => variable.name === name).value;
-        //if name is grid or audioBip and the value is different than 1 or true put false
-        if ((name === 'grid' || name === 'audioBip')) {
+        //if name is grid or deaAudioRecord and the value is different than 1 or true put false
+        if ((name === 'grid' || name === 'deaAudioRecord')) {
             if (value !== 1 && value !== 0)
                 return false;
             else
@@ -611,13 +611,13 @@ export class CpuVar extends MicroConnected {
                                     <p className='card-text text-secondary'>Saturómetro</p>
                                 </div>
                                 <div className='d-flex justify-content-between'>
-                                    <select disabled
-                                        // disabled={!targetReadable}
-                                        className={!isBetween(form.spo2, 0, 1) ? 'invalid' : ''}
+                                    <select
+                                        disabled={!targetReadable}
+                                        className={!isBetween(form.spo2, 1, 2) ? 'invalid' : ''}
                                         value={form.spo2} onChange={(e) => this.updateFormValue('spo2', e.target.value)}>
                                         <option value="-1" hidden>--</option>
-                                        <option value="0">Apexar BAT100</option>
-                                        <option value="1">Unicare UN02</option>
+                                        <option value="1">Apexar BAT100</option>
+                                        <option value="2">Unicare UN02</option>
                                     </select>
                                 </div>
                                 <hr />

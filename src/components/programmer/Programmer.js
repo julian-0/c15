@@ -224,13 +224,14 @@ class Programmer extends MicroConnected {
                         else {
                             reject('Error al programar'); // Rechaza la promesa en caso de error
                         }
+                        ipcRenderer.removeListener('CONTROLLER_RESULT_PROGRAMMER', proccess);
                         break;
                     default:
                         break;
                 }
             };
 
-            ipcRenderer.once('CONTROLLER_RESULT_PROGRAMMER', proccess);
+            ipcRenderer.on('CONTROLLER_RESULT_PROGRAMMER', proccess);
         });
 
         // Toast.promise espera que la promesa se complete (resuelta o rechazada) antes de mostrar el mensaje.
