@@ -695,10 +695,10 @@ export class CpuVar extends MicroConnected {
                                         <option value="0">DI</option>
                                         <option value="1">DII</option>
                                         <option value="2">DIII</option>
-                                        <option disabled={form.ecgElectrodes === "3"} value="3">aVR</option>
-                                        <option disabled={form.ecgElectrodes === "3"} value="4">aVL</option>
-                                        <option disabled={form.ecgElectrodes === "3"} value="5">aVF</option>
-                                        <option disabled={form.ecgElectrodes === "3"} value="6">V</option>
+                                        <option disabled={form.ecgElectrodes === 3} value="3">aVR</option>
+                                        <option disabled={form.ecgElectrodes === 3} value="4">aVL</option>
+                                        <option disabled={form.ecgElectrodes === 3} value="5">aVF</option>
+                                        <option disabled={form.ecgElectrodes === 3} value="6">V</option>
                                         <option value="100">Paletas</option>
                                     </select>
                                 </div>
