@@ -8,6 +8,11 @@ const { app } = electron;
 const { BrowserWindow } = electron;
 const nativeImage = electron.nativeImage;
 
+const {FETCH_DATA_FROM_STORAGE, HANDLE_FETCH_DATA, SAVE_DATA_IN_STORAGE, HANDLE_SAVE_DATA} = require("../src/utils/constants");
+const storage = require('electron-json-storage');
+const dataPath = storage.getDataPath();
+console.log(dataPath);
+
 if (process.env.DEV) {
     const {
         default: installExtension,
@@ -90,4 +95,42 @@ loadBalancer.register(
 ipcMain.on('CONTROLLER_RESULT', (event, args) => {
     let eventName = 'CONTROLLER_RESULT_' + args.data.source;
     mainWindow.webContents.send(eventName, args);
+});
+
+ipcMain.on('fetch-data-from-storage', (event, message) => {
+    console.log("main received: FETCH_DATA_FROM_STORAGE with name", message);
+    storage.get(message, (error, data) => {
+        
+        if (error){
+            mainWindow.send('handle-fetch-data', {
+                succes: false,
+                message: "cpuConfig not returned"
+            });
+        }
+        else{
+            mainWindow.send('handle-fetch-data', {
+                succes: true,
+                message: data
+            });
+        }
+    });
+
+});
+
+ipcMain.on('save-data-in-storage', (event, message) => {
+    console.log("main received: SAVE_DATA_IN_STORAGE with name", message);
+    storage.set("cpuDefaultConfig", message, (error) => {
+        if (error){
+            mainWindow.send('handle-save-data', {
+                succes: false,
+                message: "cpuConfig not saved"
+            });
+        }
+        else{
+            mainWindow.send('handle-save-data', {
+                succes: true,
+                message: message
+            });
+        }
+    });
 });
