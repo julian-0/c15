@@ -934,7 +934,7 @@ export class CpuVar extends MicroConnected {
                         <button
                             type="button"
                             className='mx-1 btn btn-outline-primary'
-                            // disabled={!targetReadable}
+                            disabled={!targetReadable}
                             onClick={this.fillForm}
                         >
                             Usar valores default
@@ -942,7 +942,6 @@ export class CpuVar extends MicroConnected {
                         <button
                             type="button"
                             className='mx-1 btn btn-outline-primary'
-                            // disabled={!targetReadable}
                             onClick={this.handleEditModalShow}
                         >
                             Editar valores default
