@@ -103,13 +103,10 @@ class CpuDefaultModal extends React.Component {
 
     componentDidMount() {
         ipcRenderer.on('handle-fetch-data', (event, data) => {
-            console.log("data received from fetch: ");
-            console.log(data);
             this.setState({form: data.message});
             this.props.onUpdate(data.message);
         });
         ipcRenderer.on('handle-save-data', (event, data) => {
-            console.log("data received from save: " + data.message);
             this.setState({form:data.message});
             this.props.onUpdate(data.message);
         });
@@ -129,12 +126,10 @@ class CpuDefaultModal extends React.Component {
     }
 
     loadSaveData(){
-        console.log("renderer sending fetch_data to main");
         ipcRenderer.send('fetch-data-from-storage', "cpuDefaultConfig");
     }
 
     saveDataInStorage(item){
-        console.log("renderer sending save_data to main");
         ipcRenderer.send('save-data-in-storage', item);
     }
     
@@ -178,7 +173,6 @@ class CpuDefaultModal extends React.Component {
     }
 
     handleSubmit = () => {
-        console.log("react triggered saveData");
         let form = this.state.form;
         if(form.grid === undefined){
             form.grid = false;
@@ -186,7 +180,6 @@ class CpuDefaultModal extends React.Component {
         if(form.deaAudioRecord === undefined){
             form.deaAudioRecord = false;
         }
-        console.log(form);
         this.saveDataInStorage(form);
     }
 
