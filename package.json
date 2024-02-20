@@ -1,7 +1,7 @@
 {
     "name": "c15-config",
     "description": "A desktop interface for configuring C15 Defribillator",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "private": true,
     "dependencies": {
         "@material-ui/core": "^4.10.2",
@@ -77,9 +77,9 @@
         "wait-on": "^3.2.0"
     },
     "author": {
-        "name": "Factorial Calculator",
-        "email": "aakashs.mallik.cse15@iitbhu.ac.in",
-        "url": "https://github.com/AakashMallik"
+        "name": "Julián Ordóñez",
+        "email": "jm.ord98@gmail.com",
+        "url": "https://github.com/julian-0"
     },
     "build": {
         "appId": "C15 Configuration Tool",

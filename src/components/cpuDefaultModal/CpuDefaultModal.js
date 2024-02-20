@@ -2,7 +2,6 @@ import React from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import NumericInput from "../numericInput/NumericInput";
-const { FETCH_DATA_FROM_STORAGE, HANDLE_FETCH_DATA, HANDLE_SAVE_DATA, SAVE_DATA_IN_STORAGE} = require("../../utils/constants");
 const { ipcRenderer } = window.require('electron');
 
 class CpuDefaultModal extends React.Component {

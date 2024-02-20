@@ -8,7 +8,6 @@ const { app } = electron;
 const { BrowserWindow } = electron;
 const nativeImage = electron.nativeImage;
 
-const {FETCH_DATA_FROM_STORAGE, HANDLE_FETCH_DATA, SAVE_DATA_IN_STORAGE, HANDLE_SAVE_DATA} = require("../src/utils/constants");
 const storage = require('electron-json-storage');
 const dataPath = storage.getDataPath();
 console.log(dataPath);
