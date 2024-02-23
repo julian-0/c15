@@ -5,6 +5,7 @@ import math
 from enum import Enum
 from pyocd.core.helpers import ConnectHelper
 import logging
+import traceback
 
 class Status(Enum):
     OK, ERROR = range(2)
@@ -111,7 +112,7 @@ def response(command, status, data, source):
     return json.dumps(response, cls=NanConverter)
 
 def check_connection(session):
-    if len(ConnectHelper.get_all_connected_probes(blocking=False)) < 1:
+    if (not is_connected(session)) and len(ConnectHelper.get_all_connected_probes(blocking=False)) < 1:
         session = None
         return Status.OK.name, {'probe': False, 'target': False}, session
     try:
@@ -124,6 +125,7 @@ def check_connection(session):
         return Status.OK.name, {'probe': True, 'target': targetObj}, session
     except Exception as e:
         logging.exception(e)
+        traceback.print_exc()
         session = None
         return Status.ERROR.name, {'probe': True, 'target': False, 'error': repr(e)}, session
 
@@ -134,3 +136,11 @@ def get_revision(target_str, revision_id):
             target_dict = revision_dict[key]
             revision_string = target_dict.get(revision_id, "Desconocido")
     return revision_string
+
+def is_connected(session):
+    #Check if the session is still alive
+    try:
+        session.board.target.read32(0xE0042000)
+        return True
+    except:
+        return False

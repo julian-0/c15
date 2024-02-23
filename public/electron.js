@@ -23,6 +23,11 @@ if (process.env.DEV) {
             console.log(`Added Extension:  ${name}`),
         );
     });
+}else{
+    app.whenReady().then(() => {
+        console.log("Aplicacion iniciada")
+        console.log(`Dirname:  ${__dirname}`);
+    });
 }
 
 const icon = nativeImage.createFromPath(path.join(__dirname, 'eymblue.png'));
@@ -46,12 +51,13 @@ function createWindow() {
         minWidth: 500,
         minHeight: 300,
     });
-    !process.env.DEV && mainWindow.removeMenu();
+    //!process.env.DEV && mainWindow.removeMenu();
     mainWindow.maximize();
     mainWindow.show();
 
     mainWindow.loadURL(startUrl);
-    process.env.DEV && mainWindow.webContents.openDevTools();
+    //process.env.DEV && mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     mainWindow.on('closed', function () {
         loadBalancer.stopAll();
@@ -81,7 +87,7 @@ app.on('activate', () => {
 loadBalancer.register(
   ipcMain,
   {
-    controller: '/background_tasks/controller.html'
+    controller: '/background_tasks/controller2.html'
   },
   { debug: false },
 );

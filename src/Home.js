@@ -3,6 +3,10 @@ import eymLogo from './imgs/eymBlue.png'
 
 class Home extends React.Component {
 
+    componentDidMount() {
+        console.log("Entre al home")
+    }
+
     render() {
         return (
             <div className='col h-100 d-flex align-items-center text-center'>

@@ -12,7 +12,7 @@
 
     // 1. Tell PythonShell which script to run for this background task
     let pyshell = new PythonShell(path.join(__dirname, '/../scripts/controller.py'), {
-        pythonPath: 'python3',
+        pythonPath: 'python',
     });
     log.info('Python spawned:', pyshell && pyshell.command);
 

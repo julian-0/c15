@@ -47,6 +47,7 @@ def handle_input(session, in_stream_data):
 def main():
     session = None
     while True:
+        print("esperando comando")
         in_stream_data = input()
         result, session = handle_input(session, in_stream_data)
         returnResult(result)
@@ -64,9 +65,11 @@ if __name__ == "__main__":
     logging.getLogger().addHandler(ch)
 
     # main()
+    print("Starting controller")
     try:
         main()
     except Exception as e:
+        print("Hubo un error" + repr(e))
         response = {
             "result":"Ocurrió un error inesperado",
             "exception": repr(e)

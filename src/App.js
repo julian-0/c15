@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import Home from './Home'
 import Navbar from './components/navbar/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -34,7 +34,7 @@ class App extends React.Component {
   render() {
     return (
       <>
-        <Router>
+        <HashRouter>
           <Navbar />
           <div className="content d-flex align-items-center">
             <Routes>
@@ -46,7 +46,7 @@ class App extends React.Component {
               <Route path='*' element={<Home />} />
             </Routes>
           </div>
-        </Router>
+        </HashRouter>
         <ToastContainer />
       </>
     );

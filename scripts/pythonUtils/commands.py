@@ -157,7 +157,7 @@ class MonitorCommand(TargetCommand):
             if variable_addr is None:
                 res = 0
                 #TODO: agregar error
-                print("Variable no encontrada " + variable["name"])
+                #print("Variable no encontrada " + variable["name"])
             else:
                 value = target.read32(variable_addr)
                 size = variable["size"]
@@ -200,16 +200,16 @@ class WriteMemoryCommand(TargetCommand):
             
             address = provider.get_symbol_value(pointer)
             if address is None:
-                print("Variable no encontrada " + pointer)
+                #print("Variable no encontrada " + pointer)
                 continue
             if not direct_write:
                 address = target.read32(address)
             value = variable['value']
             
             if value is None:
-                print("Valor incorrecto " + pointer)
+                #print("Valor incorrecto " + pointer)
                 continue
-            print("Variable " + pointer + " encontrada en 0x%X" % address + " a escribir valor " + str(value))
+            #print("Variable " + pointer + " encontrada en 0x%X" % address + " a escribir valor " + str(value))
             size = variable['size']
             v_type = variable['type'] 
 

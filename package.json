@@ -16,12 +16,13 @@
         "react-icons": "^4.10.1",
         "react-router-dom": "^6.15.0",
         "react-scripts": "2.1.8",
-        "react-toastify": "^9.1.3"
+        "react-toastify": "^9.1.3",
+        "string-to-stream": "^3.0.1"
     },
     "scripts": {
-        "react-start": "BROWSER=NONE react-app-rewired start",
-        "electron-start": "DEV=1 electron .",
-        "start": "concurrently 'npm run react-start' 'wait-on http://127.0.0.1:3000/ && npm run electron-start'",
+        "react-start": "set BROWSER=NONE&& react-app-rewired start",
+        "electron-start": "set DEV=1 && electron .",
+        "start": "concurrently \"npm run react-start\" \"wait-on http://127.0.0.1:3000/ && npm run electron-start\"",
         "react-build": "react-app-rewired build",
         "pack": "electron-builder --dir -c.extraMetadata.main=build/electron.js",
         "electron-build-linux": "electron-builder --linux -c.extraMetadata.main=build/electron.js",
