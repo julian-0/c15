@@ -55,13 +55,13 @@ function createWindow() {
         minWidth: 500,
         minHeight: 300,
     });
-    //!process.env.DEV && mainWindow.removeMenu();
+    !process.env.DEV && mainWindow.removeMenu();
     mainWindow.maximize();
     mainWindow.show();
 
     mainWindow.loadURL(startUrl);
-    //process.env.DEV && mainWindow.webContents.openDevTools();
-    mainWindow.webContents.openDevTools();
+    process.env.DEV && mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 
     mainWindow.on('closed', function () {
         loadBalancer.stopAll();
