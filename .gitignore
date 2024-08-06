@@ -1,3 +1,4 @@
+managed_packs/
 # Logs
 logs
 *.log
@@ -165,7 +166,7 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-!controller.spec
+!github.spec
 !testexe.spec
 
 # Installer logs
