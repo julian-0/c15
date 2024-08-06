@@ -6,7 +6,7 @@ import * as AiIcons from 'react-icons/ai'
 
 export const SidebarData = [
     {
-        title: "Descarga",
+        title: "Control",
         path: "/discharge",
         icon: <BsIcons.BsLightningCharge/>,
         cName: "nav-text"
