@@ -21,6 +21,14 @@ Made with React, ElectronJs and Python
 ![audio](https://github.com/julian-0/c15/assets/42820126/d3b3d2de-54ec-45ee-a1b2-9b0d246fb368)
 
 ## Installing for windows
+1. Install stlink driver 
+* [Download](https://www.st.com/en/development-tools/stsw-link009.html) (Need ST account)
+* Unzip it
+* Execute as admin `stlink_winusb_install.bat`
+2. [Download C15 installer](https://github.com/julian-0/c15/releases/download/c15Config_v1.0.8/C15-Config.Setup.1.0.8.exe)
+* Execute it
+  
+## Development enviroment for windows
 1. Install python 3.9.0
 * [Download installer](https://www.python.org/ftp/python/3.9.0/python-3.9.0-amd64.exe)
 * Execute it
@@ -34,8 +42,8 @@ Made with React, ElectronJs and Python
 * [Download](https://www.st.com/en/development-tools/stsw-link009.html) (Need ST account)
 * Unzip it
 * Execute as admin `stlink_winusb_install.bat`
-6. Install c15 app
-* [Download .exe](https://github.com/julian-0/c15/releases/tag/c15Config_v1.0.7)
-* Execute it
-
-Still working on a easy installation just by executing an exe...
+6. Unzip c15/scripts/pythonUtils/managed_packs.rar
+7. Build python executable
+* `pyinstaller github.spec`
+8. Start electron app
+* `npm start`
