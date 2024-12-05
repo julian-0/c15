@@ -8,6 +8,10 @@ const { app } = electron;
 const { BrowserWindow } = electron;
 const nativeImage = electron.nativeImage;
 
+const storage = require('electron-json-storage');
+const dataPath = storage.getDataPath();
+console.log(dataPath);
+
 if (process.env.DEV) {
     const {
         default: installExtension,
@@ -51,13 +55,18 @@ function createWindow() {
         minWidth: 500,
         minHeight: 300,
     });
-    //!process.env.DEV && mainWindow.removeMenu();
+    !process.env.DEV && mainWindow.removeMenu();
     mainWindow.maximize();
     mainWindow.show();
 
     mainWindow.loadURL(startUrl);
-    //process.env.DEV && mainWindow.webContents.openDevTools();
-    mainWindow.webContents.openDevTools();
+    process.env.DEV && mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
+
+    mainWindow.on('uncaughtException', function (error) {
+        console.log("log 1");
+        console.log(error);
+    });
 
     mainWindow.on('closed', function () {
         loadBalancer.stopAll();
@@ -81,6 +90,11 @@ app.on('activate', () => {
     }
 });
 
+app.on('uncaughtException', function (error) {
+    console.log("log 2");
+    console.log(error);
+});
+
 /* ----------------------------------- Custom code starts here ------------------------------------- */
 
 // 1. Register background tasks (the keys will be used for reference later)
@@ -96,4 +110,47 @@ loadBalancer.register(
 ipcMain.on('CONTROLLER_RESULT', (event, args) => {
     let eventName = 'CONTROLLER_RESULT_' + args.data.source;
     mainWindow.webContents.send(eventName, args);
+});
+
+ipcMain.on('fetch-data-from-storage', (event, message) => {
+    console.log("main received: FETCH_DATA_FROM_STORAGE with name", message);
+    storage.get(message, (error, data) => {
+        
+        if (error){
+            mainWindow.send('handle-fetch-data', {
+                succes: false,
+                message: "cpuConfig not returned"
+            });
+        }
+        else{
+            mainWindow.send('handle-fetch-data', {
+                succes: true,
+                message: data
+            });
+        }
+    });
+
+});
+
+ipcMain.on('save-data-in-storage', (event, message) => {
+    console.log("main received: SAVE_DATA_IN_STORAGE with name", message);
+    storage.set("cpuDefaultConfig", message, (error) => {
+        if (error){
+            mainWindow.send('handle-save-data', {
+                succes: false,
+                message: "cpuConfig not saved"
+            });
+        }
+        else{
+            mainWindow.send('handle-save-data', {
+                succes: true,
+                message: message
+            });
+        }
+    });
+});
+
+ipcMain.on('uncaughtException', function (error) {
+    console.log("log 3");
+    console.log(error);
 });

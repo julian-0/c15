@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
 import NumericInput from '../numericInput/NumericInput';
 import './CpuVar.css';
+import CpuDefaultModal from '../cpuDefaultModal/CpuDefaultModal';
 // Electron related imports
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
@@ -14,6 +15,7 @@ export class CpuVar extends MicroConnected {
         super(props);
         this.state = {
             targetReadable: props.targetReadable,
+            editModalShow: false,
             bpm1Error: false,
             sat1Error: false,
             ecg1Error: false,
@@ -59,7 +61,8 @@ export class CpuVar extends MicroConnected {
                 audioBip: '',
                 audioAlarm: ''
             },
-            actualDateCheck: false
+            actualDateCheck: false,
+            defaultForm:{}
         };
         this.variablesInfo = [
             { name: 'model', pointer: 'modelo_ptr', size: 1, type: 'char' },
@@ -146,6 +149,9 @@ export class CpuVar extends MicroConnected {
         this.monitorVariables = this.monitorVariables.bind(this);
         this.writeVariables = this.writeVariables.bind(this);
         this.updateFormValue = this.updateFormValue.bind(this);
+        this.handleEditModalClose = this.handleEditModalClose.bind(this);
+        this.handleUpdate = this.handleUpdate.bind(this);
+        this.fillForm = this.fillForm.bind(this);
     }
 
     componentDidMount() {
@@ -456,6 +462,21 @@ export class CpuVar extends MicroConnected {
         });
     }
 
+    handleEditModalShow = () => {
+        this.setState({ editModalShow: true });
+    }
+
+    handleEditModalClose = () => {
+        this.setState({ editModalShow: false });
+    }
+
+    handleUpdate = (configForm) => {
+        this.setState({ defaultForm: configForm });
+    }
+
+    fillForm = () => {
+        this.setState({ form: this.state.defaultForm });
+    }
 
     render() {
         const { targetReadable } = this.props;
@@ -904,11 +925,26 @@ export class CpuVar extends MicroConnected {
                     <div className='container'>
                         <button
                             type="button"
-                            className='mx-1 btn btn-warning'
+                            className='mx-1 btn btn-outline-primary'
                             disabled={!targetReadable}
                             onClick={this.monitorVariables}
                         >
                             Leer
+                        </button>
+                        <button
+                            type="button"
+                            className='mx-1 btn btn-outline-primary'
+                            disabled={!targetReadable}
+                            onClick={this.fillForm}
+                        >
+                            Usar valores default
+                        </button>
+                        <button
+                            type="button"
+                            className='mx-1 btn btn-outline-primary'
+                            onClick={this.handleEditModalShow}
+                        >
+                            Editar valores default
                         </button>
                         <button
                             type="button"
@@ -920,6 +956,11 @@ export class CpuVar extends MicroConnected {
                         </button>
                     </div>
                 </div>
+                <CpuDefaultModal
+                    show={this.state.editModalShow}
+                    handleClose={this.handleEditModalClose}
+                    onUpdate={this.handleUpdate}
+                />
             </div>
         )
     }

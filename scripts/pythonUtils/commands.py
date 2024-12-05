@@ -4,6 +4,12 @@ from pyocd.debug.elf.symbols import ELFSymbolProvider
 from pyocd.flash.loader import FlashLoader
 import struct
 import logging
+import os
+
+current_script_path = os.path.dirname(os.path.abspath(__file__))
+parent_directory_path = os.path.dirname(current_script_path)
+managed_packs_path = os.path.join(parent_directory_path, 'managed_packs')
+keil_path = [os.path.join(managed_packs_path, 'Keil.STM32L4xx_DFP.2.6.2.pack'), os.path.join(managed_packs_path, 'Keil.STM32F4xx_DFP.2.17.1.pack')]
 
 class Command:
     def execute(self, session, request, source):
@@ -59,7 +65,7 @@ class ConnectTargetCommand(ProbeCommand):
         try:
             target_str = request['target']
             if session is None:
-                session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "sector", "target_override": target_str})
+                session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "sector", "target_override": target_str, "pack": keil_path})
                 session.open()
             
             target = session.board.target
