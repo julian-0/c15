@@ -63,6 +63,11 @@ function createWindow() {
     process.env.DEV && mainWindow.webContents.openDevTools();
     //mainWindow.webContents.openDevTools();
 
+    mainWindow.on('uncaughtException', function (error) {
+        console.log("log 1");
+        console.log(error);
+    });
+
     mainWindow.on('closed', function () {
         try{
             loadBalancer.stopAll();
@@ -89,6 +94,11 @@ app.on('activate', () => {
     if (mainWindow === null) {
         createWindow();
     }
+});
+
+app.on('uncaughtException', function (error) {
+    console.log("log 2");
+    console.log(error);
 });
 
 /* ----------------------------------- Custom code starts here ------------------------------------- */
@@ -144,4 +154,9 @@ ipcMain.on('save-data-in-storage', (event, message) => {
             });
         }
     });
+});
+
+ipcMain.on('uncaughtException', function (error) {
+    console.log("log 3");
+    console.log(error);
 });
