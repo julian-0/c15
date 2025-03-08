@@ -79,4 +79,8 @@ span{
 
 .active {
     background-color: #1a83ff;
-  }
+}
+
+footer {
+    color: #f5f5f5;
+}

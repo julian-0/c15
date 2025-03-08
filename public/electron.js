@@ -64,7 +64,13 @@ function createWindow() {
     //mainWindow.webContents.openDevTools();
 
     mainWindow.on('closed', function () {
-        loadBalancer.stopAll();
+        try{
+            loadBalancer.stopAll();
+        }
+        catch(error){
+            console.log("error en stopAll");
+            console.log(error);
+        }
         mainWindow = null;
     });
 }

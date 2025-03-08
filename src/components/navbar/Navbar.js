@@ -4,6 +4,8 @@ import { SidebarData } from './SidebarData'
 import './Navbar.css'
 import { IconContext } from 'react-icons'
 import eymLogo from '../../imgs/eym.png'
+const electron = window.require('electron');
+var appVersion = electron.remote.app.getVersion(); 
 
 function Navbar() {
     const location = useLocation();
@@ -41,6 +43,7 @@ function Navbar() {
                     </ul>
                 </nav>
             </IconContext.Provider>
+            <footer className="fixed-bottom">v{appVersion}</footer>
         </div>
     )
 }

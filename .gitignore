@@ -1,3 +1,5 @@
+#Managed packs
+managed_packs/
 # Logs
 logs
 *.log
