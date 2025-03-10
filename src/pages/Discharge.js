@@ -17,7 +17,7 @@ function Discharge() {
                 <div className='container'>
                     <div className='row d-flex align-items-center justify-content-around'>
                         <DischargeVar targetReadable={targetReadable} />
-                        <Programmer target={'STM32L431VCTx'} targetReadable={targetReadable} updateTargetState={updateTargetState} />
+                        <Programmer target={'STM32L431VCTx'} targetReadable={targetReadable} updateTargetState={updateTargetState} showVersion={true}/>
                     </div>
                 </div>
             </div>
