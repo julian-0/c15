@@ -47,6 +47,19 @@ class NumericInput extends Component {
         });
     }
 
+    buildTitle() {
+        if(this.props.min === undefined && this.props.max === undefined){
+            return 'Valor numérico';
+        }
+        if(this.props.min === undefined){
+            return `Menor o igual a ${this.props.max}`;
+        }
+        if(this.props.max === undefined){
+            return `Mayor o igual a ${this.props.min}`;
+        }
+        return `Entre ${this.props.min} y ${this.props.max}`;
+    }
+
     render() {
         return (
             <input
@@ -57,7 +70,7 @@ class NumericInput extends Component {
                 className={this.props.className + (!this.state.valid || this.state.error ? ' invalid' : '')}
                 value={this.state.value} // Usa el valor del estado local.
                 onChange={this.handleInputChange}
-                title={`Entre ${this.props.min} y ${this.props.max}`}
+                title={this.buildTitle()}
             />
         );
     }

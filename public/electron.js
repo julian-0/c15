@@ -129,12 +129,14 @@ ipcMain.on('fetch-data-from-storage', (event, message) => {
 });
 
 ipcMain.on('save-data-in-storage', (event, message) => {
-    console.log("main received: SAVE_DATA_IN_STORAGE with name", message);
-    storage.set("cpuDefaultConfig", message, (error) => {
+    const { key, data } = message;
+    console.log(`main received: SAVE_DATA_IN_STORAGE with key: ${key} and data: ${data}`);
+    
+    storage.set(key, data, (error) => {
         if (error){
             mainWindow.send('handle-save-data', {
                 succes: false,
-                message: "cpuConfig not saved"
+                message: `${key} not saved`
             });
         }
         else{

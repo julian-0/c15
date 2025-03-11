@@ -129,7 +129,7 @@ class CpuDefaultModal extends React.Component {
     }
 
     saveDataInStorage(item){
-        ipcRenderer.send('save-data-in-storage', item);
+        ipcRenderer.send('save-data-in-storage', { key: 'cpuDefaultConfig', data: item });
     }
     
     updateFormValue(key, value) {

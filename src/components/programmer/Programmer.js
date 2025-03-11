@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
 import NumericInput from '../numericInput/NumericInput';
+import VersionDefaultModal from '../versionDefaultModal/VersionDefaultModal';
 
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
@@ -22,7 +23,12 @@ class Programmer extends MicroConnected {
             revName: '--',
             devName: '--',
             elfPath: undefined,
-            paused: false
+            paused: false,
+            form: {
+                revision: '',
+                variant: '',
+                rework: ''
+            }
         };
         this.intervalId = null;
         this.getData = this.getData.bind(this);
@@ -213,7 +219,7 @@ class Programmer extends MicroConnected {
         const disconnectPromise = new Promise((resolve, reject) => {
             setTimeout(() => {
                 reject('Programar tomó demasiado tiempo');
-            }, 5*60*1000);
+            }, 5 * 60 * 1000);
 
             const proccess = (event, args) => {
                 let data = args.data;
@@ -330,7 +336,30 @@ class Programmer extends MicroConnected {
         this.sendToMicroProgrammer("RESUME");
     }
 
+    fillForm = () => {
+        this.setState({ form: this.state.defaultForm });
+    }
+
+    handleEditModalShow = () => {
+        this.setState({ editModalShow: true });
+    }
+
+    handleEditModalClose = () => {
+        this.setState({ editModalShow: false });
+    }
+
+    handleUpdate = (configForm) => {
+        this.setState({ defaultForm: configForm });
+    }
+
+    handleInputChange = (fieldName, value) => {
+        const form = { ...this.state.form, [fieldName]: value };
+
+        this.setState({ form });
+    }
+
     render() {
+        const form = this.state.form;
         return (
             <div className='col-3'>
                 <div className='programmer card'>
@@ -412,83 +441,95 @@ class Programmer extends MicroConnected {
                         </div>
                     </div>
                 </div>
-                {this.props.showVersion && 
-                <div className='mt-3 programmer card'>
-                    <h4 className='card-header'>Versión del hardware</h4>
-                    <div className='card-body'>
-                        <div>
-                            <div className='d-flex justify-content-between'>
-                                <div className='col'>
-                                    <p className='card-text text-secondary'>Revisión PCB</p>
-                                </div>
-                                <div className='col'>
-                                    <p className='card-text text-secondary'>Variante</p>
-                                </div>
-                                <div className='col'>
-                                    <p className='card-text text-secondary'>Rework</p>
-                                </div>
-                            </div>
-                            <div className='d-flex justify-content-between'>
-                                <div className='col'>
-                                    <NumericInput disabled={(!this.state.targetConnected || this.state.paused)} 
-                                                        min={0} 
-                                                        className="col-10"/>
-                                </div>
-                                <div className='col'>
-                                    <NumericInput disabled={(!this.state.targetConnected || this.state.paused)} 
-                                                        min={0} 
-                                                        className="col-10"/>
-                                </div>
-                                <div className='col'>
-                                    <NumericInput disabled={(!this.state.targetConnected || this.state.paused)} 
-                                                        min={0} 
-                                                        className="col-10"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='container action-buttons d-flex justify-content-around flex-md-row flex-column'>
-                            <div className='col-6 border py-2 mx-1 rounded'>
+                {this.props.showVersion &&
+                    <div>
+                        <div className='mt-3 programmer card'>
+                            <h4 className='card-header'>Versión del hardware</h4>
+                            <div className='card-body'>
                                 <div>
-                                    <p className='card-text text-secondary'>Valores default</p>
+                                    <div className='d-flex justify-content-between'>
+                                        <div className='col'>
+                                            <p className='card-text text-secondary'>Revisión PCB</p>
+                                        </div>
+                                        <div className='col'>
+                                            <p className='card-text text-secondary'>Variante</p>
+                                        </div>
+                                        <div className='col'>
+                                            <p className='card-text text-secondary'>Rework</p>
+                                        </div>
+                                    </div>
+                                    <div className='d-flex justify-content-between'>
+                                        <div className='col'>
+                                            <NumericInput disabled={(!this.state.targetConnected || this.state.paused)}
+                                                min={0}
+                                                value={form.revision}
+                                                onChange={(value) => this.handleInputChange('revision', value)}
+                                                className="col-10" />
+                                        </div>
+                                        <div className='col'>
+                                            <NumericInput disabled={(!this.state.targetConnected || this.state.paused)}
+                                                min={0}
+                                                value={form.variant}
+                                                onChange={(value) => this.handleInputChange('variant', value)}
+                                                className="col-10" />
+                                        </div>
+                                        <div className='col'>
+                                            <NumericInput disabled={(!this.state.targetConnected || this.state.paused)}
+                                                min={0}
+                                                value={form.rework}
+                                                onChange={(value) => this.handleInputChange('rework', value)}
+                                                className="col-10" />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='d-flex justify-content-around'>
-                                    <button
-                                        type="button"
-                                        className='btn btn-outline-primary'
-                                        disabled={(!this.state.targetConnected || this.state.paused)}
-                                        onClick={this.halt}>
-                                        Escribir
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className='btn btn-outline-primary'
-                                        disabled={(!this.state.targetConnected || !this.state.paused)}
-                                        onClick={this.resume}>
-                                        Editar
-                                    </button>
+                                <div className='container action-buttons d-flex justify-content-around flex-md-row flex-column'>
+                                    <div className='col-6 border py-2 mx-1 rounded'>
+                                        <div>
+                                            <p className='card-text text-secondary'>Valores default</p>
+                                        </div>
+                                        <div className='d-flex justify-content-around'>
+                                            <button
+                                                type="button"
+                                                className='btn btn-outline-primary'
+                                                disabled={(!this.state.targetConnected || this.state.paused)}
+                                                onClick={this.fillForm}>
+                                                Escribir
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className='btn btn-outline-primary'
+                                                onClick={this.handleEditModalShow}>
+                                                Editar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className='col align-self-end py-2'>
+                                        <button
+                                            type="button"
+                                            className='btn btn-primary'
+                                            disabled={(!this.state.targetConnected)}
+                                            onClick={this.reset}>
+                                            Leer
+                                        </button>
+                                    </div>
+                                    <div className='col align-self-end py-2'>
+                                        <button
+                                            type="button"
+                                            className='btn btn-success'
+                                            disabled={(!this.state.targetConnected || !this.state.paused)}
+                                            onClick={this.resume}>
+                                            Guardar
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='col align-self-end py-2'>
-                                <button
-                                    type="button"
-                                    className='btn btn-primary'
-                                    disabled={(!this.state.targetConnected)}
-                                    onClick={this.reset}>
-                                    Leer
-                                </button>
-                            </div>
-                            <div className='col align-self-end py-2'>
-                                <button
-                                    type="button"
-                                    className='btn btn-success'
-                                    disabled={(!this.state.targetConnected || !this.state.paused)}
-                                    onClick={this.resume}>
-                                    Guardar
-                                </button>
                             </div>
                         </div>
+                        <VersionDefaultModal
+                            show={this.state.editModalShow}
+                            handleClose={this.handleEditModalClose}
+                            onUpdate={this.handleUpdate}
+                        />
                     </div>
-                </div>
                 }
             </div>
 
