@@ -27,8 +27,8 @@ class VersionDefaultModal extends React.Component {
             this.props.onUpdate(data.message);
         });
         ipcRenderer.on('handle-save-data', (event, data) => {
-            this.setState({ form: data.message });
-            this.props.onUpdate(data.message);
+            this.setState({ form: data.message.data });
+            this.props.onUpdate(data.message.data);
         });
         this.loadSaveData();
     }
