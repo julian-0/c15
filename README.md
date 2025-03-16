@@ -10,7 +10,6 @@ Made with React, ElectronJs and Python
 ### Discharge  
 ![descarga](https://github.com/julian-0/c15/assets/42820126/e597b23b-20b1-4cc5-a6e9-1816c350ebde)
 
-
 ### CPU  
 ![cpu](https://github.com/julian-0/c15/assets/42820126/f3398550-9712-4880-87a9-9b952b910101)
 
@@ -38,12 +37,22 @@ Made with React, ElectronJs and Python
 4. Add microcontrollers drivers.
 * `py -3.9 -m pyocd pack -u -i stm32l4p5zgtxp`
 * `py -3.9 -m pyocd pack -u -i stm32f405rgtx`
-5. Install stlink driver 
+5. Activate python virtual enviroment
+* `venv\Scripts\activate`
+6. Install stlink driver 
 * [Download](https://www.st.com/en/development-tools/stsw-link009.html) (Need ST account)
 * Unzip it
 * Execute as admin `stlink_winusb_install.bat`
-6. Unzip c15/scripts/pythonUtils/managed_packs.rar
-7. Build python executable
-* `pyinstaller github.spec`
-8. Start electron app
+7. Unzip c15/scripts/pythonUtils/managed_packs.rar
+8. Build python executable
+* `cd scripts && pyinstaller controller.spec && cd ..`
+> [!IMPORTANT]
+> Be sure to use python 3.9.0
+9. Start electron app
 * `npm start`
+
+## Build installer for windows
+1. If you made changes on python script you need to rebuild the executable
+* `cd scripts && pyinstaller controller.spec && cd ..`
+2. Then pack the entire app
+* `npm run bild-windows`
