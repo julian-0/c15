@@ -106,8 +106,8 @@ class CpuDefaultModal extends React.Component {
             this.props.onUpdate(data.message);
         });
         ipcRenderer.on('handle-save-data', (event, data) => {
-            this.setState({form:data.message});
-            this.props.onUpdate(data.message);
+            this.setState({form:data.message.data});
+            this.props.onUpdate(data.message.data);
         });
         this.loadSaveData();
     }
@@ -129,7 +129,7 @@ class CpuDefaultModal extends React.Component {
     }
 
     saveDataInStorage(item){
-        ipcRenderer.send('save-data-in-storage', item);
+        ipcRenderer.send('save-data-in-storage', { key: 'cpuDefaultConfig', data: item });
     }
     
     updateFormValue(key, value) {

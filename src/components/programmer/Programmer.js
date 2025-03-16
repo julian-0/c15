@@ -5,11 +5,13 @@ import FileInput from '../fileInput/FileInput'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
+import NumericInput from '../numericInput/NumericInput';
+import VersionDefaultModal from '../versionDefaultModal/VersionDefaultModal';
 
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
 
-class Programmer extends MicroConnected {
+export class Programmer extends MicroConnected {
 
     constructor(props) {
         super(props);
@@ -21,7 +23,12 @@ class Programmer extends MicroConnected {
             revName: '--',
             devName: '--',
             elfPath: undefined,
-            paused: false
+            paused: false,
+            form: {
+                revision: '',
+                variant: '',
+                rework: ''
+            }
         };
         this.intervalId = null;
         this.getData = this.getData.bind(this);
@@ -32,6 +39,16 @@ class Programmer extends MicroConnected {
         this.reset = this.reset.bind(this);
         this.halt = this.halt.bind(this);
         this.resume = this.resume.bind(this);
+        this.variablesInfo = [
+            { name: 'revision', pointer: 'controlConfigRev_ptr', size: 4, type: 'uint' },
+            { name: 'variant', pointer: 'controlConfigVar_ptr', size: 4, type: 'uint' },
+            { name: 'rework', pointer: 'controlConfigRew_ptr', size: 4, type: 'uint' },
+            { name: 'checksum', pointer: 'controlConfigCrc8_ptr', size: 1, type: 'char' }
+            //TODO: check types and python script
+        ];
+
+        this.monitorVersion = this.monitorVersion.bind(this);
+        this.writeVersion = this.writeVersion.bind(this);
     }
 
     componentDidMount() {
@@ -74,6 +91,18 @@ class Programmer extends MicroConnected {
         this.intervalId = setInterval(() => {
             this.checkConnection();
         }, 1000);
+
+        ipcRenderer.on('CONTROLLER_RESULT_VERSION', (event, args) => {
+            let data = args.data;
+            switch (data.command) {
+                case "MONITOR":
+                    this.processMonitorResult(data);
+                    break;
+                default:
+                    console.log("Unknown command: " + data.command);
+            }
+        });
+        this.monitorVersion();
     }
 
     componentWillUnmount() {
@@ -83,6 +112,8 @@ class Programmer extends MicroConnected {
         }
         // 4. Remove all output listeners before app shuts down
         ipcRenderer.removeAllListeners('CONTROLLER_RESULT_PROGRAMMER');
+        if (this.props.showVersion)
+            ipcRenderer.removeAllListeners('CONTROLLER_RESULT_VERSION');
         toast.dismiss(); // Close all toasts
     }
 
@@ -212,7 +243,7 @@ class Programmer extends MicroConnected {
         const disconnectPromise = new Promise((resolve, reject) => {
             setTimeout(() => {
                 reject('Programar tomó demasiado tiempo');
-            }, 5*60*1000);
+            }, 5 * 60 * 1000);
 
             const proccess = (event, args) => {
                 let data = args.data;
@@ -329,7 +360,146 @@ class Programmer extends MicroConnected {
         this.sendToMicroProgrammer("RESUME");
     }
 
+    fillForm = () => {
+        this.setState({ form: this.state.defaultForm });
+    }
+
+    handleEditModalShow = () => {
+        this.setState({ editModalShow: true });
+    }
+
+    handleEditModalClose = () => {
+        this.setState({ editModalShow: false });
+    }
+
+    handleUpdate = (configForm) => {
+        this.setState({ defaultForm: configForm });
+    }
+
+    handleInputChange = (fieldName, value) => {
+        const form = { ...this.state.form, [fieldName]: value };
+
+        this.setState({ form });
+    }
+
+    processMonitorResult(response) {
+        if (response.status !== 'OK')
+            return;
+        console.log('Monitor result');
+        console.log(response.data);
+        this.setVariables(response.data)
+    }
+
+    findVariableValueByName(name, variables) {
+        return variables.find(variable => variable.name === name).value;
+    }
+
+    setVariables(data) {
+        const newState = {};
+        this.variablesInfo.forEach(v => {
+            newState[v.name] = this.findVariableValueByName(v.name, data);
+        });
+        this.setState({ form: newState });
+    }
+
+    sendToMicroVersion(command, body) {
+        this.sendToMicro(command, 'VERSION', body);
+    }
+
+    monitorVersion() {
+        this.sendToMicroVersion("MONITOR", {
+            variables: this.variablesInfo
+        });
+    }
+
+    calculateChecksum(variablesInfo) {
+        let checksum = 0xA5; // Valor inicial para evitar 0xFF en caso de todos 0xFF
+        
+        let buffer = [];
+        let varTotalSize = 0;
+        
+        // Recorrer cada variable y extraer sus bytes en formato little-endian
+        variablesInfo.forEach(variable => {
+            let value = variable.value;
+            for (let i = 0; i < variable.size; i++) {
+                buffer.push((value >> (8 * i)) & 0xFF);
+            }
+            varTotalSize += variable.size;
+        });
+
+        // Rellenar con 0xFF hasta completar los 64 bytes de la estructura completa
+        let reservedSize = 64 - varTotalSize -1; // 1 byte de checksum
+        buffer = buffer.concat(new Array(reservedSize).fill(0xFF));
+        
+        // Aplicar la operación XOR a todos los bytes
+        for (let i = 0; i < buffer.length; i++) {
+            checksum ^= buffer[i];
+        }
+        
+        return checksum;
+    }
+
+    writeVersion() {
+        const form = this.state.form;
+
+        //obtain a copy of the variablesInfo array withouth the checksum
+        let variablesInfo2 = this.variablesInfo.slice(0, this.variablesInfo.length - 1);
+
+        //add to variablesInfo the value propertie from the corresonding form value, if the value is boolean replace with 1 or 0
+        const variables = variablesInfo2.map(v => {
+            let value = form[v.name];
+            if (typeof value == "boolean") {
+                value = value ? 1 : 0;
+            }
+            else {
+                value = parseInt(value);
+            }
+            return { ...v, value };
+        });
+
+        variables.push({ name: 'checksum', pointer: 'controlConfigCrc8_ptr', size: 1, type: 'char', value: this.calculateChecksum(variables) });
+        console.log(variables);
+        this.sendToMicroVersion("WRITE_FLASH", {
+            variables: variables,
+            direct: false
+        });
+
+        const calibrationPromise = new Promise((resolve, reject) => {
+
+            const proccess = (event, args) => {
+                let data = args.data;
+                switch (data.command) {
+                    case "WRITE_FLASH":
+                        ipcRenderer.removeListener('CONTROLLER_RESULT_VERSION', proccess);
+                        if (data.status === 'OK') {
+                            resolve();
+                        }
+                        else {
+                            reject('Error al escribir');
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            };
+
+            ipcRenderer.on('CONTROLLER_RESULT_VERSION', proccess);
+        });
+
+        toast.promise(
+            calibrationPromise,
+            {
+                pending: 'Escribiendo valores',
+                success: 'Escritura realizada con éxito',
+                error: 'Error al escribir'
+            },
+            Programmer.toastProperties
+        );
+    }
+
     render() {
+        const { targetReadable } = this.props;
+        const form = this.state.form;
         return (
             <div className='col-3'>
                 <div className='programmer card'>
@@ -411,6 +581,96 @@ class Programmer extends MicroConnected {
                         </div>
                     </div>
                 </div>
+                {this.props.showVersion &&
+                    <div>
+                        <div className='mt-3 programmer card'>
+                            <h4 className='card-header'>Versión del hardware</h4>
+                            <div className='card-body'>
+                                <div>
+                                    <div className='d-flex justify-content-between'>
+                                        <div className='col'>
+                                            <p className='card-text text-secondary'>Revisión PCB</p>
+                                        </div>
+                                        <div className='col'>
+                                            <p className='card-text text-secondary'>Variante</p>
+                                        </div>
+                                        <div className='col'>
+                                            <p className='card-text text-secondary'>Rework</p>
+                                        </div>
+                                    </div>
+                                    <div className='d-flex justify-content-between'>
+                                        <div className='col'>
+                                            <NumericInput disabled={!targetReadable}
+                                                min={0}
+                                                value={form.revision}
+                                                onChange={(value) => this.handleInputChange('revision', value)}
+                                                className="col-10" />
+                                        </div>
+                                        <div className='col'>
+                                            <NumericInput disabled={!targetReadable}
+                                                min={0}
+                                                value={form.variant}
+                                                onChange={(value) => this.handleInputChange('variant', value)}
+                                                className="col-10" />
+                                        </div>
+                                        <div className='col'>
+                                            <NumericInput disabled={!targetReadable}
+                                                min={0}
+                                                value={form.rework}
+                                                onChange={(value) => this.handleInputChange('rework', value)}
+                                                className="col-10" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='container action-buttons d-flex justify-content-around flex-md-row flex-column'>
+                                    <div className='col-6 border py-2 mx-1 rounded'>
+                                        <div>
+                                            <p className='card-text text-secondary'>Valores default</p>
+                                        </div>
+                                        <div className='d-flex justify-content-around'>
+                                            <button
+                                                type="button"
+                                                className='btn btn-outline-primary'
+                                                disabled={!this.state.targetConnected}
+                                                onClick={this.fillForm}>
+                                                Escribir
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className='btn btn-outline-primary'
+                                                onClick={this.handleEditModalShow}>
+                                                Editar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className='col align-self-end py-2'>
+                                        <button
+                                            type="button"
+                                            className='btn btn-primary'
+                                            disabled={!targetReadable}
+                                            onClick={this.monitorVersion}>
+                                            Leer
+                                        </button>
+                                    </div>
+                                    <div className='col align-self-end py-2'>
+                                        <button
+                                            type="button"
+                                            className='btn btn-success'
+                                            disabled={!targetReadable}
+                                            onClick={this.writeVersion}>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <VersionDefaultModal
+                            show={this.state.editModalShow}
+                            handleClose={this.handleEditModalClose}
+                            onUpdate={this.handleUpdate}
+                        />
+                    </div>
+                }
             </div>
 
         )
