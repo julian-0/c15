@@ -1,20 +1,24 @@
 <script>
     var spawn = require('child_process').spawn;
-    const {
-        PythonShell
-    } = require('python-shell');
-    const {
-        ipcRenderer
-    } = require('electron');
+    const { PythonShell } = require('python-shell');
+    const { ipcRenderer } = require('electron');
     const loadBalancer = require('electron-load-balancer');
+    const fs = require('fs');
     const path = require('path');
-    // const { helper } = require('../utils/postProcessor.js');
     const log = require('electron-log');
     const stringStreamCreator = require('string-to-stream');
 
-    // 1. Tell PythonShell which script to run for this background task
+    // 0. Clean c15_cache directory
+    const tempDir = path.join(__dirname, '/../c15_cache');
+    log.info('Cleaning and creating tmp directory');
+    if (fs.existsSync(tempDir)) {
+        log.info('Removing directory')
+        fs.rmdirSync(tempDir, { recursive: true, force: true });
+    }
+    log.info('Creating tmp directory')
+    fs.mkdirSync(tempDir, { recursive: true });
 
-    //let exePath = "C:\\Users\\jmord\\OneDrive\\Documentos\\personal\\freelos\\c15\\scripts\\dist\\controller.exe";
+    // 1. Tell PythonShell which script to run for this background task
     let exePath = path.join(__dirname, '/../scripts/dist/controller.exe');
     log.info('Exe path:', exePath);
     const python = spawn(exePath);
@@ -23,11 +27,10 @@
     } else {
       log.info(`Spawned subprocess correctly!, PID = ${python.pid}`);
     }
-    //en el exe poner un log para ver si se ejecuta
+
     python.on('close', (code) => {
         log.info(`child process exited with code ${code}`);
     }); 
-    //python.stdin.write("hola");
 
     PROCESS_NAME = 'controller';
     TOKEN = '#result# '
@@ -43,20 +46,16 @@
                 });
                 try {
                     let json = JSON.stringify(args);
-                    let intArray = new Uint8Array(Buffer.from(json));
-                    //encode in base 64
                     let base64 = Buffer.from(json).toString('base64');
-                    //python.stdin.write(json);
-                    //python.stdin.end();
                     stringStreamCreator(base64+"\n").pipe(python.stdin, {end: false});
                 } catch (error) {
-                    log.error("Error al serializar", error);
+                    log.error("Error serializing message", error);
                 }
             });
 
             // 3. Hook to recieve error from python realm
             python.stderr.on('data', (data) => {
-                log.error("error en python");
+                log.error("Error in python");
                 const string = String.fromCharCode(...data);
                 log.error(string);
             });
@@ -64,12 +63,11 @@
             // 4. Hook to recieve data from python realm
             python.stdout.on('data', (data) => {
                 data = String.fromCharCode(...data);
-                log.info("recibi de python esto :"+data);
+                log.info("Received from python: "+data);
                 try {
                     if (!data.startsWith(TOKEN))
                         return;
                     const cleanResult = data.replace(TOKEN, '').trim();
-                    //get the string before the last '}'
                     const lastBracketIndex = cleanResult.lastIndexOf('}') + 1;
                     const result = cleanResult.substring(0, lastBracketIndex);
                     const parsedJSON = JSON.parse(result);
