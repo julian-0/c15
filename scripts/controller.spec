@@ -48,7 +48,7 @@ exe = EXE(
     console=True,  # Change to False if you want no console to appear
     icon=None,  # Add path to .ico file here if you want a custom icon
     upx_exclude=[],
-    runtime_tmpdir=None,
+    runtime_tmpdir='c15_cache',
     bootloader_ignore_signals=False
 )
 

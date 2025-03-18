@@ -44,9 +44,11 @@
                 try {
                     let json = JSON.stringify(args);
                     let intArray = new Uint8Array(Buffer.from(json));
+                    //encode in base 64
+                    let base64 = Buffer.from(json).toString('base64');
                     //python.stdin.write(json);
                     //python.stdin.end();
-                    stringStreamCreator(json+"\n").pipe(python.stdin, {end: false});
+                    stringStreamCreator(base64+"\n").pipe(python.stdin, {end: false});
                 } catch (error) {
                     log.error("Error al serializar", error);
                 }
