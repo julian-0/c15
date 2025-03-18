@@ -1,6 +1,7 @@
 import React from 'react'
 import './Programmer.css'
 import { FaPowerOff } from 'react-icons/fa';
+import { BsExclamationTriangle } from 'react-icons/bs';
 import FileInput from '../fileInput/FileInput'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -24,10 +25,12 @@ export class Programmer extends MicroConnected {
             devName: '--',
             elfPath: undefined,
             paused: false,
+            versionError: false,
             form: {
                 revision: '',
                 variant: '',
-                rework: ''
+                rework: '',
+                checksum: ''
             }
         };
         this.intervalId = null;
@@ -44,8 +47,13 @@ export class Programmer extends MicroConnected {
             { name: 'variant', pointer: 'controlConfigVar_ptr', size: 4, type: 'uint' },
             { name: 'rework', pointer: 'controlConfigRew_ptr', size: 4, type: 'uint' },
             { name: 'checksum', pointer: 'controlConfigCrc8_ptr', size: 1, type: 'char' }
-            //TODO: check types and python script
         ];
+        this.defaultForm = {
+            revision: '',
+            variant: '',
+            rework: '',
+            checksum: ''
+        };
 
         this.monitorVersion = this.monitorVersion.bind(this);
         this.writeVersion = this.writeVersion.bind(this);
@@ -147,7 +155,9 @@ export class Programmer extends MicroConnected {
                 firmwareRevision: '--',
                 revName: '--',
                 devName: '--',
-                elfPath: undefined
+                elfPath: undefined,
+                form: this.defaultForm,
+                versionError: false
             });
             this.props.updateTargetState(false);
             return;
@@ -158,7 +168,9 @@ export class Programmer extends MicroConnected {
                 targetStatus: undefined,
                 revName: '--',
                 devName: '--',
-                elfPath: undefined
+                elfPath: undefined,
+                form: this.defaultForm,
+                versionError: false
             });
             this.props.updateTargetState(false);
         }
@@ -278,8 +290,10 @@ export class Programmer extends MicroConnected {
     }
 
     processSetElfFile(response) {
-        if (response.status === 'OK')
+        if (response.status === 'OK'){
             this.props.updateTargetState(true);
+            this.monitorVersion();
+        }
         else
             this.setState({ elfPath: undefined });
     }
@@ -385,9 +399,19 @@ export class Programmer extends MicroConnected {
     processMonitorResult(response) {
         if (response.status !== 'OK')
             return;
-        console.log('Monitor result');
-        console.log(response.data);
-        this.setVariables(response.data)
+        this.setVariables(response.data);
+        let variables = this.variablesInfo.map(v => {
+            let value = this.state.form[v.name];
+            value = parseInt(value);
+            return { ...v, value };
+        });
+        variables = variables.slice(0, variables.length - 1);
+        let checksum = this.calculateChecksum(variables);
+        if(checksum !== this.state.form.checksum){
+            this.setState({ versionError: true });
+        }
+        else
+            this.setState({ versionError: false });
     }
 
     findVariableValueByName(name, variables) {
@@ -458,7 +482,6 @@ export class Programmer extends MicroConnected {
         });
 
         variables.push({ name: 'checksum', pointer: 'controlConfigCrc8_ptr', size: 1, type: 'char', value: this.calculateChecksum(variables) });
-        console.log(variables);
         this.sendToMicroVersion("WRITE_FLASH", {
             variables: variables,
             direct: false
@@ -500,6 +523,7 @@ export class Programmer extends MicroConnected {
     render() {
         const { targetReadable } = this.props;
         const form = this.state.form;
+        const { versionError } = this.state;
         return (
             <div className='col-3'>
                 <div className='programmer card'>
@@ -662,6 +686,12 @@ export class Programmer extends MicroConnected {
                                         </button>
                                     </div>
                                 </div>
+                                {versionError &&
+                                    <div className='versionError'>
+                                        <BsExclamationTriangle /> 
+                                        <p className='card-text'>Versión de hardware errónea o vacía</p>
+                                    </div>
+                                }
                             </div>
                         </div>
                         <VersionDefaultModal
