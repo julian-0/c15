@@ -25,12 +25,12 @@
     if (typeof python.pid !== 'number') {
         log.error('failed');
     } else {
-      log.info(`Spawned subprocess correctly!, PID = ${python.pid}`);
+        log.info(`Spawned subprocess correctly!, PID = ${python.pid}`);
     }
 
     python.on('close', (code) => {
         log.info(`child process exited with code ${code}`);
-    }); 
+    });
 
     PROCESS_NAME = 'controller';
     TOKEN = '#result# '
@@ -47,7 +47,7 @@
                 try {
                     let json = JSON.stringify(args);
                     let base64 = Buffer.from(json).toString('base64');
-                    stringStreamCreator(base64+"\n").pipe(python.stdin, {end: false});
+                    stringStreamCreator(base64 + "\n").pipe(python.stdin, { end: false });
                 } catch (error) {
                     log.error("Error serializing message", error);
                 }
@@ -63,8 +63,9 @@
             // 4. Hook to recieve data from python realm
             python.stdout.on('data', (data) => {
                 data = String.fromCharCode(...data);
-                log.info("Received from python: "+data);
+                log.info("Received from python: " + data);
                 try {
+                    data = cleanResponse(data);
                     if (!data.startsWith(TOKEN))
                         return;
                     const cleanResult = data.replace(TOKEN, '').trim();
@@ -87,4 +88,10 @@
             pyshell.terminate();
         },
     );
+
+    // UTILS
+    function cleanResponse(text) {
+        const indice = text.indexOf(TOKEN);
+        return indice !== -1 ? text.slice(indice) : text;
+    }
 </script>

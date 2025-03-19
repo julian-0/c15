@@ -110,7 +110,8 @@ export class Programmer extends MicroConnected {
                     console.log("Unknown command: " + data.command);
             }
         });
-        this.monitorVersion();
+        if(this.props.showVersion)
+            this.monitorVersion();
     }
 
     componentWillUnmount() {
@@ -263,6 +264,7 @@ export class Programmer extends MicroConnected {
                     case "PROGRAM":
                         if (data.status === 'OK') {
                             resolve(); // Resuelve la promesa cuando la escritura es exitosa
+                            this.monitorVersion();
                         }
                         else {
                             reject('Error al programar'); // Rechaza la promesa en caso de error
@@ -397,8 +399,10 @@ export class Programmer extends MicroConnected {
     }
 
     processMonitorResult(response) {
-        if (response.status !== 'OK')
+        if (response.status !== 'OK'){
+            this.fillForm();
             return;
+        }
         this.setVariables(response.data);
         let variables = this.variablesInfo.map(v => {
             let value = this.state.form[v.name];
@@ -415,7 +419,8 @@ export class Programmer extends MicroConnected {
     }
 
     findVariableValueByName(name, variables) {
-        return variables.find(variable => variable.name === name).value;
+        const value = variables.find(variable => variable.name === name).value;
+        return value === null ? '' : value;
     }
 
     setVariables(data) {
@@ -495,7 +500,14 @@ export class Programmer extends MicroConnected {
                     case "WRITE_FLASH":
                         ipcRenderer.removeListener('CONTROLLER_RESULT_VERSION', proccess);
                         if (data.status === 'OK') {
-                            resolve();
+                            
+                            if(!this.allValuesAreEquals(data.data.variables)){
+                                reject('Error al escribir');
+                            }
+                            else                            
+                                resolve();
+
+                            this.monitorVersion();
                         }
                         else {
                             reject('Error al escribir');
@@ -518,6 +530,17 @@ export class Programmer extends MicroConnected {
             },
             Programmer.toastProperties
         );
+    }
+
+    allValuesAreEquals(variables){
+        const form = this.state.form;
+        let equals = true;
+        let variablesWithoutCrc = variables.slice(0, variables.length - 1);
+        variablesWithoutCrc.forEach(v => {
+            let originalValue = form[v.name];
+            equals = originalValue === v.value;
+        });
+        return equals;
     }
 
     render() {
@@ -689,7 +712,7 @@ export class Programmer extends MicroConnected {
                                 {versionError &&
                                     <div className='versionError'>
                                         <BsExclamationTriangle /> 
-                                        <p className='card-text'>Versión de hardware errónea o vacía</p>
+                                        <p className='card-text'>Versión de hardware errónea o vacía. Escribir luego de grabar el firmware</p>
                                     </div>
                                 }
                             </div>
