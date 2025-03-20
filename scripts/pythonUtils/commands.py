@@ -185,7 +185,7 @@ class MonitorCommand(TargetCommand):
 
                 except Exception as e:
                     logging.exception(e)
-                    print("Error al leer la variable " + variable["name"] + " " + repr(e))
+                    print("Error al leer la variable " + variable["name"] + " " + repr(e) + "\n")
                     res = None
 
             variables_res.append({"name": variable["name"], "value": res})
@@ -201,6 +201,7 @@ class WriteMemoryCommand(TargetCommand):
         loader = FlashLoader(session=session)
         variables = request['variables']
         direct_write = request['direct']
+        variables_res = []
         for variable in variables:
             pointer = variable['pointer']
             
@@ -232,15 +233,19 @@ class WriteMemoryCommand(TargetCommand):
             #write data
             try:
                 loader.add_data(address=address, data=value.to_bytes(size, byteorder='little'))
+                variables_res.append({"name": variable["name"], "value": value})
             except Exception as e:
                 logging.exception(e)
                 print("Error al escribir la variable " + pointer + " " + repr(e))
+                variables_res.append({"name": variable["name"], "value": None})
                 continue
         target.reset_and_halt()
         loader.commit()
         target.resume()
 
-        return Status.OK.name, {}, session
+        data = {}
+        data["variables"] = variables_res
+        return Status.OK.name, data, session
     
 class LightLedCommand(TargetCommand):
     def execute2(self, session, request, source):

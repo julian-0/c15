@@ -52,7 +52,12 @@ Made with React, ElectronJs and Python
 * `npm start`
 
 ## Build installer for windows
+### One line builder
+* `npm run build-all-windows`
+* The installer .exe will be located in `dist` directory
+
+### Two steps builder
 1. If you made changes on python script you need to rebuild the executable
 * `cd scripts && pyinstaller controller.spec && cd ..`
 2. Then pack the entire app
-* `npm run bild-windows`
+* `npm run build-windows`

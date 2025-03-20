@@ -29,3 +29,7 @@
 .disabled {
     color: gray;
 }
+
+.versionError {
+    color: red;
+}

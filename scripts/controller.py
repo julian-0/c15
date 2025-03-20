@@ -2,11 +2,13 @@ from pythonUtils.commands import *
 import json
 import logging
 import sys
+import base64
 
 # Identificador de resultados
 TOKEN = "#result# "
 
 def handle_input(session, in_stream_data):
+    in_stream_data = base64.b64decode(in_stream_data).decode('utf-8')
     parsed_stream_data = json.loads(in_stream_data)
     command_name = parsed_stream_data['command']
     source = parsed_stream_data['source']
@@ -48,7 +50,7 @@ def main():
     session = None
     while True:
         print("esperando comando")
-        in_stream_data = input()
+        in_stream_data = input().strip()
         result, session = handle_input(session, in_stream_data)
         returnResult(result)
 
