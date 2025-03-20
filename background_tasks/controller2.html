@@ -9,14 +9,10 @@
     const stringStreamCreator = require('string-to-stream');
 
     // 0. Clean c15_cache directory
-    const tempDir = path.join(__dirname, '/../c15_cache');
-    log.info('Cleaning and creating tmp directory');
-    if (fs.existsSync(tempDir)) {
-        log.info('Removing directory')
-        fs.rmdirSync(tempDir, { recursive: true, force: true });
-    }
-    log.info('Creating tmp directory')
-    fs.mkdirSync(tempDir, { recursive: true });
+    const devTempDir = path.join(__dirname, '/../c15_cache');
+    cleanDirectory(devTempDir);
+    const prodTempDir = path.join(__dirname, '/../../../c15_cache');
+    cleanDirectory(prodTempDir);
 
     // 1. Tell PythonShell which script to run for this background task
     let exePath = path.join(__dirname, '/../scripts/dist/controller.exe');
@@ -93,5 +89,13 @@
     function cleanResponse(text) {
         const indice = text.indexOf(TOKEN);
         return indice !== -1 ? text.slice(indice) : text;
+    }
+
+    function cleanDirectory(directory) {
+        log.info('Cleaning tmp directory: ', directory);
+        if (fs.existsSync(directory)) {
+            log.info('Removing directory: ', directory)
+            fs.rmdirSync(directory, { recursive: true, force: true });
+        }
     }
 </script>
