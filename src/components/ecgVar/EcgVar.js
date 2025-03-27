@@ -116,6 +116,7 @@ export class EcgVar extends MicroConnected {
         }
         const kc = this.state.reference - this.state.impedanciaMedida;
         const variables = [{
+            name: "cteCalibracionImp",
             pointer: "cte_calibracion_imp",
             size: 4,
             type: "float",
