@@ -24,7 +24,7 @@ Made with React, ElectronJs and Python
 * [Download](https://www.st.com/en/development-tools/stsw-link009.html) (Need ST account)
 * Unzip it
 * Execute as admin `stlink_winusb_install.bat`
-2. [Download C15 installer](https://github.com/julian-0/c15/releases/download/c15Config_v1.0.8/C15-Config.Setup.1.0.8.exe)
+2. [Download C15 exe installer](https://github.com/julian-0/c15/releases/latest)
 * Execute it
   
 ## Development enviroment for windows
