@@ -28,6 +28,7 @@ export class CpuVar extends MicroConnected {
                 language: '',
                 speed: '',
                 grid: '',
+                automaticPrintTest: '',
                 source: '',
                 externalEnergy: '',
                 internalEnergy: '',
@@ -70,6 +71,7 @@ export class CpuVar extends MicroConnected {
             { name: 'language', pointer: 'idioma_ptr', size: 1, type: 'char' },
             { name: 'speed', pointer: 'velocidad_ptr', size: 1, type: 'char' },
             { name: 'grid', pointer: 'grilla_ptr', size: 1, type: 'char' },
+            { name: 'automaticPrintTest', pointer: 'impresion_automatica_ptr', size: 1, type: 'char' },
             { name: 'source', pointer: 'fuente_ptr', size: 1, type: 'char' },
             { name: 'externalEnergy', pointer: 'energia_externa_ptr', size: 1, type: 'char' },
             { name: 'internalEnergy', pointer: 'energia_interna_ptr', size: 1, type: 'char' },
@@ -315,7 +317,7 @@ export class CpuVar extends MicroConnected {
     findVariableValueByName(name, variables) {
         const value = variables.find(variable => variable.name === name).value;
         //if name is grid or deaAudioRecord and the value is different than 1 or true put false
-        if ((name === 'grid' || name === 'deaAudioRecord')) {
+        if ((name === 'grid' || name === 'deaAudioRecord' || name === 'automaticPrintTest')) {
             if (value !== 1 && value !== 0)
                 return false;
             else
@@ -581,6 +583,10 @@ export class CpuVar extends MicroConnected {
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Grilla</p>
                                     <input disabled={!targetReadable} checked={form.grid ? form.grid : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('grid', e.target.checked)} />
+                                </div>
+                                <div className='d-flex justify-content-between'>
+                                    <p className='card-text text-secondary'>Impresión automática de test</p>
+                                    <input disabled={!targetReadable} checked={form.automaticPrintTest ? form.automaticPrintTest : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('automaticPrintTest', e.target.checked)} />
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <p className='card-text text-secondary'>Fuente</p>
