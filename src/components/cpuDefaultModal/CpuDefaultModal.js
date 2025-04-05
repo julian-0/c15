@@ -22,6 +22,7 @@ class CpuDefaultModal extends React.Component {
                 language: '',
                 speed: '',
                 grid: '',
+                automaticPrintTest: '',
                 source: '',
                 externalEnergy: '',
                 internalEnergy: '',
@@ -179,6 +180,9 @@ class CpuDefaultModal extends React.Component {
         if(form.deaAudioRecord === undefined){
             form.deaAudioRecord = false;
         }
+        if(form.automaticPrintTest === undefined){
+            form.automaticPrintTest = false;
+        }
         this.saveDataInStorage(form);
     }
 
@@ -289,6 +293,10 @@ class CpuDefaultModal extends React.Component {
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Grilla</p>
                                         <input checked={form.grid ? form.grid : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('grid', e.target.checked)} />
+                                    </div>
+                                    <div className='d-flex justify-content-between'>
+                                        <p className='card-text text-secondary'>Impresión automática de test</p>
+                                        <input checked={form.automaticPrintTest ? form.automaticPrintTest : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('automaticPrintTest', e.target.checked)} />
                                     </div>
                                     <div className='d-flex justify-content-between'>
                                         <p className='card-text text-secondary'>Fuente</p>

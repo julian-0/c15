@@ -1,5 +1,6 @@
 .cpuvar .card-text {
     font-size: 0.8rem;
+    text-align: start;
 }
 
 /* select p elements inside div of .cpuvar and put margin-bottom 0.3rem */
