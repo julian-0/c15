@@ -60,7 +60,8 @@ export class CpuVar extends MicroConnected {
                 pacemakerFrecuency: '',
                 pacemakerAmplitude: '',
                 audioBip: '',
-                audioAlarm: ''
+                audioAlarm: '',
+                demo: ''
             },
             actualDateCheck: false,
             defaultForm:{}
@@ -104,6 +105,7 @@ export class CpuVar extends MicroConnected {
             { name: 'pacemakerAmplitude', pointer: 'amplitud_marcapasos_ptr', size: 1, type: 'char' },
             { name: 'audioBip', pointer: 'volumen_bip_ptr', size: 1, type: 'char' },
             { name: 'audioAlarm', pointer: 'volumen_alarma_ptr', size: 1, type: 'char' },
+            { name: 'demo', pointer: 'demo_ptr', size: 1, type: 'char' }
         ];
 
         this.modelOptions = [];
@@ -317,7 +319,7 @@ export class CpuVar extends MicroConnected {
     findVariableValueByName(name, variables) {
         const value = variables.find(variable => variable.name === name).value;
         //if name is grid or deaAudioRecord and the value is different than 1 or true put false
-        if ((name === 'grid' || name === 'deaAudioRecord' || name === 'automaticPrintTest')) {
+        if ((name === 'grid' || name === 'deaAudioRecord' || name === 'automaticPrintTest' || name === 'demo' )) {
             if (value !== 1 && value !== 0)
                 return false;
             else
@@ -782,7 +784,15 @@ export class CpuVar extends MicroConnected {
                                 </div>
                             </div>
                         </div>
-
+                        <div className='card row'>
+                            <h6 className='card-header text-center'>Demo</h6>
+                            <div className='card-body'>
+                                <div className='d-flex justify-content-between'>
+                                    <p className='card-text text-secondary'>Demo</p>
+                                    <input disabled={!targetReadable} checked={form.demo ? form.demo : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('demo', e.target.checked)} />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className='col-3 my-1 d-flex flex-column'>
                         <div className='card row'>
