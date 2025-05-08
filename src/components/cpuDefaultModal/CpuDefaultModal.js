@@ -54,7 +54,8 @@ class CpuDefaultModal extends React.Component {
                 pacemakerFrecuency: '',
                 pacemakerAmplitude: '',
                 audioBip: '',
-                audioAlarm: ''
+                audioAlarm: '',
+                demo: ''
             },
             actualDateCheck: false
         };
@@ -174,15 +175,14 @@ class CpuDefaultModal extends React.Component {
 
     handleSubmit = () => {
         let form = this.state.form;
-        if(form.grid === undefined){
-            form.grid = false;
-        }
-        if(form.deaAudioRecord === undefined){
-            form.deaAudioRecord = false;
-        }
-        if(form.automaticPrintTest === undefined){
-            form.automaticPrintTest = false;
-        }
+        const defaultBooleans = ['grid', 'deaAudioRecord', 'automaticPrintTest', 'demo'];
+    
+        defaultBooleans.forEach((key) => {
+            if (form[key] === undefined) {
+                form[key] = false;
+            }
+        });
+    
         this.saveDataInStorage(form);
     }
 
@@ -492,7 +492,15 @@ class CpuDefaultModal extends React.Component {
                                     </div>
                                 </div>
                             </div>
-
+                            <div className='card row'>
+                                <h6 className='card-header text-center'>Demo</h6>
+                                <div className='card-body'>
+                                    <div className='d-flex justify-content-between'>
+                                        <p className='card-text text-secondary'>Demo</p>
+                                        <input checked={form.demo ? form.demo : false} type='checkbox' className='form-check-input' onChange={(e) => this.updateFormValue('demo', e.target.checked)} />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div className='col-3 my-1 d-flex flex-column'>
                             <div className='card row'>
