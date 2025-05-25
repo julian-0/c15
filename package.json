@@ -1,7 +1,7 @@
 {
     "name": "c15-config",
     "description": "A desktop interface for configuring C15 Defribillator",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "private": true,
     "dependencies": {
         "@material-ui/core": "^4.10.2",

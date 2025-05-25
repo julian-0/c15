@@ -319,12 +319,16 @@ export class CpuVar extends MicroConnected {
     findVariableValueByName(name, variables) {
         const value = variables.find(variable => variable.name === name).value;
         //if name is grid or deaAudioRecord and the value is different than 1 or true put false
-        if ((name === 'grid' || name === 'deaAudioRecord' || name === 'automaticPrintTest' || name === 'demo' )) {
+        if ((name === 'grid' || name === 'deaAudioRecord' || name === 'automaticPrintTest' )) {
             if (value !== 1 && value !== 0)
                 return false;
             else
                 return value === 1;
         }
+        if(name === 'demo' ){
+            return value !== 0;
+        }
+
         return value;
     }
 
