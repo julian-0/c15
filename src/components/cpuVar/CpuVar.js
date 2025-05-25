@@ -319,12 +319,16 @@ export class CpuVar extends MicroConnected {
     findVariableValueByName(name, variables) {
         const value = variables.find(variable => variable.name === name).value;
         //if name is grid or deaAudioRecord and the value is different than 1 or true put false
-        if ((name === 'grid' || name === 'deaAudioRecord' || name === 'automaticPrintTest' || name === 'demo' )) {
+        if ((name === 'grid' || name === 'deaAudioRecord' || name === 'automaticPrintTest' )) {
             if (value !== 1 && value !== 0)
                 return false;
             else
                 return value === 1;
         }
+        if(name === 'demo' ){
+            return value !== 0;
+        }
+
         return value;
     }
 
@@ -369,7 +373,10 @@ export class CpuVar extends MicroConnected {
         //add to variablesInfo the value propertie from the corresonding form value, if the value is boolean replace with 1 or 0
         const variables = this.variablesInfo.map(v => {
             let value = form[v.name];
-            if (typeof value == "boolean") {
+            if (v.name === 'demo') {
+                value = value ? 7 : 0;
+            }
+            else if (typeof value == "boolean") {
                 value = value ? 1 : 0;
             }
             else {
