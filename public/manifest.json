@@ -1,21 +1,21 @@
 {
-  "short_name": "F-Cal",
-  "name": "Factorial Calculator",
+  "short_name": "C-15 Config",
+  "name": "C15 Configuration Tool",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "icon.ico",
+      "sizes": "256x256 64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "eymblue.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "51x40"
     },
     {
-      "src": "logo512.png",
+      "src": "eym.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "128x100"
     }
   ],
   "start_url": ".",

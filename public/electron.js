@@ -78,6 +78,17 @@ function createWindow() {
         }
         mainWindow = null;
     });
+
+    // ToDo: use this to set the APP_VARIANT globally, check if works
+    mainWindow.webContents.on('did-finish-load', () => {
+        console.log('App is ready');
+        //print process.env.REACT_APP_VARIANT
+        console.log(`REACT_APP_VARIANT: ${process.env.REACT_APP_VARIANT}`);
+        const variant = process.env.REACT_APP_VARIANT || 'full';
+        mainWindow.webContents.executeJavaScript(`
+            window.APP_VARIANT = '${variant}';
+        `);
+    });
 }
 
 app.commandLine.appendSwitch('force-color-profile', 'srgb');

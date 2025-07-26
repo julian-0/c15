@@ -4,6 +4,7 @@ import { SidebarData } from './SidebarData'
 import './Navbar.css'
 import { IconContext } from 'react-icons'
 import eymLogo from '../../imgs/eym.png'
+import { isLiteVersion } from '../../config.js'
 const electron = window.require('electron');
 var appVersion = electron.remote.app.getVersion(); 
 
@@ -14,6 +15,8 @@ function Navbar() {
     const handleClick = (title) => {
         setActiveItem(title);
     }
+
+    const lite = isLiteVersion(); 
 
     return (
         <div className='menu'>
@@ -35,7 +38,7 @@ function Navbar() {
                                     onClick={() => handleClick(item.title)}>
                                     <Link to={item.path} className={className}>
                                         {item.icon}
-                                        <span>{item.title}</span>
+                                        <span>{lite ? item.liteTitle : item.title}</span>
                                     </Link>
                                 </li>
                             );
@@ -43,7 +46,7 @@ function Navbar() {
                     </ul>
                 </nav>
             </IconContext.Provider>
-            <footer className="fixed-bottom">v{appVersion}</footer>
+            <footer className="fixed-bottom">v{appVersion}{lite? "-lite" : ""}</footer>
         </div>
     )
 }
