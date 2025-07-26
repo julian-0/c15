@@ -267,7 +267,8 @@ export class Programmer extends MicroConnected {
                     case "PROGRAM":
                         if (data.status === 'OK') {
                             resolve(); // Resuelve la promesa cuando la escritura es exitosa
-                            this.monitorVersion();
+                            if (this.props.showVersion)
+                                this.monitorVersion();
                         }
                         else {
                             reject('Error al programar'); // Rechaza la promesa en caso de error
@@ -305,7 +306,8 @@ export class Programmer extends MicroConnected {
 
     updateFile(elfPath) {
         this.setState({ elfPath: elfPath });
-        this.sendToMicroProgrammer("SET_ELF_FILE", { path: elfPath });
+        if (elfPath && !elfPath.endsWith('.bin')) 
+            this.sendToMicroProgrammer("SET_ELF_FILE", { path: elfPath });
     }
 
     toggleConexion() {

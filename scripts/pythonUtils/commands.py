@@ -125,7 +125,8 @@ class ProgramCommand(TargetCommand):
         path = request['path']
         target = session.board.target
         FileProgrammer(session).program(path)
-        target.elf = path
+        if not path.endswith('.bin'):
+            target.elf = path
         target.reset_and_halt()
         target.resume()
         data = {}
