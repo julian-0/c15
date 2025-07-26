@@ -1,7 +1,10 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import { isLiteVersion } from './config.js'
 
-const savedLang = localStorage.getItem("lang") || "en";
+const lite = isLiteVersion(); 
+
+const savedLang = lite ? (localStorage.getItem("lang") || "en") : "es";
 
 i18n
     .use(initReactI18next)

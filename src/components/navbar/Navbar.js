@@ -58,14 +58,16 @@ function Navbar() {
             </IconContext.Provider>
 
             <footer className="fixed-bottom mx-1" >
-                <GrLanguage />
-                <select id='langSelect' className='mx-1' value={i18n.language} onChange={onChangeLang}>
-                    {LANGUAGES.map(({ code, label }) => (
-                        <option key={code} value={code}>
-                            {label}
-                        </option>
-                    ))}
-                </select>
+                {lite && <div>
+                    <GrLanguage />
+                    <select id='langSelect' className='mx-1' value={i18n.language} onChange={onChangeLang}>
+                        {LANGUAGES.map(({ code, label }) => (
+                            <option key={code} value={code}>
+                                {label}
+                            </option>
+                        ))}
+                    </select>
+                </div>}
                 <div>v{appVersion}{lite? "-lite" : ""}</div>
             </footer>
         </div>
