@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { SidebarData } from './SidebarData'
 import './Navbar.css'
 import { IconContext } from 'react-icons'
+import { GrLanguage } from "react-icons/gr";
 import eymLogo from '../../imgs/eym.png'
 import { isLiteVersion } from '../../config.js'
 import { LANGUAGES } from "../../utils/constants.js";
@@ -56,16 +57,17 @@ function Navbar() {
                 </nav>
             </IconContext.Provider>
 
-    <div className="fixed-bottom" >
-        <select defaultValue={"es"} onChange={onChangeLang}>
-            {LANGUAGES.map(({ code, label }) => (
-                <option key={code} value={code}>
-                    {label}
-                </option>
-            ))}
-        </select>
-        <footer>v{appVersion}{lite? "-lite" : ""}</footer>
-    </div>
+            <footer className="fixed-bottom mx-1" >
+                <GrLanguage />
+                <select id='langSelect' className='mx-1' value={i18n.language} onChange={onChangeLang}>
+                    {LANGUAGES.map(({ code, label }) => (
+                        <option key={code} value={code}>
+                            {label}
+                        </option>
+                    ))}
+                </select>
+                <div>v{appVersion}{lite? "-lite" : ""}</div>
+            </footer>
         </div>
     )
 }

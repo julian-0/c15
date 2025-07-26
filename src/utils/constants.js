@@ -6,6 +6,7 @@ module.export = {
 }
 
 export const LANGUAGES = [
-  { label: "Spanish", code: "es" },
+  { label: "Español", code: "es" },
   { label: "English", code: "en" },
+  { label: "中文", code: "zh" },
 ];

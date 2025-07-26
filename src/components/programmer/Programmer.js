@@ -557,19 +557,19 @@ export class Programmer extends MicroConnected {
                         <div className='stlink'>
                             <h5 className='card-title text-center'>STLink</h5>
                             <div className='d-flex justify-content-between'>
-                                <span className='text-secondary'>Nº de serie:</span>
+                                <span className='text-secondary'>{t('serialNumber')}:</span>
                                 <input type="text" className='col-7 text-secondary-emphasis' value={this.state.serialNumber} disabled />
                             </div>
                         </div>
                         <hr />
                         <div className='microcontrolador'>
-                            <h5 className='card-title text-center'>Microcontrolador</h5>
+                            <h5 className='card-title text-center'>{t('microcontroller')}</h5>
                             <div className='d-flex justify-content-between'>
                                 <span className='card-text text-secondary'>
                                     {
                                         this.state.targetConnected ?
-                                            <span className='online'>● Conectado</span> :
-                                            <span className='offline'>● Desconectado</span>
+                                            <span className='online'>● {t('connected')}</span> :
+                                            <span className='offline'>● {t('disconnected')}</span>
                                     }
                                 </span>
                                 {
@@ -580,7 +580,7 @@ export class Programmer extends MicroConnected {
                                             style={{ cursor: 'pointer' }}
                                         >
                                             <FaPowerOff className="icon mx-1" />
-                                            Desconectar
+                                            {t('disconnect')}
                                         </label>
                                         :
                                         <label
@@ -589,20 +589,20 @@ export class Programmer extends MicroConnected {
                                             style={{ cursor: this.state.probeConnected ? 'pointer' : 'not-allowed' }}
                                         >
                                             <FaPowerOff className="icon mx-1" />
-                                            Conectar
+                                            {t('connect')}
                                         </label>
                                 }
                             </div>
                             <div className='d-flex justify-content-between'>
-                                <span className='card-text text-secondary'>Modelo:</span>
+                                <span className='card-text text-secondary'>{t('model')}:</span>
                                 <span className='card-text text-secondary-emphasis'>{this.state.devName + ' ' + this.state.revName}</span>
                             </div>
                             <div className='d-flex justify-content-between'>
-                                <span className='card-text text-secondary'>Versión de firmware:</span>
+                                <span className='card-text text-secondary'>{t('firmVersion')}:</span>
                                 <FileInput targetConnected={this.state.targetConnected} parentCallback={this.updateFile} />
                             </div>
                             <div className='btn-record d-flex justify-content-end'>
-                                <button type="button" className='btn btn-warning' onClick={this.programElf}>Grabar</button>
+                                <button type="button" className='btn btn-warning' onClick={this.programElf}>{t('flash')}</button>
                             </div>
                         </div>
                         <div className='container action-buttons d-flex justify-content-between flex-md-row flex-column'>
@@ -611,21 +611,21 @@ export class Programmer extends MicroConnected {
                                 className='btn btn-primary'
                                 disabled={(!this.state.targetConnected)}
                                 onClick={this.reset}>
-                                Reiniciar
+                                {t('reset')}
                             </button>
                             <button
                                 type="button"
                                 className='btn btn-danger'
                                 disabled={(!this.state.targetConnected || this.state.paused)}
                                 onClick={this.halt}>
-                                Pausar
+                                {t('halt')}
                             </button>
                             <button
                                 type="button"
                                 className='btn btn-success'
                                 disabled={(!this.state.targetConnected || !this.state.paused)}
                                 onClick={this.resume}>
-                                Reaunudar
+                                {t('resume')}
                             </button>
                         </div>
                     </div>
