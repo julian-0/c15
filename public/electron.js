@@ -29,7 +29,7 @@ if (process.env.DEV) {
     });
 }else{
     app.whenReady().then(() => {
-        console.log("Aplicacion iniciada")
+        console.log("Aplicación iniciada")
         console.log(`Dirname:  ${__dirname}`);
     });
 }

@@ -47,7 +47,6 @@ i18n
                     writingPending: "Writing values",
                     writingOk: "Write successful",
                     writingError: "Error writing",
-                    elfFile: ".elf file",
                 },
             },
             es: {
@@ -82,7 +81,6 @@ i18n
                     writingPending: "Escribiendo valores",
                     writingOk: "Escritura realizada con éxito",
                     writingError: "Error al escribir",
-                    elfFile: "Archivo .elf",
                 },
             },
             zh: {
@@ -117,7 +115,6 @@ i18n
                     writingPending: "正在写入值",
                     writingOk: "写入成功",
                     writingError: "写入错误",
-                    elfFile: ".elf 文件",
                 },
             },
             // Add more languages here
