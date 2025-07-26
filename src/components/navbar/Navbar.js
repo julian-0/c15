@@ -5,12 +5,21 @@ import './Navbar.css'
 import { IconContext } from 'react-icons'
 import eymLogo from '../../imgs/eym.png'
 import { isLiteVersion } from '../../config.js'
+import { LANGUAGES } from "../../utils/constants.js";
+import { useTranslation } from "react-i18next";
 const electron = window.require('electron');
 var appVersion = electron.remote.app.getVersion(); 
 
 function Navbar() {
     const location = useLocation();
     const [activeItem, setActiveItem] = useState('');
+    const { i18n, t } = useTranslation();
+
+    const onChangeLang = (e) => {
+        const lang = e.target.value;
+        i18n.changeLanguage(lang);
+        localStorage.setItem('lang', lang);
+    }
 
     const handleClick = (title) => {
         setActiveItem(title);
@@ -38,7 +47,7 @@ function Navbar() {
                                     onClick={() => handleClick(item.title)}>
                                     <Link to={item.path} className={className}>
                                         {item.icon}
-                                        <span>{lite ? item.liteTitle : item.title}</span>
+                                        <span>{lite ? t("step", {number: item.stepNumber}) : item.title}</span>
                                     </Link>
                                 </li>
                             );
@@ -46,7 +55,17 @@ function Navbar() {
                     </ul>
                 </nav>
             </IconContext.Provider>
-            <footer className="fixed-bottom">v{appVersion}{lite? "-lite" : ""}</footer>
+
+    <div className="fixed-bottom" >
+        <select defaultValue={"es"} onChange={onChangeLang}>
+            {LANGUAGES.map(({ code, label }) => (
+                <option key={code} value={code}>
+                    {label}
+                </option>
+            ))}
+        </select>
+        <footer>v{appVersion}{lite? "-lite" : ""}</footer>
+    </div>
         </div>
     )
 }

@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
 import NumericInput from '../numericInput/NumericInput';
 import VersionDefaultModal from '../versionDefaultModal/VersionDefaultModal';
+import { withTranslation  } from "react-i18next";
 
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
@@ -547,10 +548,11 @@ export class Programmer extends MicroConnected {
         const { targetReadable } = this.props;
         const form = this.state.form;
         const { versionError } = this.state;
+        const { t } = this.props;
         return (
             <div className='col-3'>
                 <div className='programmer card'>
-                    <h4 className='card-header text-center'>Programador</h4>
+                    <h4 className='card-header text-center'>{t("programer")}</h4>
                     <div className='card-body'>
                         <div className='stlink'>
                             <h5 className='card-title text-center'>STLink</h5>
@@ -730,4 +732,4 @@ export class Programmer extends MicroConnected {
     }
 }
 
-export default Programmer
+export default withTranslation()(Programmer);
