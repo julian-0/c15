@@ -14,7 +14,7 @@ i18n
         resources: {
             en: {
                 translation: {
-                    programer: "Programer",
+                    programer: "Programmer",
                     step: "Step {{number}}",
                     serialNumber: "Serial number",
                     microcontroller: "Microcontroller",
