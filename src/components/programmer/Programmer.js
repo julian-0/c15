@@ -60,6 +60,8 @@ export class Programmer extends MicroConnected {
         this.writeVersion = this.writeVersion.bind(this);
     }
 
+    t = this.props.t;
+
     componentDidMount() {
         // 3. Setup listener for controller python output (bounced from main process)
         ipcRenderer.on('CONTROLLER_RESULT_PROGRAMMER', (event, args) => {
@@ -129,21 +131,21 @@ export class Programmer extends MicroConnected {
 
     processResetResult(response) {
         if (response.status === 'OK') {
-            toast.success('Reseteado', Programmer.toastProperties);
+            toast.success(this.t('reseted'), Programmer.toastProperties);
             //this.setState({ paused: true });
         }
     }
 
     processHaltResult(response) {
         if (response.status === 'OK') {
-            toast.success('Pausado', Programmer.toastProperties);
+            toast.success(this.t('halted'), Programmer.toastProperties);
             this.setState({ paused: true });
         }
     }
 
     processResumeResult(response) {
         if (response.status === 'OK') {
-            toast.success('Reaunudado', Programmer.toastProperties);
+            toast.success(this.t('resumed'), Programmer.toastProperties);
             this.setState({ paused: false });
         }
     }
@@ -196,7 +198,7 @@ export class Programmer extends MicroConnected {
 
     processGetDataResult(response) {
         if (response.status === 'ERROR') {
-            toast.error('Error conectandose al micro', Programmer.toastProperties)
+            toast.error(this.t('errorConectingToMicro'), Programmer.toastProperties)
             return;
         }
 
@@ -211,14 +213,14 @@ export class Programmer extends MicroConnected {
     processConnectResult(response) {
         if (response.status === 'ERROR') {
             if (response.data.error.includes('USBError')) {
-                toast.error('Reconecte el usb', Programmer.toastProperties)
+                toast.error(this.t('reconnectUsb'), Programmer.toastProperties)
                 return;
             }
             else if (response.data.error.includes('STLink error (9): Get IDCODE')) {
-                toast.error('Revisar alimentación o reiniciar equipo', Programmer.toastProperties)
+                toast.error(this.t('checkDevice'), Programmer.toastProperties)
                 return;
             }
-            toast.error('Error conectandose al micro: ' + response.data.error, Programmer.toastProperties)
+            toast.error(this.t('errorConectingToMicro')+ ": " + response.data.error, Programmer.toastProperties)
             return;
         }
 
@@ -284,9 +286,9 @@ export class Programmer extends MicroConnected {
         toast.promise(
             disconnectPromise,
             {
-                pending: 'Programando firmware...',
-                success: 'Programado',
-                error: 'Error al programar'
+                pending: this.t('flashPending'),
+                success: this.t('flashOk'),
+                error: this.t('flashError')
             },
             Programmer.toastProperties
         );
@@ -347,9 +349,9 @@ export class Programmer extends MicroConnected {
         toast.promise(
             disconnectPromise,
             {
-                pending: 'Desconectando...',
-                success: 'Desconectado',
-                error: 'Error al desconectar'
+                pending: this.t('disconnectPending'),
+                success: this.t('disconnectOk'),
+                error: this.t('disconnectError')
             },
             Programmer.toastProperties
         );
@@ -525,9 +527,9 @@ export class Programmer extends MicroConnected {
         toast.promise(
             calibrationPromise,
             {
-                pending: 'Escribiendo valores',
-                success: 'Escritura realizada con éxito',
-                error: 'Error al escribir'
+                pending: this.t('writingPending'),
+                success: this.t('writingOk'),
+                error: this.t('writingError')
             },
             Programmer.toastProperties
         );
