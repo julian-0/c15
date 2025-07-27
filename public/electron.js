@@ -29,7 +29,7 @@ if (process.env.DEV) {
     });
 }else{
     app.whenReady().then(() => {
-        console.log("Aplicacion iniciada")
+        console.log("Aplicación iniciada")
         console.log(`Dirname:  ${__dirname}`);
     });
 }
@@ -71,12 +71,24 @@ function createWindow() {
     mainWindow.on('closed', function () {
         try{
             loadBalancer.stopAll();
+            console.log("Stopping all background processes");
         }
         catch(error){
             console.log("error en stopAll");
             console.log(error);
         }
         mainWindow = null;
+    });
+
+    // ToDo: use this to set the APP_VARIANT globally, check if works
+    mainWindow.webContents.on('did-finish-load', () => {
+        console.log('App is ready');
+        //print process.env.REACT_APP_VARIANT
+        console.log(`REACT_APP_VARIANT: ${process.env.REACT_APP_VARIANT}`);
+        const variant = process.env.REACT_APP_VARIANT || 'full';
+        mainWindow.webContents.executeJavaScript(`
+            window.APP_VARIANT = '${variant}';
+        `);
     });
 }
 
@@ -101,6 +113,15 @@ app.on('uncaughtException', function (error) {
     console.log(error);
 });
 
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error.message);
+    // evitar que crashee la app
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason);
+});
+
 /* ----------------------------------- Custom code starts here ------------------------------------- */
 
 // 1. Register background tasks (the keys will be used for reference later)
@@ -114,6 +135,10 @@ loadBalancer.register(
 
 // 2. Set up eventlisteners to bounce message from background to UI 
 ipcMain.on('CONTROLLER_RESULT', (event, args) => {
+    if (!mainWindow || mainWindow.isDestroyed()) {
+        console.error("Main window is not available. Application might have crashed or closed.");
+        return;
+    }
     let eventName = 'CONTROLLER_RESULT_' + args.data.source;
     mainWindow.webContents.send(eventName, args);
 });

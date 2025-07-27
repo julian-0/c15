@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import MicroConnected from '../MicroConnected';
 import NumericInput from '../numericInput/NumericInput';
 import VersionDefaultModal from '../versionDefaultModal/VersionDefaultModal';
+import { withTranslation  } from "react-i18next";
 
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
@@ -58,6 +59,8 @@ export class Programmer extends MicroConnected {
         this.monitorVersion = this.monitorVersion.bind(this);
         this.writeVersion = this.writeVersion.bind(this);
     }
+
+    t = this.props.t;
 
     componentDidMount() {
         // 3. Setup listener for controller python output (bounced from main process)
@@ -128,21 +131,21 @@ export class Programmer extends MicroConnected {
 
     processResetResult(response) {
         if (response.status === 'OK') {
-            toast.success('Reseteado', Programmer.toastProperties);
+            toast.success(this.t('reseted'), Programmer.toastProperties);
             //this.setState({ paused: true });
         }
     }
 
     processHaltResult(response) {
         if (response.status === 'OK') {
-            toast.success('Pausado', Programmer.toastProperties);
+            toast.success(this.t('halted'), Programmer.toastProperties);
             this.setState({ paused: true });
         }
     }
 
     processResumeResult(response) {
         if (response.status === 'OK') {
-            toast.success('Reaunudado', Programmer.toastProperties);
+            toast.success(this.t('resumed'), Programmer.toastProperties);
             this.setState({ paused: false });
         }
     }
@@ -195,7 +198,7 @@ export class Programmer extends MicroConnected {
 
     processGetDataResult(response) {
         if (response.status === 'ERROR') {
-            toast.error('Error conectandose al micro', Programmer.toastProperties)
+            toast.error(this.t('errorConectingToMicro'), Programmer.toastProperties)
             return;
         }
 
@@ -210,14 +213,14 @@ export class Programmer extends MicroConnected {
     processConnectResult(response) {
         if (response.status === 'ERROR') {
             if (response.data.error.includes('USBError')) {
-                toast.error('Reconecte el usb', Programmer.toastProperties)
+                toast.error(this.t('reconnectUsb'), Programmer.toastProperties)
                 return;
             }
             else if (response.data.error.includes('STLink error (9): Get IDCODE')) {
-                toast.error('Revisar alimentación o reiniciar equipo', Programmer.toastProperties)
+                toast.error(this.t('checkDevice'), Programmer.toastProperties)
                 return;
             }
-            toast.error('Error conectandose al micro: ' + response.data.error, Programmer.toastProperties)
+            toast.error(this.t('errorConectingToMicro')+ ": " + response.data.error, Programmer.toastProperties)
             return;
         }
 
@@ -264,7 +267,8 @@ export class Programmer extends MicroConnected {
                     case "PROGRAM":
                         if (data.status === 'OK') {
                             resolve(); // Resuelve la promesa cuando la escritura es exitosa
-                            this.monitorVersion();
+                            if (this.props.showVersion)
+                                this.monitorVersion();
                         }
                         else {
                             reject('Error al programar'); // Rechaza la promesa en caso de error
@@ -283,9 +287,9 @@ export class Programmer extends MicroConnected {
         toast.promise(
             disconnectPromise,
             {
-                pending: 'Programando firmware...',
-                success: 'Programado',
-                error: 'Error al programar'
+                pending: this.t('flashPending'),
+                success: this.t('flashOk'),
+                error: this.t('flashError')
             },
             Programmer.toastProperties
         );
@@ -302,7 +306,8 @@ export class Programmer extends MicroConnected {
 
     updateFile(elfPath) {
         this.setState({ elfPath: elfPath });
-        this.sendToMicroProgrammer("SET_ELF_FILE", { path: elfPath });
+        if (elfPath && !elfPath.endsWith('.bin')) 
+            this.sendToMicroProgrammer("SET_ELF_FILE", { path: elfPath });
     }
 
     toggleConexion() {
@@ -346,9 +351,9 @@ export class Programmer extends MicroConnected {
         toast.promise(
             disconnectPromise,
             {
-                pending: 'Desconectando...',
-                success: 'Desconectado',
-                error: 'Error al desconectar'
+                pending: this.t('disconnectPending'),
+                success: this.t('disconnectOk'),
+                error: this.t('disconnectError')
             },
             Programmer.toastProperties
         );
@@ -524,9 +529,9 @@ export class Programmer extends MicroConnected {
         toast.promise(
             calibrationPromise,
             {
-                pending: 'Escribiendo valores',
-                success: 'Escritura realizada con éxito',
-                error: 'Error al escribir'
+                pending: this.t('writingPending'),
+                success: this.t('writingOk'),
+                error: this.t('writingError')
             },
             Programmer.toastProperties
         );
@@ -547,27 +552,28 @@ export class Programmer extends MicroConnected {
         const { targetReadable } = this.props;
         const form = this.state.form;
         const { versionError } = this.state;
+        const { t } = this.props;
         return (
             <div className='col-3'>
                 <div className='programmer card'>
-                    <h4 className='card-header text-center'>Programador</h4>
+                    <h4 className='card-header text-center'>{t("programer")}</h4>
                     <div className='card-body'>
                         <div className='stlink'>
                             <h5 className='card-title text-center'>STLink</h5>
                             <div className='d-flex justify-content-between'>
-                                <span className='text-secondary'>Nº de serie:</span>
+                                <span className='text-secondary'>{t('serialNumber')}:</span>
                                 <input type="text" className='col-7 text-secondary-emphasis' value={this.state.serialNumber} disabled />
                             </div>
                         </div>
                         <hr />
                         <div className='microcontrolador'>
-                            <h5 className='card-title text-center'>Microcontrolador</h5>
+                            <h5 className='card-title text-center'>{t('microcontroller')}</h5>
                             <div className='d-flex justify-content-between'>
                                 <span className='card-text text-secondary'>
                                     {
                                         this.state.targetConnected ?
-                                            <span className='online'>● Conectado</span> :
-                                            <span className='offline'>● Desconectado</span>
+                                            <span className='online'>● {t('connected')}</span> :
+                                            <span className='offline'>● {t('disconnected')}</span>
                                     }
                                 </span>
                                 {
@@ -578,7 +584,7 @@ export class Programmer extends MicroConnected {
                                             style={{ cursor: 'pointer' }}
                                         >
                                             <FaPowerOff className="icon mx-1" />
-                                            Desconectar
+                                            {t('disconnect')}
                                         </label>
                                         :
                                         <label
@@ -587,20 +593,20 @@ export class Programmer extends MicroConnected {
                                             style={{ cursor: this.state.probeConnected ? 'pointer' : 'not-allowed' }}
                                         >
                                             <FaPowerOff className="icon mx-1" />
-                                            Conectar
+                                            {t('connect')}
                                         </label>
                                 }
                             </div>
                             <div className='d-flex justify-content-between'>
-                                <span className='card-text text-secondary'>Modelo:</span>
+                                <span className='card-text text-secondary'>{t('model')}:</span>
                                 <span className='card-text text-secondary-emphasis'>{this.state.devName + ' ' + this.state.revName}</span>
                             </div>
                             <div className='d-flex justify-content-between'>
-                                <span className='card-text text-secondary'>Versión de firmware:</span>
+                                <span className='card-text text-secondary'>{t('firmVersion')}:</span>
                                 <FileInput targetConnected={this.state.targetConnected} parentCallback={this.updateFile} />
                             </div>
                             <div className='btn-record d-flex justify-content-end'>
-                                <button type="button" className='btn btn-warning' onClick={this.programElf}>Grabar</button>
+                                <button type="button" className='btn btn-warning' onClick={this.programElf}>{t('flash')}</button>
                             </div>
                         </div>
                         <div className='container action-buttons d-flex justify-content-between flex-md-row flex-column'>
@@ -609,21 +615,21 @@ export class Programmer extends MicroConnected {
                                 className='btn btn-primary'
                                 disabled={(!this.state.targetConnected)}
                                 onClick={this.reset}>
-                                Reiniciar
+                                {t('reset')}
                             </button>
                             <button
                                 type="button"
                                 className='btn btn-danger'
                                 disabled={(!this.state.targetConnected || this.state.paused)}
                                 onClick={this.halt}>
-                                Pausar
+                                {t('halt')}
                             </button>
                             <button
                                 type="button"
                                 className='btn btn-success'
                                 disabled={(!this.state.targetConnected || !this.state.paused)}
                                 onClick={this.resume}>
-                                Reaunudar
+                                {t('resume')}
                             </button>
                         </div>
                     </div>
@@ -730,4 +736,4 @@ export class Programmer extends MicroConnected {
     }
 }
 
-export default Programmer
+export default withTranslation()(Programmer);

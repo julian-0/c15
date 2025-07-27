@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { FaUpload } from 'react-icons/fa';
 import './FileInput.css';
+import { useTranslation } from "react-i18next";
+
 
 const FileInput = ({ targetConnected, parentCallback }) => {
     const [selectedFile, setSelectedFile] = useState(null);
 
+    const { t } = useTranslation();
+    
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (!file) return;
@@ -37,7 +41,7 @@ const FileInput = ({ targetConnected, parentCallback }) => {
                     event.target.value = null
                 }}
             />
-            <label htmlFor="upload" className='file-label text-secondary-emphasis'>{!selectedFile ? 'Archivo .efl' : selectedFile.name}</label>
+            <label htmlFor="upload" className='file-label text-secondary-emphasis'>{!selectedFile ? t('elfFile') : selectedFile.name}</label>
         </div>
     );
 };

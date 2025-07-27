@@ -51,6 +51,10 @@ Made with React, ElectronJs and Python
 9. Start electron app
 * `npm start`
 
+### Lite mode
+* Modify in `src\config.js` the function `getAppVariant()`
+* This should work with a variable
+
 ## Build installer for windows
 ### One line builder
 * `npm run build-all-windows`
@@ -61,3 +65,6 @@ Made with React, ElectronJs and Python
 * `cd scripts && pyinstaller controller.spec && cd ..`
 2. Then pack the entire app
 * `npm run build-windows`
+
+### Build lite version
+* `npm run build-lite-windows`

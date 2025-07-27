@@ -1,0 +1,52 @@
+{
+    "appId": "com.em.c15configlite",
+    "productName": "C15-Config Lite",
+    "copyright": "Copyright © E&M Electromedicina",
+    "asar": false,
+    "linux": {
+        "target": [
+            "deb",
+            "snap"
+        ],
+        "category": "Utility"
+    },
+    "snap": {
+        "confinement": "classic"
+    },
+    "win": {
+        "target": [
+            "nsis"
+        ],
+        "legalTrademarks": "Copyright © E&M Electromedicina",
+        "signingHashAlgorithms": [
+            "sha1",
+            "sha256"
+        ]
+    },
+    "mac": {
+        "category": "public.app-category.education",
+        "target": [
+            "default"
+        ]
+    },
+    "nsis": {
+        "oneClick": true
+    },
+    "files": [
+        "build/**/*",
+        "node_modules/**/*",
+        "utils/**/*",
+        "scripts/dist/controller.exe",
+        "background_tasks/**/*",
+        "pythonUtils/**/*",
+        "config-overrides.js",
+        "application.log"
+    ],
+    "extends": null,
+    "extraMetadata": {
+        "main": "build/electron.js",
+        "name": "c15-config-lite",
+        "version": "1.5.0",
+        "description": "A desktop interface for configuring C15 Defribillator (Lite Version)"
+    }
+}

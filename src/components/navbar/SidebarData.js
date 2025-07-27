@@ -7,24 +7,28 @@ import * as AiIcons from 'react-icons/ai'
 export const SidebarData = [
     {
         title: "Control",
+        stepNumber: "1",
         path: "/discharge",
         icon: <BsIcons.BsLightningCharge/>,
         cName: "nav-text"
     },
     {
         title: "CPU",
+        stepNumber: "2",
         path: "/cpu",
         icon: <BsIcons.BsCpu/>,
         cName: "nav-text"
     },
     {
         title: "ECG",
+        stepNumber: "3",
         path: "/ecg",
         icon: <LiaIcons.LiaHeartbeatSolid/>,
         cName: "nav-text"
     },
     {
         title: "Audio",
+        stepNumber: "4",
         path: "/audio",
         icon: <AiIcons.AiOutlineSound/>,
         cName: "nav-text"
