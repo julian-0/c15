@@ -1,7 +1,7 @@
 {
     "name": "c15-config",
     "description": "A desktop interface for configuring C15 Defribillator",
-    "version": "1.4.2",
+    "version": "1.5.0",
     "private": true,
     "dependencies": {
         "@material-ui/core": "^4.10.2",
@@ -36,6 +36,7 @@
         "build-python": "venv\\Scripts\\activate && cd scripts && pyinstaller controller.spec",
         "build-linux": "npm run react-build && npm run electron-build-linux",
         "build-windows": "npm run react-build && npm run electron-build-windows",
+        "build-lite-windows": "npm run react-build && electron-builder --win --config electron-builder-lite.json",
         "build-all-windows": "npm run build-python && npm run build-windows",
         "build-mac": "npm run react-build && npm run electron-build-mac",
         "build": "npm run react-build && npm run electron-build-linux && npm run electron-build-windows & npm run electron-build-mac",

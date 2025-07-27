@@ -71,6 +71,7 @@ function createWindow() {
     mainWindow.on('closed', function () {
         try{
             loadBalancer.stopAll();
+            console.log("Stopping all background processes");
         }
         catch(error){
             console.log("error en stopAll");
@@ -112,6 +113,15 @@ app.on('uncaughtException', function (error) {
     console.log(error);
 });
 
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error.message);
+    // evitar que crashee la app
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason);
+});
+
 /* ----------------------------------- Custom code starts here ------------------------------------- */
 
 // 1. Register background tasks (the keys will be used for reference later)
@@ -125,6 +135,10 @@ loadBalancer.register(
 
 // 2. Set up eventlisteners to bounce message from background to UI 
 ipcMain.on('CONTROLLER_RESULT', (event, args) => {
+    if (!mainWindow || mainWindow.isDestroyed()) {
+        console.error("Main window is not available. Application might have crashed or closed.");
+        return;
+    }
     let eventName = 'CONTROLLER_RESULT_' + args.data.source;
     mainWindow.webContents.send(eventName, args);
 });
