@@ -99,3 +99,8 @@ span{
 footer {
     color: #f5f5f5;
 }
+
+.superior-title {
+    color: white;
+    text-decoration: underline;
+}

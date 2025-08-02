@@ -8,6 +8,7 @@ export const SidebarData = [
     {
         title: "Control",
         stepNumber: "1",
+        superiorTitle: "SC1902",
         path: "/discharge",
         icon: <BsIcons.BsLightningCharge/>,
         cName: "nav-text"
@@ -15,6 +16,7 @@ export const SidebarData = [
     {
         title: "CPU",
         stepNumber: "2",
+        superiorTitle: "SC1901",
         path: "/cpu",
         icon: <BsIcons.BsCpu/>,
         cName: "nav-text"
