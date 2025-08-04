@@ -13,4 +13,5 @@ export function getAppVariant() {
 
 export function isLiteVersion() {
     return getAppVariant() === 'lite';
+    // return true;
 }
