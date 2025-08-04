@@ -46,7 +46,7 @@
     "extraMetadata": {
         "main": "build/electron.js",
         "name": "c15-config-lite",
-        "version": "1.5.0",
+        "version": "1.5.1",
         "description": "A desktop interface for configuring C15 Defribillator (Lite Version)"
     }
 }
