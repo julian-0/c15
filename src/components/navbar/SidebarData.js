@@ -15,7 +15,7 @@ export const SidebarData = [
     },
     {
         title: "CPU",
-        stepNumber: "2",
+        stepNumber: "1",
         superiorTitle: "SC1901",
         path: "/cpu",
         icon: <BsIcons.BsCpu/>,
@@ -23,14 +23,14 @@ export const SidebarData = [
     },
     {
         title: "ECG",
-        stepNumber: "3",
+        stepNumber: "2",
         path: "/ecg",
         icon: <LiaIcons.LiaHeartbeatSolid/>,
         cName: "nav-text"
     },
     {
         title: "Audio",
-        stepNumber: "4",
+        stepNumber: "3",
         path: "/audio",
         icon: <AiIcons.AiOutlineSound/>,
         cName: "nav-text"
