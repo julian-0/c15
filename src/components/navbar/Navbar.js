@@ -41,7 +41,8 @@ function Navbar() {
                         {SidebarData.map((item, index) => {
                             const isActive = item.title === activeItem || item.path === location.pathname;
                             const className = isActive ? 'active' : '';
-                            return (
+                            return (<>
+                                {lite && item.superiorTitle && <span className="superior-title">{item.superiorTitle}</span>}
                                 <li
                                     key={index} 
                                     className={item.cName}
@@ -51,6 +52,7 @@ function Navbar() {
                                         <span>{lite ? t("step", {number: item.stepNumber}) : item.title}</span>
                                     </Link>
                                 </li>
+                                </>
                             );
                         })}
                     </ul>

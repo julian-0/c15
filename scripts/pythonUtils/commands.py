@@ -65,7 +65,7 @@ class ConnectTargetCommand(ProbeCommand):
         try:
             target_str = request['target']
             if session is None:
-                session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "sector", "target_override": target_str, "pack": keil_path})
+                session = ConnectHelper.session_with_chosen_probe(blocking=False, options={"chip_erase": "sector", "target_override": target_str, "pack": keil_path, "frequency": 4000000})
                 session.open()
             
             target = session.board.target
